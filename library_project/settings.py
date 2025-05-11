@@ -11,8 +11,11 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+<<<<<<< HEAD
 import pymysql
 pymysql.install_as_MySQLdb()
+=======
+>>>>>>> 0c2a6205b13309ee1b0979ca9fbb541a7e9b44ea
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -39,10 +42,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+<<<<<<< HEAD
     'books.apps.BooksConfig',
     'users.apps.UsersConfig',
 ]
 AUTH_USER_MODEL = 'users.CustomUser'
+=======
+]
+>>>>>>> 0c2a6205b13309ee1b0979ca9fbb541a7e9b44ea
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -79,12 +86,17 @@ WSGI_APPLICATION = 'library_project.wsgi.application'
 
 DATABASES = {
     'default': {
+<<<<<<< HEAD
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'librairy_db',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': 'localhost',
         'PORT': '3306',
+=======
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+>>>>>>> 0c2a6205b13309ee1b0979ca9fbb541a7e9b44ea
     }
 }
 
@@ -123,6 +135,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
+<<<<<<< HEAD
 # Autres configurations...
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
@@ -137,6 +150,9 @@ MEDIA_ROOT = BASE_DIR / 'media'
 LOGIN_REDIRECT_URL = 'librarian_dashboard'  # ou une autre vue après connexion
 LOGOUT_REDIRECT_URL = 'login'
 
+=======
+STATIC_URL = 'static/'
+>>>>>>> 0c2a6205b13309ee1b0979ca9fbb541a7e9b44ea
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
