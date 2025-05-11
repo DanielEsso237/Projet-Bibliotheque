@@ -1,0 +1,47 @@
+{% extends 'books/base.html' %}
+
+{% block title %}Tableau de bord - Bibliothécaire{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3">📚 Tableau de bord du bibliothécaire</h1>
+            <a href="{% url 'add_book' %}" class="btn btn-primary">
+                <i class="fas fa-plus-circle"></i> Ajouter un livre
+            </a>
+        </div>
+
+        <h4 class="mb-3">📖 Liste des livres</h4>
+
+        {% if books %}
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                {% for book in books %}
+                    <div class="col">
+                        <div class="card h-100">
+                            {% if book.cover_image %}
+                                <img src="{{ book.cover_image.url }}" class="card-img-top" alt="{{ book.title }}" style="object-fit: cover; height: 200px;">
+                            {% else %}
+                                <div class="card-img-top" style="height: 200px; background-color: #f1f1f1; text-align: center; display: flex; justify-content: center; align-items: center; font-size: 1.5em;">
+                                    📖
+                                </div>
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">{{ book.title }}</h5>
+                                <p class="card-text">{{ book.author }}</p>
+                                <p class="card-text">
+                                    {% if book.is_available %}
+                                        <span class="badge bg-success">Disponible</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Indisponible</span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info">Aucun livre disponible pour le moment.</div>
+        {% endif %}
+    </div>
+{% endblock %}

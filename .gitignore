@@ -1,0 +1,16 @@
+ # Environnement virtuel
+venv/
+
+# Fichiers Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Fichiers de développement
+*.log
+*.pid
+.DS_Store
+
+# Fichiers sensibles
+.env
