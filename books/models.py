@@ -8,7 +8,7 @@ class Book(models.Model):
     quantity = models.PositiveIntegerField(default=0)  # Quantité d'exemplaires, ne peut pas être négative
     category = models.CharField(max_length=50, blank=True)  # Catégorie (ex. roman, science, etc.)
     is_physical = models.BooleanField(default=True)  # True pour physique, False pour virtuel
-    file_url = models.URLField(blank=True, null=True)  # Lien vers un fichier (ex. PDF pour livres virtuels)
+    ebook_file = models.FileField(upload_to='ebooks/', blank=True, null=True)  # Fichier PDF pour livres numériques
     cover_image = models.ImageField(upload_to='covers/', blank=True, null=True)  # Photo de couverture
     is_available = models.BooleanField(default=True)  # Disponible pour l'emprunt
     created_at = models.DateTimeField(auto_now_add=True)  # Date de création
