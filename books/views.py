@@ -18,3 +18,6 @@ def add_book(request):
     else:
         form = BookForm()
     return render(request, 'books/add_book.html', {'form': form})
+
+def current_loans(request):
+    return render(request, 'books/current_loans.html')
