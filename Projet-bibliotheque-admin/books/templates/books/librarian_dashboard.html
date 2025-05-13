@@ -1,0 +1,377 @@
+{% extends 'books/base.html' %}
+{% load static %}
+
+{% block title %}Tableau de bord - Bibliothécaire{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <!-- En-tête avec bouton d'ajout -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3">📚 Tableau de bord du bibliothécaire</h1>
+            <a href="{% url 'add_book' %}" class="btn btn-primary">
+                <i class="fas fa-plus-circle"></i> Ajouter un livre
+            </a>
+        </div>
+
+        <!-- Liste des livres -->
+        <h4 class="mb-3">📖 Liste des livres</h4>
+        {% if books %}
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                {% for book in books %}
+                    <div class="col">
+                        <div class="card book-card h-100 shadow-sm">
+                            <div class="card-img-wrapper">
+                                {% if book.cover_image %}
+                                    <img src="{{ book.cover_image.url }}" class="card-img-top" alt="{{ book.title }}">
+                                {% else %}
+                                    <div class="card-img-placeholder">
+                                        <span>📖</span>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title text-truncate" title="{{ book.title }}">{{ book.title }}</h5>
+                                <p class="card-text text-muted text-truncate" title="{{ book.author }}">{{ book.author }}</p>
+                                <p class="card-text">
+                                    {% if book.is_physical %}
+                                        <span class="text-secondary">Physique (Quantité: {{ book.quantity }})</span>
+                                    {% else %}
+                                        <span class="text-secondary">E-book</span>
+                                    {% endif %}
+                                </p>
+                                <p class="card-text">
+                                    {% if book.is_available %}
+                                        <span class="badge bg-success">Disponible</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Indisponible</span>
+                                    {% endif %}
+                                </p>
+                                <div class="mt-auto">
+                                    <a href="#" class="btn btn-sm btn-primary me-2 edit-book-btn" title="Modifier" data-bs-toggle="modal" data-bs-target="#editBookModal" data-book-id="{{ book.id }}">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="#" class="btn btn-sm btn-danger me-2 delete-book-btn" title="Supprimer" data-bs-toggle="modal" data-bs-target="#deleteBookModal" data-book-id="{{ book.id }}" data-book-title="{{ book.title | escapejs }}">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                    <a href="#" class="btn btn-sm btn-info view-details-btn" title="Voir les détails" data-bs-toggle="modal" data-bs-target="#viewDetailsModal" data-book-id="{{ book.id }}">
+                                        <i class="fas fa-info-circle"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Pagination -->
+            {% if books.paginator.num_pages > 1 %}
+                <nav aria-label="Page navigation" class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        {% if books.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page=1">« Première</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ books.previous_page_number }}">Précédent</a>
+                            </li>
+                        {% endif %}
+                        {% for num in books.paginator.page_range %}
+                            <li class="page-item {% if books.number == num %}active{% endif %}">
+                                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                            </li>
+                        {% endfor %}
+                        {% if books.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ books.next_page_number }}">Suivant</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ books.paginator.num_pages }}">Dernière »</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+        {% else %}
+            <div class="alert alert-info">Aucun livre disponible pour le moment.</div>
+        {% endif %}
+
+        <!-- Bouton d'export -->
+        <div class="text-end mt-4">
+            <a href="#" class="btn btn-secondary">
+                <i class="fas fa-download"></i> Exporter la liste
+            </a>
+        </div>
+
+        <!-- Modale de confirmation de suppression -->
+        <div class="modal fade" id="deleteBookModal" tabindex="-1" aria-labelledby="deleteBookModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteBookModalLabel">Confirmer la suppression</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Êtes-vous sûr de vouloir supprimer le livre "<span id="bookTitle"></span>" ? Cette action est irréversible.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                        <form id="deleteBookForm" method="post" action="">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Supprimer</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modale de succès pour la suppression -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="modal fade" id="successDeleteModal" tabindex="-1" aria-labelledby="successDeleteModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="successDeleteModalLabel">Succès</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body text-center">
+                                <div class="checkmark-container">
+                                    <span class="checkmark">✔</span>
+                                </div>
+                                <p class="mt-3">{{ message }}</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-success" data-bs-dismiss="modal">OK</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Modale pour voir les détails -->
+        <div class="modal fade" id="viewDetailsModal" tabindex="-1" aria-labelledby="viewDetailsModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="viewDetailsModalLabel">Détails du livre</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p><strong>Titre :</strong> <span id="detailTitle"></span></p>
+                        <p><strong>Auteur :</strong> <span id="detailAuthor"></span></p>
+                        <p><strong>Type :</strong> <span id="detailType"></span></p>
+                        <p><strong>Quantité :</strong> <span id="detailQuantity"></span></p>
+                        <p><strong>Disponibilité :</strong> <span id="detailAvailability"></span></p>
+                        <p><strong>Couverture :</strong> <img id="detailCover" src="" alt="Couverture" class="img-fluid" style="max-height: 200px; display: none;"> <span id="detailCoverText"></span></p>
+                        <p id="ebookFileContainer" style="display: none;"><strong>Fichier PDF :</strong> <a id="detailEbookFile" href="#" target="_blank">Voir le PDF</a></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modale pour modifier le livre -->
+        <div class="modal fade" id="editBookModal" tabindex="-1" aria-labelledby="editBookModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editBookModalLabel">Modifier le livre</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editBookForm" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="editTitle" class="form-label">Titre</label>
+                                <input type="text" class="form-control" id="editTitle" name="title" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editAuthor" class="form-label">Auteur</label>
+                                <input type="text" class="form-control" id="editAuthor" name="author" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Type</label>
+                                <div>
+                                    <div class="form-check">
+                                        <input type="radio" class="form-check-input type-radio" id="editIsPhysicalYes" name="is_physical" value="True" data-toggle="physical">
+                                        <label class="form-check-label" for="editIsPhysicalYes">Physique</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="radio" class="form-check-input type-radio" id="editIsPhysicalNo" name="is_physical" value="False" data-toggle="ebook">
+                                        <label class="form-check-label" for="editIsPhysicalNo">E-book</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3 physical-field" id="quantityField">
+                                <label for="editQuantity" class="form-label">Quantité</label>
+                                <input type="number" class="form-control" id="editQuantity" name="quantity" min="1" required>
+                            </div>
+                            <div class="mb-3 ebook-field" id="ebookFileField" style="display: none;">
+                                <label for="editEbookFile" class="form-label">Fichier PDF (facultatif)</label>
+                                <input type="file" class="form-control" id="editEbookFile" name="ebook_file" accept=".pdf">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Disponibilité</label>
+                                <div>
+                                    <div class="form-check">
+                                        <input type="radio" class="form-check-input" id="editIsAvailableYes" name="is_available" value="True">
+                                        <label class="form-check-label" for="editIsAvailableYes">Disponible</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="radio" class="form-check-input" id="editIsAvailableNo" name="is_available" value="False">
+                                        <label class="form-check-label" for="editIsAvailableNo">Indisponible</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editCoverImage" class="form-label">Couverture (facultatif)</label>
+                                <input type="file" class="form-control" id="editCoverImage" name="cover_image">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Enregistrer</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Gestion de la modale de confirmation de suppression
+            const deleteButtons = document.querySelectorAll('.delete-book-btn');
+            const bookTitleSpan = document.getElementById('bookTitle');
+            const deleteForm = document.getElementById('deleteBookForm');
+
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const bookId = this.getAttribute('data-book-id');
+                    const bookTitle = this.getAttribute('data-book-title');
+                    
+                    bookTitleSpan.textContent = bookTitle;
+                    deleteForm.action = `/books/delete/${bookId}/`;
+                });
+            });
+
+            // Gestion de la modale pour voir les détails
+            const viewDetailsButtons = document.querySelectorAll('.view-details-btn');
+            const detailTitle = document.getElementById('detailTitle');
+            const detailAuthor = document.getElementById('detailAuthor');
+            const detailType = document.getElementById('detailType');
+            const detailQuantity = document.getElementById('detailQuantity');
+            const detailAvailability = document.getElementById('detailAvailability');
+            const detailCover = document.getElementById('detailCover');
+            const detailCoverText = document.getElementById('detailCoverText');
+            const detailEbookFile = document.getElementById('detailEbookFile');
+            const ebookFileContainer = document.getElementById('ebookFileContainer');
+
+            viewDetailsButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const bookId = this.getAttribute('data-book-id');
+
+                    fetch(`/books/api/book/${bookId}/`)
+                        .then(response => response.json())
+                        .then(data => {
+                            detailTitle.textContent = data.title || 'Non disponible';
+                            detailAuthor.textContent = data.author || 'Non disponible';
+                            detailType.textContent = data.is_physical ? 'Physique' : 'E-book';
+                            detailQuantity.textContent = data.quantity || 'Non disponible';
+                            detailAvailability.textContent = data.is_available ? 'Disponible' : 'Indisponible';
+                            if (data.cover_image) {
+                                detailCover.src = data.cover_image;
+                                detailCover.style.display = 'inline-block';
+                                detailCoverText.textContent = '';
+                            } else {
+                                detailCover.style.display = 'none';
+                                detailCoverText.textContent = 'Non disponible';
+                            }
+                            if (data.ebook_file && !data.is_physical) {
+                                detailEbookFile.href = data.ebook_file;
+                                ebookFileContainer.style.display = 'block';
+                            } else {
+                                ebookFileContainer.style.display = 'none';
+                            }
+                        })
+                        .catch(error => console.error('Erreur:', error));
+                });
+            });
+
+            // Gestion de la modale pour modifier le livre
+            const editButtons = document.querySelectorAll('.edit-book-btn');
+            const editForm = document.getElementById('editBookForm');
+            const editTitle = document.getElementById('editTitle');
+            const editAuthor = document.getElementById('editAuthor');
+            const editIsPhysicalYes = document.getElementById('editIsPhysicalYes');
+            const editIsPhysicalNo = document.getElementById('editIsPhysicalNo');
+            const editQuantity = document.getElementById('editQuantity');
+            const editEbookFile = document.getElementById('editEbookFile');
+            const editIsAvailableYes = document.getElementById('editIsAvailableYes');
+            const editIsAvailableNo = document.getElementById('editIsAvailableNo');
+            const editCoverImage = document.getElementById('editCoverImage');
+
+            editButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const bookId = this.getAttribute('data-book-id');
+
+                    fetch(`/books/api/book/${bookId}/`)
+                        .then(response => response.json())
+                        .then(data => {
+                            editForm.action = `/books/edit/${bookId}/`;
+                            editTitle.value = data.title || '';
+                            editAuthor.value = data.author || '';
+                            editIsPhysicalYes.checked = data.is_physical;
+                            editIsPhysicalNo.checked = !data.is_physical;
+                            editIsAvailableYes.checked = data.is_available;
+                            editIsAvailableNo.checked = !data.is_available;
+                            editQuantity.value = data.quantity || 1;
+                            if (data.is_physical) {
+                                document.getElementById('quantityField').style.display = 'block';
+                                document.getElementById('ebookFileField').style.display = 'none';
+                                editQuantity.required = true;
+                                editEbookFile.required = false;
+                            } else {
+                                document.getElementById('quantityField').style.display = 'none';
+                                document.getElementById('ebookFileField').style.display = 'block';
+                                editQuantity.required = false;
+                                editEbookFile.required = false;
+                            }
+                            editCoverImage.value = '';
+                        })
+                        .catch(error => console.error('Erreur:', error));
+                });
+            });
+
+            // Gestion du changement de type dans la modale de modification
+            const typeRadios = document.querySelectorAll('.type-radio');
+            typeRadios.forEach(radio => {
+                radio.addEventListener('change', function () {
+                    if (this.value === 'True') {
+                        document.getElementById('quantityField').style.display = 'block';
+                        document.getElementById('ebookFileField').style.display = 'none';
+                        editQuantity.required = true;
+                        editEbookFile.required = false;
+                    } else {
+                        document.getElementById('quantityField').style.display = 'none';
+                        document.getElementById('ebookFileField').style.display = 'block';
+                        editQuantity.required = false;
+                        editEbookFile.required = false;
+                    }
+                });
+            });
+
+            // Afficher automatiquement la modale de succès si elle existe
+            const successDeleteModal = document.getElementById('successDeleteModal');
+            if (successDeleteModal) {
+                const modal = new bootstrap.Modal(successDeleteModal, {
+                    backdrop: 'static',
+                    keyboard: false
+                });
+                modal.show();
+            }
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,82 @@
+{% extends 'books/base.html' %}
+{% load static %}
+
+{% block title %}Ajouter un livre{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Ajouter un livre</h1>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    
+    <!-- Informations générales -->
+    <fieldset class="border p-3 mb-3">
+        <legend class="float-none w-auto px-2">Informations générales</legend>
+        {% for field in form %}
+            {% if field.name not in 'ebook_file is_physical cover_image is_available quantity' %}
+                <div class="mb-3">
+                    <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.help_text %}
+                        <small class="form-text text-muted">{{ field.help_text }}</small>
+                    {% endif %}
+                    {% if field.errors %}
+                        <div class="text-danger">{{ field.errors }}</div>
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% endfor %}
+        <div class="mb-3" id="quantity-field">
+            <label for="{{ form.quantity.id_for_label }}" class="form-label">{{ form.quantity.label }}</label>
+            {{ form.quantity }}
+            {% if form.quantity.errors %}
+                <div class="text-danger">{{ form.quantity.errors }}</div>
+            {% endif %}
+        </div>
+    </fieldset>
+
+    <!-- Format (livre physique ou numérique) -->
+    <fieldset class="border p-3 mb-3">
+        <legend class="float-none w-auto px-2">Format</legend>
+        <div class="form-check mb-3">
+            {{ form.is_physical }}
+            <label class="form-check-label" for="{{ form.is_physical.id_for_label }}">{{ form.is_physical.label }}</label>
+        </div>
+        <div id="ebook-file-field" class="mb-3" style="display: none;">
+            <label for="{{ form.ebook_file.id_for_label }}" class="form-label">{{ form.ebook_file.label }}</label>
+            {{ form.ebook_file }}
+            {% if form.ebook_file.help_text %}
+                <small class="form-text text-muted">{{ form.ebook_file.help_text }}</small>
+            {% endif %}
+            {% if form.ebook_file.errors %}
+                <div class="text-danger">{{ form.ebook_file.errors }}</div>
+            {% endif %}
+        </div>
+    </fieldset>
+
+    <!-- Image de couverture -->
+    <div class="mb-3">
+        <label for="{{ form.cover_image.id_for_label }}" class="form-label">{{ form.cover_image.label }}</label>
+        {{ form.cover_image }}
+        {% if form.cover_image.errors %}
+            <div class="text-danger">{{ form.cover_image.errors }}</div>
+        {% endif %}
+    </div>
+
+    <!-- Disponibilité -->
+    <div class="form-check mb-3">
+        {{ form.is_available }}
+        <label class="form-check-label" for="{{ form.is_available.id_for_label }}">{{ form.is_available.label }}</label>
+    </div>
+
+    <button type="submit" class="btn btn-success">Ajouter</button>
+    <a href="{% url 'librarian_dashboard' %}" class="btn btn-secondary">Retour au tableau de bord</a>
+</form>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const redirectUrl = "{{ redirect_url|escapejs }}"; // Rendu côté serveur
+</script>
+<script src="{% static 'books/js/add_book.js' %}"></script>
+{% endblock %}
