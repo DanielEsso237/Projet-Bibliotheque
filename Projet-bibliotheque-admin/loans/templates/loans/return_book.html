@@ -1,0 +1,36 @@
+{% extends 'books/base.html' %}
+{% load static %}
+
+{% block title %}Rendre un livre{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1 class="h3 mb-4">📚 Rendre un livre</h1>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} text-center" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Confirmer le retour</h5>
+                <p>Vous êtes sur le point de marquer le livre <strong>{{ loan.book.title }}</strong> comme rendu par <strong>{{ loan.user.username }}</strong>.</p>
+                <p><strong>Date d'emprunt :</strong> {{ loan.loan_date|date:"d/m/Y H:i" }}</p>
+                <p><strong>Date limite :</strong> {{ loan.due_date|date:"d/m/Y H:i" }}</p>
+                <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-undo"></i> Confirmer le retour
+                    </button>
+                    <a href="{% url 'loan_list' %}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Annuler
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

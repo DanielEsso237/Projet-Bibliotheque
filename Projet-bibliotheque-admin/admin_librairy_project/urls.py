@@ -8,6 +8,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('books/', include('books.urls')),
     path('users/', include('users.urls')),
+    path('loans/', include('loans.urls')),  # Ajout de l'application loans
     path('', RedirectView.as_view(url='/users/login/', permanent=False), name='index'),
 ]
 

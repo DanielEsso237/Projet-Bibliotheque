@@ -13,6 +13,7 @@ class Book(models.Model):
     is_available = models.BooleanField(default=True)  # Disponible pour l'emprunt
     created_at = models.DateTimeField(auto_now_add=True)  # Date de création
     updated_at = models.DateTimeField(auto_now=True)  # Date de dernière modification
+    is_borrowed = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.title} by {self.author}"

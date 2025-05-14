@@ -7,13 +7,16 @@ from pathlib import Path
 import pymysql
 pymysql.install_as_MySQLdb()
 
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-1@v6%2lcfq7)1n*aram+ao!dr6!d$4_#rq=-d%awe*jn)(^&7r'
 
+# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*']  # À ajuster pour la production (par exemple, ['localhost', '127.0.0.1'])
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -24,6 +27,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'books.apps.BooksConfig',
     'users.apps.UsersConfig',
+    'loans.apps.LoansConfig',
 ]
 
 AUTH_USER_MODEL = 'users.CustomUser'
@@ -80,12 +84,18 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
+# Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
     BASE_DIR / 'books/static',
     BASE_DIR / 'users/static',
+    BASE_DIR / 'admin_librairy_project/static',
 ]
+
+
+# Pour collectstatic (optionnel pour le déploiement)
+# STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
