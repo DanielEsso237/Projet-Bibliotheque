@@ -1,0 +1,51 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion - Utilisateur Standard</title>
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'fontawesome/css/all.min.css' %}" rel="stylesheet">
+    <style>
+        .register-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 5rem;
+        }
+        .form-label {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <h2 class="text-center mb-4">Connexion - Utilisateur Standard</h2>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} text-center" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="id_username" class="form-label">Nom d'utilisateur <i class="fas fa-user"></i></label>
+                <input type="text" name="username" id="id_username" class="form-control" placeholder="Entrez votre nom d'utilisateur" required>
+            </div>
+            <div class="mb-3">
+                <label for="id_password" class="form-label">Mot de passe <i class="fas fa-lock"></i></label>
+                <input type="password" name="password" id="id_password" class="form-control" placeholder="Entrez votre mot de passe" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Se connecter <i class="fas fa-sign-in-alt"></i></button>
+        </form>
+        <p class="text-center mt-3">Pas de compte ? <a href="{% url 'readers_register' %}">S'inscrire</a></p>
+    </div>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

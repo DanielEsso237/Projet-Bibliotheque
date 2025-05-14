@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .models import Loan
 from books.models import Book
-from users.models import CustomUser  # Ajout de l'importation
+from users.models import CustomUser
 from django.utils import timezone
 
 @login_required
@@ -70,6 +70,7 @@ def create_loan(request):
         messages.success(request, f"L'emprunt du livre '{book.title}' pour {user.username} a été enregistré.")
         return redirect('loan_list')
 
-    users = CustomUser.objects.all()
+    # Filtrer uniquement les utilisateurs standards
+    users = CustomUser.objects.filter(is_standard_user=True)
     books = Book.objects.filter(is_available=True)
     return render(request, 'loans/create_loan.html', {'users': users, 'books': books})
