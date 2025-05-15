@@ -5,6 +5,7 @@ from .models import Loan
 from books.models import Book
 from users.models import CustomUser
 from django.utils import timezone
+from datetime import datetime
 
 @login_required
 def loan_list(request):
@@ -44,11 +45,23 @@ def create_loan(request):
     if request.method == 'POST':
         user_id = request.POST.get('user')
         book_id = request.POST.get('book')
-        due_date = request.POST.get('due_date')
+        due_date_str = request.POST.get('due_date')
 
         user = get_object_or_404(CustomUser, id=user_id)
         book = get_object_or_404(Book, id=book_id)
 
+        # Convertir due_date en datetime conscient
+        try:
+            due_date_naive = datetime.strptime(due_date_str, '%Y-%m-%d')
+            due_date = timezone.make_aware(due_date_naive)
+        except ValueError:
+            messages.error(request, "Format de date invalide. Utilisez AAAA-MM-JJ.")
+            return redirect('create_loan')
+
+        if not book.is_physical:
+            messages.error(request, "Seuls les livres physiques peuvent être empruntés.")
+            return redirect('create_loan')
+        
         if not book.is_available:
             messages.error(request, "Ce livre n'est pas disponible pour l'emprunt.")
             return redirect('create_loan')
@@ -60,17 +73,16 @@ def create_loan(request):
         loan = Loan.objects.create(
             user=user,
             book=book,
-            due_date=due_date,
+            due_date=due_date,  # Utiliser le datetime conscient
             loan_date=timezone.now()
         )
-        book.is_available = False
-        if book.is_physical:
-            book.quantity -= 1
+        book.quantity -= 1
+        if book.quantity == 0:
+            book.is_available = False
         book.save()
         messages.success(request, f"L'emprunt du livre '{book.title}' pour {user.username} a été enregistré.")
         return redirect('loan_list')
 
-    # Filtrer uniquement les utilisateurs standards
     users = CustomUser.objects.filter(is_standard_user=True)
-    books = Book.objects.filter(is_available=True)
+    books = Book.objects.filter(is_physical=True, is_available=True)
     return render(request, 'loans/create_loan.html', {'users': users, 'books': books})

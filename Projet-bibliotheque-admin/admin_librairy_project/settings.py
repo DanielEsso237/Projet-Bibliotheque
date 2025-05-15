@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'books.apps.BooksConfig',
     'users.apps.UsersConfig',
     'loans.apps.LoansConfig',
+    'notifications.apps.NotificationsConfig',
 ]
 
 AUTH_USER_MODEL = 'users.CustomUser'
@@ -54,6 +55,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'notifications.context_processors.notification_count',
             ],
         },
     },

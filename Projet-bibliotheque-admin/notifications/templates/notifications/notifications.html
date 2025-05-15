@@ -1,0 +1,43 @@
+{% extends 'books/base.html' %}
+{% load static %}
+
+{% block title %}Notifications{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-header">
+            <h3>Notifications</h3>
+        </div>
+        <div class="card-body">
+            {% if notifications %}
+                {% for notification in notifications %}
+                    <div class="alert alert-{{ notification.type }} mb-3" role="alert" id="notification-{{ notification.id }}">
+                        <i class="fas fa-exclamation-triangle me-2" aria-hidden="true"></i>
+                        {{ notification.message }}
+                        {% if not notification.is_read %}
+                            <button class="btn btn-sm btn-secondary float-end" onclick="markAsRead({{ notification.id }})">Marquer comme lu</button>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-center">Aucune notification pour le moment.</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+        function markAsRead(notificationId) {
+            fetch(`/notifications/mark-as-read/${notificationId}/`, { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        const notificationElement = document.getElementById(`notification-${notificationId}`);
+                        notificationElement.querySelector('button').remove();
+                        updateNotificationBadges(); // Rafraîchir les badges
+                    }
+                });
+        }
+    </script>
+{% endblock %}

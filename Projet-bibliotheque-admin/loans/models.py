@@ -10,6 +10,7 @@ class Loan(models.Model):
     return_date = models.DateTimeField(null=True, blank=True)
     due_date = models.DateTimeField()
     is_returned = models.BooleanField(default=False)
+    fine = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)  # Amende en euros
 
     def __str__(self):
         return f"{self.book.title} emprunté par {self.user.username} (Due: {self.due_date})"

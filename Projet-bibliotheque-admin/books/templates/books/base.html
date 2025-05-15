@@ -5,24 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Bibliothèque{% endblock %}</title>
-
-    <!-- Bootstrap CSS -->
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
-
-    <!-- Font Awesome -->
     <link href="{% static 'fontawesome/css/all.min.css' %}" rel="stylesheet">
-
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'books/css/custom.css' %}">
 </head>
 <body>
-
-    <!-- Sidebar Toggle Button -->
     <button class="btn btn-outline-secondary position-fixed m-2" onclick="toggleSidebar()" style="z-index: 1000;">
         <i class="fas fa-bars"></i>
     </button>
 
-    <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
         <div class="p-3">
             <h3 class="text-center">📚 Bibliothèque</h3>
@@ -31,11 +22,21 @@
                     <a class="nav-link" href="{% url 'librarian_dashboard' %}"><i class="fas fa-home me-2"></i> Tableau de bord</a>
                     <a class="nav-link" href="{% url 'add_book' %}"><i class="fas fa-plus-circle me-2"></i> Ajouter un livre</a>
                     <a class="nav-link" href="{% url 'loan_list' %}"><i class="fas fa-undo-alt me-2"></i> Gérer les retours</a>
-                    <!-- Placeholder pour réaliser un emprunt (à implémenter) -->
-                    <a class="nav-link" href="{% url 'create_loan' %}"><i class="fas fa-book me-2"></i> Réaliser un emprunt</a>
-                    <!-- Placeholder pour livres empruntés (à implémenter) -->
-                    <a class="nav-link" href="#"><i class="fas fa-book-reader me-2"></i> Livres empruntés</a>
-                    <!-- Placeholder pour livres en retard (à implémenter) -->
+                    <a class="nav-link" href="{% url 'create_loan' %}"><i class="fas fa-book me-2"></i> Réaliser un emprunt</a>              
+                    <a class="nav-link" href="{% url 'notifications' %}">
+                        <i class="fas fa-bell me-2"></i> Notifications
+                        {% if notification_counts.total > 0 %}
+                            {% if notification_counts.overdue > 0 %}
+                                <span class="badge bg-warning rounded-pill ms-2" title="Retours proches">{{ notification_counts.overdue }}</span>
+                            {% endif %}
+                            {% if notification_counts.late > 0 %}
+                                <span class="badge bg-danger rounded-pill ms-2" title="Retards">{{ notification_counts.late }}</span>
+                            {% endif %}
+                            {% if notification_counts.low_stock > 0 %}
+                                <span class="badge bg-info rounded-pill ms-2" title="Stock faible">{{ notification_counts.low_stock }}</span>
+                            {% endif %}
+                        {% endif %}
+                    </a>
                     <a class="nav-link" href="#"><i class="fas fa-clock me-2"></i> Livres en retard</a>
                     <a class="nav-link" href="#"><i class="fas fa-users-cog me-2"></i> Gérer les utilisateurs</a>
                     <a class="nav-link" href="#"><i class="fas fa-chart-line me-2"></i> Statistiques</a>
@@ -49,14 +50,12 @@
         </div>
     </div>
 
-    <!-- Main Content -->
     <div class="content" id="content" style="margin-left: 250px; transition: margin-left 0.3s;">
         <div class="container-fluid pt-4">
             {% block content %}{% endblock %}
         </div>
     </div>
 
-    <!-- Modale pour les messages -->
     {% if messages %}
         {% for message in messages %}
             <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
@@ -81,7 +80,6 @@
         {% endfor %}
     {% endif %}
 
-    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         function toggleSidebar() {
@@ -99,6 +97,49 @@
             document.getElementById('sidebar').style.marginLeft = '0';
             document.getElementById('content').style.marginLeft = '250px';
         });
+    </script>
+    <script>
+        function updateNotificationBadges() {
+            fetch("{% url 'notification_count_api' %}", {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest', // Indique une requête AJAX
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erreur réseau ou réponse invalide');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const overdueBadge = document.querySelector('.badge.bg-warning');
+                const lateBadge = document.querySelector('.badge.bg-danger');
+                const lowStockBadge = document.querySelector('.badge.bg-info');
+                
+                if (overdueBadge) {
+                    overdueBadge.textContent = data.overdue || 0;
+                    overdueBadge.style.display = (data.overdue > 0) ? 'inline' : 'none';
+                }
+                if (lateBadge) {
+                    lateBadge.textContent = data.late || 0;
+                    lateBadge.style.display = (data.late > 0) ? 'inline' : 'none';
+                }
+                if (lowStockBadge) {
+                    lowStockBadge.textContent = data.low_stock || 0;
+                    lowStockBadge.style.display = (data.low_stock > 0) ? 'inline' : 'none';
+                }
+            })
+            .catch(error => {
+                console.error('Erreur lors de la mise à jour des badges:', error);
+            });
+        }
+
+        // Rafraîchir toutes les 5 minutes (300 000 ms)
+        setInterval(updateNotificationBadges, 300000);
+        // Lancer la mise à jour au chargement initial
+        document.addEventListener('DOMContentLoaded', updateNotificationBadges);
     </script>
     {% block extra_js %}{% endblock %}
 </body>
