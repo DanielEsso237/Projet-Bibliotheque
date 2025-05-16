@@ -13,96 +13,109 @@
             </a>
         </div>
 
+        <!-- Barre de recherche et filtre -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <input type="text" id="searchInput" class="form-control" placeholder="Rechercher par titre..." value="{{ request.GET.search|default:'' }}">
+            </div>
+            <div class="col-md-6">
+                <form id="filterForm">
+                    <select name="availability" id="availabilityFilter" class="form-select w-auto">
+                        <option value="">Tous les statuts</option>
+                        <option value="true" {% if request.GET.availability == 'true' %}selected{% endif %}>Disponible</option>
+                        <option value="false" {% if request.GET.availability == 'false' %}selected{% endif %}>Indisponible</option>
+                    </select>
+                </form>
+            </div>
+        </div>
+
         <!-- Liste des livres -->
         <h4 class="mb-3">📖 Liste des livres</h4>
-        {% if books %}
-            <div class="row row-cols-1 row-cols-md-3 g-4">
-                {% for book in books %}
-                    <div class="col">
-                        <div class="card book-card h-100 shadow-sm">
-                            <div class="card-img-wrapper">
-                                {% if book.cover_image %}
-                                    <img src="{{ book.cover_image.url }}" class="card-img-top" alt="{{ book.title }}">
-                                {% else %}
-                                    <div class="card-img-placeholder">
-                                        <span>📖</span>
+        <div id="booksList">
+            {% if books %}
+                <div class="row row-cols-1 row-cols-md-3 g-4" id="booksContainer">
+                    {% for book in books %}
+                        <div class="col">
+                            <div class="card book-card h-100 shadow-sm">
+                                <div class="card-img-wrapper">
+                                    {% if book.cover_image %}
+                                        <img src="{{ book.cover_image.url }}" class="card-img-top" alt="{{ book.title }}">
+                                    {% else %}
+                                        <div class="card-img-placeholder">
+                                            <span>📖</span>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title text-truncate" title="{{ book.title }}">{{ book.title }}</h5>
+                                    <p class="card-text text-muted text-truncate" title="{{ book.author }}">{{ book.author }}</p>
+                                    <p class="card-text">
+                                        {% if book.is_physical %}
+                                            <span class="text-secondary">Physique (Quantité: {{ book.quantity }})</span>
+                                        {% else %}
+                                            <span class="text-secondary">E-book</span>
+                                        {% endif %}
+                                    </p>
+                                    <p class="card-text">
+                                        {% if book.is_available %}
+                                            <span class="badge bg-success">Disponible</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">Indisponible</span>
+                                        {% endif %}
+                                    </p>
+                                    <div class="mt-auto">
+                                        <a href="#" class="btn btn-sm btn-primary me-2 edit-book-btn" title="Modifier" data-bs-toggle="modal" data-bs-target="#editBookModal" data-book-id="{{ book.id }}">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a href="#" class="btn btn-sm btn-danger me-2 delete-book-btn" title="Supprimer" data-bs-toggle="modal" data-bs-target="#deleteBookModal" data-book-id="{{ book.id }}" data-book-title="{{ book.title | escapejs }}">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                        <a href="#" class="btn btn-sm btn-info view-details-btn" title="Voir les détails" data-bs-toggle="modal" data-bs-target="#viewDetailsModal" data-book-id="{{ book.id }}">
+                                            <i class="fas fa-info-circle"></i>
+                                        </a>
                                     </div>
-                                {% endif %}
-                            </div>
-                            <div class="card-body d-flex flex-column">
-                                <h5 class="card-title text-truncate" title="{{ book.title }}">{{ book.title }}</h5>
-                                <p class="card-text text-muted text-truncate" title="{{ book.author }}">{{ book.author }}</p>
-                                <p class="card-text">
-                                    {% if book.is_physical %}
-                                        <span class="text-secondary">Physique (Quantité: {{ book.quantity }})</span>
-                                    {% else %}
-                                        <span class="text-secondary">E-book</span>
-                                    {% endif %}
-                                </p>
-                                <p class="card-text">
-                                    {% if book.is_available %}
-                                        <span class="badge bg-success">Disponible</span>
-                                    {% else %}
-                                        <span class="badge bg-danger">Indisponible</span>
-                                    {% endif %}
-                                </p>
-                                <div class="mt-auto">
-                                    <a href="#" class="btn btn-sm btn-primary me-2 edit-book-btn" title="Modifier" data-bs-toggle="modal" data-bs-target="#editBookModal" data-book-id="{{ book.id }}">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <a href="#" class="btn btn-sm btn-danger me-2 delete-book-btn" title="Supprimer" data-bs-toggle="modal" data-bs-target="#deleteBookModal" data-book-id="{{ book.id }}" data-book-title="{{ book.title | escapejs }}">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
-                                    <a href="#" class="btn btn-sm btn-info view-details-btn" title="Voir les détails" data-bs-toggle="modal" data-bs-target="#viewDetailsModal" data-book-id="{{ book.id }}">
-                                        <i class="fas fa-info-circle"></i>
-                                    </a>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                {% endfor %}
-            </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info" id="noResultsMessage">Aucun livre disponible pour le moment.</div>
+            {% endif %}
+        </div>
 
-            <!-- Pagination -->
+        <!-- Pagination -->
+        <div id="paginationContainer">
             {% if books.paginator.num_pages > 1 %}
                 <nav aria-label="Page navigation" class="mt-4">
                     <ul class="pagination justify-content-center">
                         {% if books.has_previous %}
                             <li class="page-item">
-                                <a class="page-link" href="?page=1">« Première</a>
+                                <a class="page-link" href="?page=1&search={{ request.GET.search|default:'' }}&availability={{ request.GET.availability|default:'' }}">« Première</a>
                             </li>
                             <li class="page-item">
-                                <a class="page-link" href="?page={{ books.previous_page_number }}">Précédent</a>
+                                <a class="page-link" href="?page={{ books.previous_page_number }}&search={{ request.GET.search|default:'' }}&availability={{ request.GET.availability|default:'' }}">Précédent</a>
                             </li>
                         {% endif %}
                         {% for num in books.paginator.page_range %}
                             <li class="page-item {% if books.number == num %}active{% endif %}">
-                                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                <a class="page-link" href="?page={{ num }}&search={{ request.GET.search|default:'' }}&availability={{ request.GET.availability|default:'' }}">{{ num }}</a>
                             </li>
                         {% endfor %}
                         {% if books.has_next %}
                             <li class="page-item">
-                                <a class="page-link" href="?page={{ books.next_page_number }}">Suivant</a>
+                                <a class="page-link" href="?page={{ books.next_page_number }}&search={{ request.GET.search|default:'' }}&availability={{ request.GET.availability|default:'' }}">Suivant</a>
                             </li>
                             <li class="page-item">
-                                <a class="page-link" href="?page={{ books.paginator.num_pages }}">Dernière »</a>
+                                <a class="page-link" href="?page={{ books.paginator.num_pages }}&search={{ request.GET.search|default:'' }}&availability={{ request.GET.availability|default:'' }}">Dernière »</a>
                             </li>
                         {% endif %}
                     </ul>
                 </nav>
             {% endif %}
-        {% else %}
-            <div class="alert alert-info">Aucun livre disponible pour le moment.</div>
-        {% endif %}
-
-        <!-- Bouton d'export -->
-        <div class="text-end mt-4">
-            <a href="#" class="btn btn-secondary">
-                <i class="fas fa-download"></i> Exporter la liste
-            </a>
         </div>
 
-        <!-- Modale de confirmation de suppression -->
+        <!-- Modales (inchangées) -->
         <div class="modal fade" id="deleteBookModal" tabindex="-1" aria-labelledby="deleteBookModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -124,32 +137,6 @@
             </div>
         </div>
 
-        <!-- Modale de succès pour la suppression -->
-        {% if messages %}
-            {% for message in messages %}
-                <div class="modal fade" id="successDeleteModal" tabindex="-1" aria-labelledby="successDeleteModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="successDeleteModalLabel">Succès</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body text-center">
-                                <div class="checkmark-container">
-                                    <span class="checkmark">✔</span>
-                                </div>
-                                <p class="mt-3">{{ message }}</p>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-success" data-bs-dismiss="modal">OK</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
-        {% endif %}
-
-        <!-- Modale pour voir les détails -->
         <div class="modal fade" id="viewDetailsModal" tabindex="-1" aria-labelledby="viewDetailsModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -173,7 +160,6 @@
             </div>
         </div>
 
-        <!-- Modale pour modifier le livre -->
         <div class="modal fade" id="editBookModal" tabindex="-1" aria-labelledby="editBookModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -242,6 +228,136 @@
 {% block extra_js %}
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            const searchInput = document.getElementById('searchInput');
+            const availabilityFilter = document.getElementById('availabilityFilter');
+            const booksContainer = document.getElementById('booksContainer');
+            const booksList = document.getElementById('booksList');
+            const noResultsMessage = document.getElementById('noResultsMessage') || document.createElement('div');
+            const paginationContainer = document.getElementById('paginationContainer');
+
+            noResultsMessage.className = 'alert alert-info';
+            noResultsMessage.id = 'noResultsMessage';
+            noResultsMessage.textContent = 'Aucun livre trouvé.';
+
+            function fetchBooks() {
+                const search = searchInput.value;
+                const availability = availabilityFilter.value;
+                const page = new URLSearchParams(window.location.search).get('page') || '1';
+
+                fetch(`/books/api/search/?search=${encodeURIComponent(search)}&availability=${availability}&page=${page}`, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Mettre à jour les livres
+                    booksContainer.innerHTML = '';
+                    if (data.books.length === 0) {
+                        booksList.innerHTML = '';
+                        booksList.appendChild(noResultsMessage);
+                    } else {
+                        data.books.forEach(book => {
+                            const bookCard = document.createElement('div');
+                            bookCard.className = 'col';
+                            bookCard.innerHTML = `
+                                <div class="card book-card h-100 shadow-sm">
+                                    <div class="card-img-wrapper">
+                                        ${book.cover_image ? 
+                                            `<img src="${book.cover_image}" class="card-img-top" alt="${book.title}">` :
+                                            `<div class="card-img-placeholder"><span>📖</span></div>`}
+                                    </div>
+                                    <div class="card-body d-flex flex-column">
+                                        <h5 class="card-title text-truncate" title="${book.title}">${book.title}</h5>
+                                        <p class="card-text text-muted text-truncate" title="${book.author}">${book.author}</p>
+                                        <p class="card-text">
+                                            ${book.is_physical ? 
+                                                `<span class="text-secondary">Physique (Quantité: ${book.quantity})</span>` :
+                                                `<span class="text-secondary">E-book</span>`}
+                                        </p>
+                                        <p class="card-text">
+                                            ${book.is_available ? 
+                                                `<span class="badge bg-success">Disponible</span>` :
+                                                `<span class="badge bg-danger">Indisponible</span>`}
+                                        </p>
+                                        <div class="mt-auto">
+                                            <a href="#" class="btn btn-sm btn-primary me-2 edit-book-btn" title="Modifier" data-bs-toggle="modal" data-bs-target="#editBookModal" data-book-id="${book.id}">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a href="#" class="btn btn-sm btn-danger me-2 delete-book-btn" title="Supprimer" data-bs-toggle="modal" data-bs-target="#deleteBookModal" data-book-id="${book.id}" data-book-title="${book.title}">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                            <a href="#" class="btn btn-sm btn-info view-details-btn" title="Voir les détails" data-bs-toggle="modal" data-bs-target="#viewDetailsModal" data-book-id="${book.id}">
+                                                <i class="fas fa-info-circle"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>`;
+                            booksContainer.appendChild(bookCard);
+                        });
+                        booksList.innerHTML = '';
+                        booksList.appendChild(booksContainer);
+                    }
+
+                    // Mettre à jour la pagination
+                    paginationContainer.innerHTML = '';
+                    if (data.paginator.num_pages > 1) {
+                        const nav = document.createElement('nav');
+                        nav.setAttribute('aria-label', 'Page navigation');
+                        nav.className = 'mt-4';
+                        const ul = document.createElement('ul');
+                        ul.className = 'pagination justify-content-center';
+
+                        if (data.has_previous) {
+                            ul.innerHTML += `
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=1&search=${encodeURIComponent(search)}&availability=${availability}">« Première</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=${data.previous_page_number}&search=${encodeURIComponent(search)}&availability=${availability}">Précédent</a>
+                                </li>`;
+                        }
+
+                        data.page_range.forEach(num => {
+                            ul.innerHTML += `
+                                <li class="page-item ${num === data.current_page ? 'active' : ''}">
+                                    <a class="page-link" href="?page=${num}&search=${encodeURIComponent(search)}&availability=${availability}">${num}</a>
+                                </li>`;
+                        });
+
+                        if (data.has_next) {
+                            ul.innerHTML += `
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=${data.next_page_number}&search=${encodeURIComponent(search)}&availability=${availability}">Suivant</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=${data.paginator.num_pages}&search=${encodeURIComponent(search)}&availability=${availability}">Dernière »</a>
+                                </li>`;
+                        }
+
+                        nav.appendChild(ul);
+                        paginationContainer.appendChild(nav);
+                    }
+                })
+                .catch(error => console.error('Erreur:', error));
+            }
+
+            // Écouteurs pour la recherche et le filtrage
+            searchInput.addEventListener('input', fetchBooks);
+            availabilityFilter.addEventListener('change', fetchBooks);
+
+            // Gestion des clics sur la pagination
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('page-link')) {
+                    e.preventDefault();
+                    const url = new URL(e.target.href);
+                    const params = new URLSearchParams(url.search);
+                    const page = params.get('page') || '1';
+                    window.history.pushState({}, '', `?page=${page}&search=${encodeURIComponent(searchInput.value)}&availability=${availabilityFilter.value}`);
+                    fetchBooks();
+                }
+            });
+
             // Gestion de la modale de confirmation de suppression
             const deleteButtons = document.querySelectorAll('.delete-book-btn');
             const bookTitleSpan = document.getElementById('bookTitle');
@@ -345,7 +461,6 @@
                 });
             });
 
-            // Gestion du changement de type dans la modale de modification
             const typeRadios = document.querySelectorAll('.type-radio');
             typeRadios.forEach(radio => {
                 radio.addEventListener('change', function () {
@@ -362,16 +477,6 @@
                     }
                 });
             });
-
-            // Afficher automatiquement la modale de succès si elle existe
-            const successDeleteModal = document.getElementById('successDeleteModal');
-            if (successDeleteModal) {
-                const modal = new bootstrap.Modal(successDeleteModal, {
-                    backdrop: 'static',
-                    keyboard: false
-                });
-                modal.show();
-            }
         });
     </script>
 {% endblock %}

@@ -7,11 +7,61 @@ from .models import Book
 from .forms import BookForm
 
 def librarian_dashboard(request):
-    books_list = Book.objects.all()
+    books_list = Book.objects.all().order_by('title')
+
+    search_query = request.GET.get('search', '')
+    if search_query:
+        books_list = books_list.filter(title__icontains=search_query)
+
+    availability = request.GET.get('availability', '')
+    if availability:
+        books_list = books_list.filter(is_available=(availability.lower() == 'true'))
+
     paginator = Paginator(books_list, 9)
     page_number = request.GET.get('page')
     books = paginator.get_page(page_number)
+
     return render(request, 'books/librarian_dashboard.html', {'books': books})
+
+def search_books_api(request):
+    books_list = Book.objects.all().order_by('title')
+
+    search_query = request.GET.get('search', '')
+    if search_query:
+        books_list = books_list.filter(title__icontains=search_query)
+
+    availability = request.GET.get('availability', '')
+    if availability:
+        books_list = books_list.filter(is_available=(availability.lower() == 'true'))
+
+    paginator = Paginator(books_list, 9)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+
+    books = [
+        {
+            'id': book.id,
+            'title': book.title,
+            'author': book.author,
+            'is_physical': book.is_physical,
+            'quantity': book.quantity if book.is_physical else None,
+            'is_available': book.is_available,
+            'cover_image': book.cover_image.url if book.cover_image else None,
+        } for book in page_obj
+    ]
+
+    return JsonResponse({
+        'books': books,
+        'has_previous': page_obj.has_previous(),
+        'has_next': page_obj.has_next(),
+        'previous_page_number': page_obj.previous_page_number() if page_obj.has_previous() else None,
+        'next_page_number': page_obj.next_page_number() if page_obj.has_next() else None,
+        'page_range': list(page_obj.paginator.page_range),
+        'current_page': page_obj.number,
+        'paginator': {'num_pages': page_obj.paginator.num_pages}
+    })
+
+
 
 def add_book(request):
     if request.method == 'POST':
