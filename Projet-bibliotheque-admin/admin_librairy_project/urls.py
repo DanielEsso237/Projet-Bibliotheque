@@ -11,6 +11,7 @@ urlpatterns = [
     path('loans/', include('loans.urls')),
     path('notifications/', include('notifications.urls')),  # Ajout ici
     path('', RedirectView.as_view(url='/users/login/', permanent=False), name='index'),
+    path('statistics/', include('library_stats.urls')),
 ]
 
 if settings.DEBUG:

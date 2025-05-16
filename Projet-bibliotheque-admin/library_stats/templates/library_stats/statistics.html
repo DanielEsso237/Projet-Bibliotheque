@@ -1,0 +1,132 @@
+{% extends 'books/base.html' %}
+{% load static %}
+
+{% block title %}Statistiques{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <h1 class="h3 mb-4">📊 Statistiques</h1>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} text-center" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% if not user.is_librarian %}
+            <div class="alert alert-warning text-center">
+                {{ message }}
+            </div>
+        {% else %}
+            <!-- Statistiques sur les livres -->
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="card text-white bg-primary mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">Livres totaux</h5>
+                            <p class="card-text display-4">{{ total_books }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-white bg-success mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">Livres disponibles</h5>
+                            <p class="card-text display-4">{{ available_books }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-white bg-danger mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">Livres indisponibles</h5>
+                            <p class="card-text display-4">{{ unavailable_books }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top 5 livres empruntés -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Top 5 des livres les plus empruntés</h5>
+                    <ul class="list-group">
+                        {% for book in top_borrowed_books %}
+                            <li class="list-group-item">{{ book.title }} ({{ book.borrow_count }} emprunts)</li>
+                        {% empty %}
+                            <li class="list-group-item">Aucun livre emprunté encore.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Statistiques sur les emprunts -->
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="card text-white bg-info mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">Emprunts actifs</h5>
+                            <p class="card-text display-4">{{ active_loans }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-white bg-warning mb-3">
+                        <h5 class="card-title">Emprunts en retard</h5>
+                        <p class="card-text display-4">{{ overdue_loans }}</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-white bg-secondary mb-3">
+                        <h5 class="card-title">Taux de retard</h5>
+                        <p class="card-text display-4">{{ overdue_percentage|floatformat:2 }}%</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistiques sur les utilisateurs -->
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="card text-white bg-primary mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">Utilisateurs totaux</h5>
+                            <p class="card-text display-4">{{ total_users }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-white bg-success mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">Bibliothécaires</h5>
+                            <p class="card-text display-4">{{ librarians }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-white bg-secondary mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">Utilisateurs standards</h5>
+                            <p class="card-text display-4">{{ standard_users }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top 5 emprunteurs -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Top 5 des emprunteurs</h5>
+                    <ul class="list-group">
+                        {% for user in top_borrowers %}
+                            <li class="list-group-item">{{ user.username }} ({{ user.borrow_count }} emprunts)</li>
+                        {% empty %}
+                            <li class="list-group-item">Aucun emprunteur encore.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

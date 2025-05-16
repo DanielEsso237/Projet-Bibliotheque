@@ -1,0 +1,14 @@
+{% extends 'books/base.html' %}
+{% load static %}
+
+{% block title %}Accès refusé{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="alert alert-danger text-center mt-5" role="alert">
+            <h4>Accès refusé</h4>
+            <p>{{ message }}</p>
+            <a href="{% url 'librarian_dashboard' %}" class="btn btn-primary mt-3">Retour au tableau de bord</a>
+        </div>
+    </div>
+{% endblock %}

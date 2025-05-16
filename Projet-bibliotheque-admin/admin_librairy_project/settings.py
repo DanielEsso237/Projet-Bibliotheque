@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'loans.apps.LoansConfig',
     'notifications.apps.NotificationsConfig',
+    'library_stats.apps.LibraryStatsConfig',
 ]
 
 AUTH_USER_MODEL = 'users.CustomUser'
