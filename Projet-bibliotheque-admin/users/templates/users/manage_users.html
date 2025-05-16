@@ -1,0 +1,218 @@
+{% extends 'books/base.html' %}
+{% load static %}
+
+{% block title %}Gérer les utilisateurs{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <h1 class="h3 mb-4">👤 Gérer les utilisateurs</h1>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} text-center" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Barre de recherche -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <input type="text" id="searchInput" class="form-control" placeholder="Rechercher par nom ou email..." value="{{ request.GET.search|default:'' }}">
+            </div>
+        </div>
+
+        <!-- Liste des utilisateurs -->
+        <div id="usersList">
+            {% if users %}
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Nom d'utilisateur</th>
+                                <th>Email</th>
+                                <th>Type</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersContainer">
+                            {% for user in users %}
+                                <tr>
+                                    <td>{{ user.username }}</td>
+                                    <td>{{ user.email }}</td>
+                                    <td>
+                                        {% if user.is_librarian %}
+                                            <span class="badge bg-primary">Bibliothécaire</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">Utilisateur standard</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="#" class="btn btn-sm btn-warning me-2" data-bs-toggle="modal" data-bs-target="#editUserModal" data-user-id="{{ user.id }}" data-username="{{ user.username }}" data-email="{{ user.email }}" data-is-librarian="{{ user.is_librarian|yesno:'yes,no' }}">
+                                            <i class="fas fa-edit"></i> Modifier
+                                        </a>
+                                        <a href="#" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteUserModal" data-user-id="{{ user.id }}" data-username="{{ user.username }}">
+                                            <i class="fas fa-trash"></i> Supprimer
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                {% if users.paginator.num_pages > 1 %}
+                    <nav aria-label="Page navigation" class="mt-4">
+                        <ul class="pagination justify-content-center">
+                            {% if users.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=1&search={{ request.GET.search|default:'' }}">« Première</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ users.previous_page_number }}&search={{ request.GET.search|default:'' }}">Précédent</a>
+                                </li>
+                            {% endif %}
+                            {% for num in users.paginator.page_range %}
+                                <li class="page-item {% if users.number == num %}active{% endif %}">
+                                    <a class="page-link" href="?page={{ num }}&search={{ request.GET.search|default:'' }}">{{ num }}</a>
+                                </li>
+                            {% endfor %}
+                            {% if users.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ users.next_page_number }}&search={{ request.GET.search|default:'' }}">Suivant</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ users.paginator.num_pages }}&search={{ request.GET.search|default:'' }}">Dernière »</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                {% endif %}
+            {% else %}
+                <div class="alert alert-info">Aucun utilisateur trouvé.</div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Modal pour modifier un utilisateur -->
+    <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editUserModalLabel">Modifier l'utilisateur</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editUserForm" method="post" action="{% url 'update_user' 0 %}">
+                        {% csrf_token %}
+                        <input type="hidden" id="editUserId" name="user_id">
+                        <div class="mb-3">
+                            <label for="editUsername" class="form-label">Nom d'utilisateur</label>
+                            <input type="text" class="form-control" id="editUsername" name="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="editEmail" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Type de compte</label>
+                            <select class="form-select" id="editIsLibrarian" name="is_librarian" required>
+                                <option value="no">Utilisateur standard</option>
+                                <option value="yes">Bibliothécaire</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Enregistrer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal pour supprimer un utilisateur -->
+    <div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteUserModalLabel">Supprimer l'utilisateur</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Êtes-vous sûr de vouloir supprimer l'utilisateur <strong id="deleteUsername"></strong> ? Cette action est irréversible.</p>
+                    <form id="deleteUserForm" method="post" action="{% url 'delete_user' 0 %}">
+                        {% csrf_token %}
+                        <input type="hidden" id="deleteUserId" name="user_id">
+                        <button type="submit" class="btn btn-danger">Confirmer la suppression</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchInput = document.getElementById('searchInput');
+            const usersContainer = document.getElementById('usersContainer');
+
+            // Gestion de la recherche
+            searchInput.addEventListener('input', debounce(function () {
+                const query = searchInput.value.trim();
+                window.history.pushState({}, '', `?search=${encodeURIComponent(query)}`);
+                fetchUsers();
+            }, 300));
+
+            function fetchUsers() {
+                const query = searchInput.value.trim();
+                window.location.href = `?search=${encodeURIComponent(query)}`;  // Redirection simple pour l'instant
+            }
+
+            // Gestion des modals
+            const editUserModal = document.getElementById('editUserModal');
+            const deleteUserModal = document.getElementById('deleteUserModal');
+
+            editUserModal.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget;
+                const userId = button.getAttribute('data-user-id');
+                const username = button.getAttribute('data-username');
+                const email = button.getAttribute('data-email');
+                const isLibrarian = button.getAttribute('data-is-librarian') === 'yes';
+
+                const modal = this;
+                modal.querySelector('#editUserId').value = userId;
+                modal.querySelector('#editUsername').value = username;
+                modal.querySelector('#editEmail').value = email;
+                modal.querySelector('#editIsLibrarian').value = isLibrarian ? 'yes' : 'no';
+
+                // Mettre à jour l'action du formulaire dynamiquement
+                const form = modal.querySelector('#editUserForm');
+                form.action = form.action.replace('0', userId);
+            });
+
+            deleteUserModal.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget;
+                const userId = button.getAttribute('data-user-id');
+                const username = button.getAttribute('data-username');
+
+                const modal = this;
+                modal.querySelector('#deleteUserId').value = userId;
+                modal.querySelector('#deleteUsername').textContent = username;
+
+                // Mettre à jour l'action du formulaire dynamiquement
+                const form = modal.querySelector('#deleteUserForm');
+                form.action = form.action.replace('0', userId);
+            });
+
+            // Fonction de debounce pour limiter les requêtes
+            function debounce(func, wait) {
+                let timeout;
+                return function (...args) {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => func.apply(this, args), wait);
+                };
+            }
+        });
+    </script>
+{% endblock %}

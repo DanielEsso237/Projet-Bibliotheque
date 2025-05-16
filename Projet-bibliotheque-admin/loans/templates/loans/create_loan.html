@@ -90,7 +90,11 @@
                         });
                         userSuggestions.classList.add('show');
                     } else {
-                        userSuggestions.classList.remove('show');
+                        const noResultItem = document.createElement('div');
+                        noResultItem.className = 'dropdown-item text-danger';
+                        noResultItem.textContent = 'Aucun utilisateur trouvé';
+                        userSuggestions.appendChild(noResultItem);
+                        userSuggestions.classList.add('show');
                     }
                 })
                 .catch(error => {
@@ -131,7 +135,11 @@
                         });
                         bookSuggestions.classList.add('show');
                     } else {
-                        bookSuggestions.classList.remove('show');
+                        const noResultItem = document.createElement('div');
+                        noResultItem.className = 'dropdown-item text-danger';
+                        noResultItem.textContent = 'Aucun livre trouvé';
+                        bookSuggestions.appendChild(noResultItem);
+                        bookSuggestions.classList.add('show');
                     }
                 })
                 .catch(error => {
