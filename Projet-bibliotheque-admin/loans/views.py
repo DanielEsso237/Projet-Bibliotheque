@@ -153,3 +153,35 @@ def create_loan(request):
     users = CustomUser.objects.filter(is_standard_user=True)
     books = Book.objects.filter(is_physical=True, is_available=True)
     return render(request, 'loans/create_loan.html', {'users': users, 'books': books})
+
+@login_required
+def late_books(request):
+    if not request.user.is_librarian:
+        messages.error(request, "Seuls les bibliothécaires peuvent accéder à cette page.")
+        return redirect('login')
+
+    # Liste des emprunts en retard (due_date < maintenant et non rendus)
+    late_loans = Loan.objects.filter(
+        is_returned=False,
+        due_date__lt=timezone.now()
+    ).select_related('user', 'book').order_by('due_date')
+
+    # Calculer les jours de retard pour chaque prêt
+    now = timezone.now()
+    loans_with_days_late = []
+    for loan in late_loans:
+        days_late = (now - loan.due_date).days
+        loans_with_days_late.append({
+            'loan': loan,
+            'days_late': days_late
+        })
+
+    # Pagination
+    paginator = Paginator(loans_with_days_late, 10)  # 10 emprunts par page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'loans/late_books.html', {
+        'loans': page_obj,
+        'now': now
+    })
