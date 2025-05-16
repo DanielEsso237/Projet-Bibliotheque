@@ -185,3 +185,56 @@ def late_books(request):
         'loans': page_obj,
         'now': now
     })
+    
+
+@login_required
+def search_users_api(request):
+    if not request.user.is_librarian:
+        return JsonResponse({'users': []}, status=403)
+
+    query = request.GET.get('query', '')
+    users = CustomUser.objects.filter(
+        is_standard_user=True,
+        is_active=True
+    )
+
+    if query:
+        users = users.filter(
+            Q(username__icontains=query) | Q(email__icontains=query)
+        )
+
+    users_list = [
+        {
+            'id': user.id,
+            'username': user.username,
+            'email': user.email
+        } for user in users[:10]  # Limite à 10 résultats pour éviter une liste trop longue
+    ]
+
+    return JsonResponse({'users': users_list})
+
+@login_required
+def search_books_api(request):
+    if not request.user.is_librarian:
+        return JsonResponse({'books': []}, status=403)
+
+    query = request.GET.get('query', '')
+    books = Book.objects.filter(
+        is_physical=True,
+        is_available=True
+    )
+
+    if query:
+        books = books.filter(
+            Q(title__icontains=query) | Q(author__icontains=query)
+        )
+
+    books_list = [
+        {
+            'id': book.id,
+            'title': book.title,
+            'author': book.author
+        } for book in books[:10]  # Limite à 10 résultats
+    ]
+
+    return JsonResponse({'books': books_list})

@@ -19,21 +19,17 @@
             <div class="card-body">
                 <form method="post">
                     {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="user" class="form-label">Utilisateur</label>
-                        <select class="form-select" id="user" name="user" required>
-                            {% for user in users %}
-                                <option value="{{ user.id }}">{{ user.username }} ({{ user.email }})</option>
-                            {% endfor %}
-                        </select>
+                    <div class="mb-3 position-relative">
+                        <label for="userInput" class="form-label">Utilisateur</label>
+                        <input type="text" class="form-control" id="userInput" placeholder="Rechercher par nom ou email..." required>
+                        <input type="hidden" id="userId" name="user" required>
+                        <div id="userSuggestions" class="dropdown-menu w-100" style="max-height: 200px; overflow-y: auto;"></div>
                     </div>
-                    <div class="mb-3">
-                        <label for="book" class="form-label">Livre</label>
-                        <select class="form-select" id="book" name="book" required>
-                            {% for book in books %}
-                                <option value="{{ book.id }}">{{ book.title }} ({{ book.author }})</option>
-                            {% endfor %}
-                        </select>
+                    <div class="mb-3 position-relative">
+                        <label for="bookInput" class="form-label">Livre</label>
+                        <input type="text" class="form-control" id="bookInput" placeholder="Rechercher par titre ou auteur..." required>
+                        <input type="hidden" id="bookId" name="book" required>
+                        <div id="bookSuggestions" class="dropdown-menu w-100" style="max-height: 200px; overflow-y: auto;"></div>
                     </div>
                     <div class="mb-3">
                         <label for="due_date" class="form-label">Date limite de retour</label>
@@ -49,4 +45,118 @@
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const userInput = document.getElementById('userInput');
+            const userIdInput = document.getElementById('userId');
+            const userSuggestions = document.getElementById('userSuggestions');
+            const bookInput = document.getElementById('bookInput');
+            const bookIdInput = document.getElementById('bookId');
+            const bookSuggestions = document.getElementById('bookSuggestions');
+
+            // Fonction pour gérer l'autocomplétion des utilisateurs
+            userInput.addEventListener('input', debounce(function () {
+                const query = userInput.value.trim();
+                if (query.length < 1) {
+                    userSuggestions.innerHTML = '';
+                    userSuggestions.classList.remove('show');
+                    return;
+                }
+
+                fetch(`{% url 'search_users_api' %}?query=${encodeURIComponent(query)}`, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    userSuggestions.innerHTML = '';
+                    if (data.users.length > 0) {
+                        data.users.forEach(user => {
+                            const suggestionItem = document.createElement('div');
+                            suggestionItem.className = 'dropdown-item';
+                            suggestionItem.textContent = `${user.username} (${user.email})`;
+                            suggestionItem.addEventListener('click', () => {
+                                userInput.value = `${user.username} (${user.email})`;
+                                userIdInput.value = user.id;
+                                userSuggestions.innerHTML = '';
+                                userSuggestions.classList.remove('show');
+                            });
+                            userSuggestions.appendChild(suggestionItem);
+                        });
+                        userSuggestions.classList.add('show');
+                    } else {
+                        userSuggestions.classList.remove('show');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur lors de la recherche des utilisateurs:', error);
+                });
+            }, 300));
+
+            // Fonction pour gérer l'autocomplétion des livres
+            bookInput.addEventListener('input', debounce(function () {
+                const query = bookInput.value.trim();
+                if (query.length < 1) {
+                    bookSuggestions.innerHTML = '';
+                    bookSuggestions.classList.remove('show');
+                    return;
+                }
+
+                fetch(`{% url 'search_books_api' %}?query=${encodeURIComponent(query)}`, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    bookSuggestions.innerHTML = '';
+                    if (data.books.length > 0) {
+                        data.books.forEach(book => {
+                            const suggestionItem = document.createElement('div');
+                            suggestionItem.className = 'dropdown-item';
+                            suggestionItem.textContent = `${book.title} (${book.author})`;
+                            suggestionItem.addEventListener('click', () => {
+                                bookInput.value = `${book.title} (${book.author})`;
+                                bookIdInput.value = book.id;
+                                bookSuggestions.innerHTML = '';
+                                bookSuggestions.classList.remove('show');
+                            });
+                            bookSuggestions.appendChild(suggestionItem);
+                        });
+                        bookSuggestions.classList.add('show');
+                    } else {
+                        bookSuggestions.classList.remove('show');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur lors de la recherche des livres:', error);
+                });
+            }, 300));
+
+            // Cacher les suggestions si on clique ailleurs
+            document.addEventListener('click', function (e) {
+                if (!userInput.contains(e.target) && !userSuggestions.contains(e.target)) {
+                    userSuggestions.classList.remove('show');
+                }
+                if (!bookInput.contains(e.target) && !bookSuggestions.contains(e.target)) {
+                    bookSuggestions.classList.remove('show');
+                }
+            });
+
+            // Fonction de debounce pour limiter les requêtes
+            function debounce(func, wait) {
+                let timeout;
+                return function (...args) {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => func.apply(this, args), wait);
+                };
+            }
+        });
+    </script>
 {% endblock %}
