@@ -13,6 +13,9 @@ class Notification(models.Model):
     is_read = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)
 
+    class Meta:
+        unique_together = ('user', 'message', 'type')  # Ajoute cette contrainte d'unicité
+
     def __str__(self):
         return f"{self.message} ({self.user.username})"
 
