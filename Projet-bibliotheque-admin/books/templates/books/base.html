@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{% csrf_token %}">
     <title>{% block title %}Bibliothèque{% endblock %}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"  crossorigin="anonymous">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="{% static 'books/css/custom.css' %}">
     {% block extra_css %}{% endblock %}
@@ -17,8 +17,8 @@
         <i class="fas fa-bars"></i>
     </button>
 
-    <!-- Sidebar (cachée par défaut) -->
-    <div class="sidebar" id="sidebar" style="margin-left: -250px; transition: margin-left 0.3s;">
+    <!-- Sidebar (affichée par défaut) -->
+    <div class="sidebar" id="sidebar" style="margin-left: 0; transition: margin-left 0.3s;">
         <div class="p-3">
             <h3 class="text-center">📚 Bibliothèque</h3>
             <nav class="nav flex-column">
@@ -27,18 +27,10 @@
                     <a class="nav-link" href="{% url 'add_book' %}"><i class="fas fa-plus-circle me-2"></i> Ajouter un livre</a>
                     <a class="nav-link" href="{% url 'loan_list' %}"><i class="fas fa-undo-alt me-2"></i> Gérer les retours</a>
                     <a class="nav-link" href="{% url 'create_loan' %}"><i class="fas fa-book me-2"></i> Réaliser un emprunt</a>              
-                    <a class="nav-link" href="{% url 'notifications' %}">
+                    <a class="nav-link position-relative" href="{% url 'notifications' %}">
                         <i class="fas fa-bell me-2"></i> Notifications
                         {% if notification_counts.total > 0 %}
-                            {% if notification_counts.overdue > 0 %}
-                                <span class="badge bg-warning rounded-pill ms-2" title="Retours proches">{{ notification_counts.overdue }}</span>
-                            {% endif %}
-                            {% if notification_counts.late > 0 %}
-                                <span class="badge bg-danger rounded-pill ms-2" title="Retards">{{ notification_counts.late }}</span>
-                            {% endif %}
-                            {% if notification_counts.low_stock > 0 %}
-                                <span class="badge bg-info rounded-pill ms-2" title="Stock faible">{{ notification_counts.low_stock }}</span>
-                            {% endif %}
+                            <span class="badge rounded-pill bg-danger position-absolute top-0 end-0 mt-1 me-1" style="font-size: 0.7em;">{{ notification_counts.total }}</span>
                         {% endif %}
                     </a>
                     <a class="nav-link" href="{% url 'late_books' %}"><i class="fas fa-clock me-2"></i> Livres en retard</a>
@@ -54,74 +46,8 @@
         </div>
     </div>
 
-    <!-- Navbar en haut -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm mb-4">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">📚 Bibliothèque</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    {% if user.is_authenticated %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'librarian_dashboard' %}"><i class="fas fa-home"></i></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'add_book' %}"><i class="fas fa-plus-circle"></i></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'loan_list' %}"><i class="fas fa-undo-alt"></i></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'create_loan' %}"><i class="fas fa-book"></i></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'notifications' %}">
-                                <i class="fas fa-bell"></i>
-                                {% if notification_counts.total > 0 %}
-                                    {% if notification_counts.overdue > 0 %}
-                                        <span class="badge bg-warning rounded-pill" title="Retours proches">{{ notification_counts.overdue }}</span>
-                                    {% endif %}
-                                    {% if notification_counts.late > 0 %}
-                                        <span class="badge bg-danger rounded-pill" title="Retards">{{ notification_counts.late }}</span>
-                                    {% endif %}
-                                    {% if notification_counts.low_stock > 0 %}
-                                        <span class="badge bg-info rounded-pill" title="Stock faible">{{ notification_counts.low_stock }}</span>
-                                    {% endif %}
-                                {% endif %}
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'late_books' %}"><i class="fas fa-clock"></i></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'manage_users' %}"><i class="fas fa-users-cog"></i></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'statistics' %}"><i class="fas fa-chart-line"></i></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#"><i class="fas fa-cog"></i></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-danger" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i></a>
-                        </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'login' %}"><i class="fas fa-sign-in-alt"></i></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'register' %}"><i class="fas fa-user-plus"></i></a>
-                        </li>
-                    {% endif %}
-                </ul>
-            </div>
-        </div>
-    </nav>
-
     <!-- Contenu principal -->
-    <div class="content" id="content" style="transition: margin-left 0.3s;">
+    <div class="content" id="content" style="margin-left: 250px; transition: margin-left 0.3s;">
         <div class="container-fluid pt-4">
             {% block content %}{% endblock %}
         </div>
@@ -160,23 +86,19 @@
         </script>
     {% endif %}
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"  crossorigin="anonymous"></script>
     <script>
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const content = document.getElementById('content');
-            if (sidebar.style.marginLeft === '-250px' || sidebar.style.marginLeft === '') {
-                sidebar.style.marginLeft = '0';
-                content.style.marginLeft = '250px';
-            } else {
+            if (sidebar.style.marginLeft === '0px' || sidebar.style.marginLeft === '') {
                 sidebar.style.marginLeft = '-250px';
                 content.style.marginLeft = '0';
+            } else {
+                sidebar.style.marginLeft = '0';
+                content.style.marginLeft = '250px';
             }
         }
-        document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('sidebar').style.marginLeft = '-250px'; // Caché par défaut
-            document.getElementById('content').style.marginLeft = '0'; // Pas de marge par défaut
-        });
 
         let isUpdatingNotifications = false;
         function updateNotificationBadges() {
@@ -198,21 +120,10 @@
                 return response.json();
             })
             .then(data => {
-                const overdueBadge = document.querySelector('.badge.bg-warning');
-                const lateBadge = document.querySelector('.badge.bg-danger');
-                const lowStockBadge = document.querySelector('.badge.bg-info');
-                
-                if (overdueBadge) {
-                    overdueBadge.textContent = data.overdue || 0;
-                    overdueBadge.style.display = (data.overdue > 0) ? 'inline' : 'none';
-                }
-                if (lateBadge) {
-                    lateBadge.textContent = data.late || 0;
-                    lateBadge.style.display = (data.late > 0) ? 'inline' : 'none';
-                }
-                if (lowStockBadge) {
-                    lowStockBadge.textContent = data.low_stock || 0;
-                    lowStockBadge.style.display = (data.low_stock > 0) ? 'inline' : 'none';
+                const totalBadge = document.querySelector('.badge.bg-danger');
+                if (totalBadge) {
+                    totalBadge.textContent = data.total || 0;
+                    totalBadge.style.display = (data.total > 0) ? 'inline' : 'none';
                 }
             })
             .catch(error => {

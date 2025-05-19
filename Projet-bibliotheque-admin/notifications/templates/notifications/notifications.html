@@ -29,12 +29,11 @@
 {% block extra_js %}
     <script>
         function markAsRead(notificationId) {
-            const csrfTokenElement = document.querySelector('[name=csrfmiddlewaretoken]');
-            if (!csrfTokenElement) {
-                console.error('CSRF token non trouvé. Assurez-vous que {% csrf_token %} est inclus dans le template.');
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            if (!csrfToken) {
+                console.error('CSRF token non trouvé. Assurez-vous que la balise meta est présente dans base.html.');
                 return;
             }
-            const csrfToken = csrfTokenElement.value;
 
             fetch(`/notifications/mark-as-read/${notificationId}/`, {
                 method: 'POST',
@@ -51,14 +50,14 @@
                 return response.json();
             })
             .then(data => {
-                console.log('Réponse:', data); // Pour déboguer
+                console.log('Réponse:', data);
                 if (data.status === 'success') {
                     const notificationElement = document.getElementById(`notification-${notificationId}`);
                     const button = notificationElement.querySelector('button');
                     if (button) {
                         button.remove();
                     }
-                    updateNotificationBadges(); // Rafraîchir les badges
+                    updateNotificationBadges(); // Rafraîchir les badges immédiatement
                 } else {
                     console.error('Échec:', data.message);
                 }
