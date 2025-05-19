@@ -7,6 +7,9 @@
     <div class="container">
         <h1 class="h3 mb-4">📚 Réaliser un emprunt</h1>
 
+        <!-- Conteneur pour les messages d'erreur JavaScript -->
+        <div id="jsErrorMessage" class="alert alert-danger d-none" role="alert"></div>
+
         {% if messages %}
             {% for message in messages %}
                 <div class="alert alert-{{ message.tags }} text-center" role="alert">
@@ -56,6 +59,15 @@
             const bookInput = document.getElementById('bookInput');
             const bookIdInput = document.getElementById('bookId');
             const bookSuggestions = document.getElementById('bookSuggestions');
+            const form = document.querySelector('form');
+            const errorMessage = document.getElementById('jsErrorMessage');
+
+            // Fonction pour afficher une erreur côté client
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorMessage.classList.remove('d-none');
+                setTimeout(() => errorMessage.classList.add('d-none'), 5000); // Cacher après 5 secondes
+            }
 
             // Fonction pour gérer l'autocomplétion des utilisateurs
             userInput.addEventListener('input', debounce(function () {
@@ -154,6 +166,22 @@
                 }
                 if (!bookInput.contains(e.target) && !bookSuggestions.contains(e.target)) {
                     bookSuggestions.classList.remove('show');
+                }
+            });
+
+            // Validation avant soumission
+            form.addEventListener('submit', function (e) {
+                if (!userIdInput.value || !bookIdInput.value) {
+                    e.preventDefault();
+                    showError('Veuillez sélectionner un utilisateur et un livre valides.');
+                    return;
+                }
+                // Vérifier que due_date est rempli (déjà géré par required)
+                const dueDate = document.getElementById('due_date').value;
+                if (!dueDate) {
+                    e.preventDefault();
+                    showError('Veuillez entrer une date de retour.');
+                    return;
                 }
             });
 

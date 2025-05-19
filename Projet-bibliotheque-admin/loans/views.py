@@ -1,3 +1,4 @@
+# loans/views.py
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -81,8 +82,6 @@ def search_loans_api(request):
         'paginator': {'num_pages': page_obj.paginator.num_pages}
     })
 
-
-
 @login_required
 def return_book(request, loan_id):
     if not request.user.is_librarian:
@@ -100,8 +99,8 @@ def return_book(request, loan_id):
         loan.save()
         messages.success(request, f"Le livre '{loan.book.title}' a été rendu avec succès.")
         return redirect('loan_list')
-    
-    return render(request, 'loans/return_book.html', {'loan': loan})
+    else:  # GET request
+        return render(request, 'loans/return_book.html', {'loan': loan})
 
 @login_required
 def create_loan(request):
@@ -114,10 +113,26 @@ def create_loan(request):
         book_id = request.POST.get('book')
         due_date_str = request.POST.get('due_date')
 
+        # Vérifier que user_id et book_id ne sont pas vides
+        if not user_id or not book_id:
+            messages.error(request, "Veuillez sélectionner un utilisateur et un livre.")
+            return redirect('create_loan')
+
+        try:
+            user_id = int(user_id)  # Convertir en entier
+            book_id = int(book_id)  # Convertir en entier
+        except (ValueError, TypeError):
+            messages.error(request, "Les identifiants de l'utilisateur ou du livre sont invalides.")
+            return redirect('create_loan')
+
         user = get_object_or_404(CustomUser, id=user_id)
         book = get_object_or_404(Book, id=book_id)
 
         # Convertir due_date en datetime conscient
+        if not due_date_str:
+            messages.error(request, "Veuillez entrer une date de retour.")
+            return redirect('create_loan')
+        
         try:
             due_date_naive = datetime.strptime(due_date_str, '%Y-%m-%d')
             due_date = timezone.make_aware(due_date_naive)

@@ -189,7 +189,7 @@
                                         `<span class="badge bg-success">En cours</span>`}
                                 </td>
                                 <td>
-                                    <a href="{% url 'return_book' 0 %}".replace('0', loan.id) class="btn btn-sm btn-success">
+                                    <a href="/loans/return/${loan.id}/" class="btn btn-sm btn-success">
                                         <i class="fas fa-undo"></i> Marquer comme rendu
                                     </a>
                                 </td>`;
