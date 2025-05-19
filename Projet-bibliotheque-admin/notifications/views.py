@@ -22,39 +22,49 @@ def notifications(request):
         is_returned=False,
         due_date__gte=timezone.make_aware(timezone.datetime.combine(today, timezone.datetime.min.time())),
         due_date__lte=timezone.make_aware(timezone.datetime.combine(today + timedelta(days=7), timezone.datetime.max.time()))
-    )
+    ).select_related('user', 'book')
+
     for loan in overdue_loans:
-        due_date_as_date = loan.due_date.date()
-        days_left = (due_date_as_date - today).days
-        message = f"Il reste {days_left} jour(s) à {loan.user.username} pour rendre '{loan.book.title}' (échéance: {loan.due_date})."
-        notification, created = Notification.objects.get_or_create(
-            user=request.user,
-            message=message,
-            type='warning',
-            defaults={'is_read': False}
-        )
-        # Ne réinitialise pas is_read si la notification existe déjà
-        notifications.append(notification)
+        try:
+            user = loan.user
+            due_date_as_date = loan.due_date.date()
+            days_left = (due_date_as_date - today).days
+            message = f"Il reste {days_left} jour(s) à {user.username} pour rendre '{loan.book.title}' (échéance: {loan.due_date})."
+            notification, created = Notification.objects.get_or_create(
+                user=request.user,
+                message=message,
+                type='warning',
+                defaults={'is_read': False}
+            )
+            notifications.append(notification)
+        except (CustomUser.DoesNotExist, Book.DoesNotExist):
+            print(f"Utilisateur ou livre introuvable pour le prêt ID {loan.id}. Considérer la suppression de ce prêt.")
 
     # Notifications pour les retards
     late_loans = Loan.objects.filter(
         is_returned=False,
         due_date__lt=timezone.make_aware(timezone.datetime.combine(today, timezone.datetime.min.time()))
-    )
+    ).select_related('user', 'book')
+
     for loan in late_loans:
-        due_date_as_date = loan.due_date.date()
-        days_late = (today - due_date_as_date).days
-        fine_amount = days_late * 0.10
-        loan.fine = fine_amount
-        loan.save()
-        message = f"'{loan.book.title}' de {loan.user.username} est en retard de {days_late} jour(s) (amende: {fine_amount:.2f} €)."
-        notification, created = Notification.objects.get_or_create(
-            user=request.user,
-            message=message,
-            type='danger',
-            defaults={'is_read': False}
-        )
-        notifications.append(notification)
+        try:
+            user = loan.user
+            book = loan.book
+            due_date_as_date = loan.due_date.date()
+            days_late = (today - due_date_as_date).days
+            fine_amount = days_late * 0.10
+            loan.fine = fine_amount
+            loan.save()
+            message = f"'{book.title}' de {user.username} est en retard de {days_late} jour(s) (amende: {fine_amount:.2f} €)."
+            notification, created = Notification.objects.get_or_create(
+                user=request.user,
+                message=message,
+                type='danger',
+                defaults={'is_read': False}
+            )
+            notifications.append(notification)
+        except (CustomUser.DoesNotExist, Book.DoesNotExist):
+            print(f"Utilisateur ou livre introuvable pour le prêt ID {loan.id}. Considérer la suppression de ce prêt.")
 
     # Notifications pour les stocks faibles
     low_stock_books = Book.objects.filter(is_physical=True, is_available=True, quantity__lte=5)

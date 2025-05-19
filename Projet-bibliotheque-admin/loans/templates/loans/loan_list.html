@@ -113,14 +113,19 @@
         document.addEventListener('DOMContentLoaded', function () {
             const searchInput = document.getElementById('searchInput');
             const statusFilter = document.getElementById('statusFilter');
-            const loansContainer = document.getElementById('loansContainer');
             const loansList = document.getElementById('loansList');
-            const noResultsMessage = document.getElementById('noResultsMessage') || document.createElement('div');
             const paginationContainer = document.getElementById('paginationContainer');
 
-            noResultsMessage.className = 'alert alert-info';
-            noResultsMessage.id = 'noResultsMessage';
-            noResultsMessage.textContent = 'Aucun emprunt trouvé.';
+            let loansContainer = document.getElementById('loansContainer'); // Initialisation
+
+            // Créer l'élément noResultsMessage s'il n'existe pas
+            let noResultsMessage = document.getElementById('noResultsMessage');
+            if (!noResultsMessage) {
+                noResultsMessage = document.createElement('div');
+                noResultsMessage.className = 'alert alert-info';
+                noResultsMessage.id = 'noResultsMessage';
+                noResultsMessage.textContent = 'Aucun emprunt trouvé.';
+            }
 
             function fetchLoans() {
                 const search = encodeURIComponent(searchInput.value.trim());
@@ -140,14 +145,37 @@
                     return response.json();
                 })
                 .then(data => {
-                    // Vider le conteneur
+                    // Si la table n'existe pas, la créer
+                    if (!document.getElementById('loansTable')) {
+                        const tableWrapper = document.createElement('div');
+                        tableWrapper.className = 'table-responsive';
+                        tableWrapper.innerHTML = `
+                            <table class="table table-striped table-hover" id="loansTable">
+                                <thead>
+                                    <tr>
+                                        <th>Livre</th>
+                                        <th>Utilisateur</th>
+                                        <th>Date d'emprunt</th>
+                                        <th>Date limite</th>
+                                        <th>Statut</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="loansContainer"></tbody>
+                            </table>`;
+                        loansList.innerHTML = '';
+                        loansList.appendChild(tableWrapper);
+                        loansContainer = document.getElementById('loansContainer'); // Mettre à jour la référence
+                    }
+
+                    // Vider uniquement le contenu de loansContainer
                     loansContainer.innerHTML = '';
 
                     if (data.loans.length === 0) {
                         loansList.innerHTML = '';
                         loansList.appendChild(noResultsMessage);
                     } else {
-                        // Construire les lignes de la table
+                        // Remplir loansContainer avec les nouvelles lignes
                         data.loans.forEach(loan => {
                             const loanRow = document.createElement('tr');
                             loanRow.innerHTML = `
@@ -167,27 +195,6 @@
                                 </td>`;
                             loansContainer.appendChild(loanRow);
                         });
-
-                        // Reconstruire la table avec le thead
-                        loansList.innerHTML = '';
-                        const tableWrapper = document.createElement('div');
-                        tableWrapper.className = 'table-responsive';
-                        tableWrapper.innerHTML = `
-                            <table class="table table-striped table-hover" id="loansTable">
-                                <thead>
-                                    <tr>
-                                        <th>Livre</th>
-                                        <th>Utilisateur</th>
-                                        <th>Date d'emprunt</th>
-                                        <th>Date limite</th>
-                                        <th>Statut</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="loansContainer"></tbody>
-                            </table>`;
-                        tableWrapper.querySelector('#loansContainer').innerHTML = loansContainer.innerHTML;
-                        loansList.appendChild(tableWrapper);
                     }
 
                     // Mettre à jour la pagination
