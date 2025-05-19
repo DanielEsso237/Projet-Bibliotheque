@@ -48,17 +48,23 @@
                 </div>
             </div>
 
+            <!-- Graphique : État des livres -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">État des livres</h5>
+                    <div class="chart-container">
+                        <canvas id="bookStatusChart" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+
             <!-- Top 5 livres empruntés -->
             <div class="card mb-4">
                 <div class="card-body">
                     <h5 class="card-title">Top 5 des livres les plus empruntés</h5>
-                    <ul class="list-group">
-                        {% for book in top_borrowed_books %}
-                            <li class="list-group-item">{{ book.title }} ({{ book.borrow_count }} emprunts)</li>
-                        {% empty %}
-                            <li class="list-group-item">Aucun livre emprunté encore.</li>
-                        {% endfor %}
-                    </ul>
+                    <div class="chart-container">
+                        <canvas id="topBorrowedChart" height="200"></canvas>
+                    </div>
                 </div>
             </div>
 
@@ -74,14 +80,38 @@
                 </div>
                 <div class="col-md-4">
                     <div class="card text-white bg-warning mb-3">
-                        <h5 class="card-title">Emprunts en retard</h5>
-                        <p class="card-text display-4">{{ overdue_loans }}</p>
+                        <div class="card-body">
+                            <h5 class="card-title">Emprunts en retard</h5>
+                            <p class="card-text display-4">{{ overdue_loans }}</p>
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="card text-white bg-secondary mb-3">
-                        <h5 class="card-title">Taux de retard</h5>
-                        <p class="card-text display-4">{{ overdue_percentage|floatformat:2 }}%</p>
+                        <div class="card-body">
+                            <h5 class="card-title">Taux de retard</h5>
+                            <p class="card-text display-4">{{ overdue_percentage|floatformat:2 }}%</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Graphique : État des prêts -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">État des prêts</h5>
+                    <div class="chart-container">
+                        <canvas id="loanStatusChart" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Graphique : Variations des emprunts et retours -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Variations des emprunts et retours dans le temps</h5>
+                    <div class="chart-container">
+                        <canvas id="loanTrendChart" height="200"></canvas>
                     </div>
                 </div>
             </div>
@@ -114,6 +144,16 @@
                 </div>
             </div>
 
+            <!-- Graphique : Types d'utilisateurs -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Types d'utilisateurs</h5>
+                    <div class="chart-container">
+                        <canvas id="userTypeChart" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+
             <!-- Top 5 emprunteurs -->
             <div class="card mb-4">
                 <div class="card-body">
@@ -129,4 +169,168 @@
             </div>
         {% endif %}
     </div>
+{% endblock %}
+
+{% block extra_css %}
+    <style>
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* Limite la largeur maximale */
+            height: 300px; /* Hauteur fixe pour les graphiques */
+            margin: 0 auto; /* Centre le graphique */
+        }
+    </style>
+{% endblock %}
+
+{% block extra_js %}
+    <!-- Utilisation d'un CDN pour Chart.js sans integrity -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js" crossorigin="anonymous"></script>
+    <script>
+        // Vérifier si Chart.js est chargé
+        if (typeof Chart === 'undefined') {
+            console.error('Chart.js n\'a pas pu être chargé. Vérifiez le CDN ou votre connexion réseau.');
+        } else {
+            // Stockage des instances de graphiques
+            const chartInstances = {};
+
+            // Fonction pour détruire un graphique existant
+            function destroyChart(chartId) {
+                if (chartInstances[chartId]) {
+                    chartInstances[chartId].destroy();
+                    delete chartInstances[chartId];
+                }
+            }
+
+            // Fonction pour initialiser un graphique
+            function createChart(chartId, ctx, type, data, options) {
+                try {
+                    // Détruire le graphique existant s'il y en a un
+                    destroyChart(chartId);
+                    // Créer un nouveau graphique et le stocker
+                    chartInstances[chartId] = new Chart(ctx, {
+                        type: type,
+                        data: data,
+                        options: options
+                    });
+                } catch (error) {
+                    console.error('Erreur lors de la création du graphique:', error);
+                }
+            }
+
+            // Graphique : État des livres
+            const bookStatusData = {{ book_status_data|safe }};
+            if (bookStatusData && bookStatusData.labels && bookStatusData.data) {
+                const bookStatusCtx = document.getElementById('bookStatusChart').getContext('2d');
+                createChart('bookStatusChart', bookStatusCtx, 'pie', {
+                    labels: bookStatusData.labels,
+                    datasets: [{
+                        data: bookStatusData.data,
+                        backgroundColor: bookStatusData.backgroundColor
+                    }]
+                }, {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top' },
+                        title: { display: true, text: 'État des livres' }
+                    }
+                });
+            } else {
+                console.error('Données invalides pour le graphique État des livres:', bookStatusData);
+            }
+
+            // Graphique : Top 5 livres empruntés
+            const topBorrowedData = {{ top_borrowed_data|safe }};
+            if (topBorrowedData && topBorrowedData.labels && topBorrowedData.data) {
+                const topBorrowedCtx = document.getElementById('topBorrowedChart').getContext('2d');
+                createChart('topBorrowedChart', topBorrowedCtx, 'bar', {
+                    labels: topBorrowedData.labels,
+                    datasets: [{
+                        data: topBorrowedData.data,
+                        backgroundColor: topBorrowedData.backgroundColor
+                    }]
+                }, {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        title: { display: true, text: 'Top 5 livres empruntés' }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, title: { display: true, text: 'Nombre d\'emprunts' } }
+                    }
+                });
+            } else {
+                console.error('Données invalides pour le graphique Top 5 livres empruntés:', topBorrowedData);
+            }
+
+            // Graphique : État des prêts
+            const loanStatusData = {{ loan_status_data|safe }};
+            if (loanStatusData && loanStatusData.labels && loanStatusData.data) {
+                const loanStatusCtx = document.getElementById('loanStatusChart').getContext('2d');
+                createChart('loanStatusChart', loanStatusCtx, 'pie', {
+                    labels: loanStatusData.labels,
+                    datasets: [{
+                        data: loanStatusData.data,
+                        backgroundColor: loanStatusData.backgroundColor
+                    }]
+                }, {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top' },
+                        title: { display: true, text: 'État des prêts' }
+                    }
+                });
+            } else {
+                console.error('Données invalides pour le graphique État des prêts:', loanStatusData);
+            }
+
+            // Graphique : Variations des emprunts et retours
+            const loanTrendData = {{ loan_trend_data|safe }};
+            if (loanTrendData && loanTrendData.labels && loanTrendData.datasets) {
+                const loanTrendCtx = document.getElementById('loanTrendChart').getContext('2d');
+                createChart('loanTrendChart', loanTrendCtx, 'line', {
+                    labels: loanTrendData.labels,
+                    datasets: loanTrendData.datasets
+                }, {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top' },
+                        title: { display: true, text: 'Variations des emprunts et retours' }
+                    },
+                    scales: {
+                        x: { title: { display: true, text: 'Mois' } },
+                        y: { beginAtZero: true, title: { display: true, text: 'Nombre' } }
+                    }
+                });
+            } else {
+                console.error('Données invalides pour le graphique Variations des emprunts et retours:', loanTrendData);
+            }
+
+            // Graphique : Types d'utilisateurs
+            const userTypeData = {{ user_type_data|safe }};
+            if (userTypeData && userTypeData.labels && userTypeData.data) {
+                const userTypeCtx = document.getElementById('userTypeChart').getContext('2d');
+                createChart('userTypeChart', userTypeCtx, 'pie', {
+                    labels: userTypeData.labels,
+                    datasets: [{
+                        data: userTypeData.data,
+                        backgroundColor: userTypeData.backgroundColor
+                    }]
+                }, {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top' },
+                        title: { display: true, text: 'Types d\'utilisateurs' }
+                    }
+                });
+            } else {
+                console.error('Données invalides pour le graphique Types d\'utilisateurs:', userTypeData);
+            }
+        }
+    </script>
 {% endblock %}

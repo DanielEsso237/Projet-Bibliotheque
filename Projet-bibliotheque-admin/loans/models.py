@@ -6,7 +6,7 @@ from books.models import Book
 
 class Loan(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='loans')
-    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='loans')  # Ajout de related_name
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='loans')  # Ajout ou confirmation de related_name
     loan_date = models.DateTimeField(auto_now_add=True)
     due_date = models.DateTimeField()
     return_date = models.DateTimeField(null=True, blank=True)
