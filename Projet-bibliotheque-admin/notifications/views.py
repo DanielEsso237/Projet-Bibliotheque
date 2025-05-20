@@ -32,7 +32,7 @@ def notifications(request):
             user = loan.user
             book = loan.book
             due_date_as_date = loan.due_date.date()
-            message = f"Retour proche pour '{book.title}' emprunté par {user.username} (échéance: {loan.due_date.date()})."
+            message = f"Retour proche pour '{book.title}' emprunté par {user.username} (échéance: {due_date_as_date})."
             notification, created = Notification.objects.get_or_create(
                 user=request.user,
                 message=message,
@@ -112,6 +112,23 @@ def mark_notification_as_read(request, notification_id):
     except Exception as e:
         logger.error(f"Erreur lors du marquage de la notification ID {notification_id}: {str(e)}")
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+@login_required
+def mark_all_notifications_as_read(request):
+    logger.info(f"Tentative de marquage de toutes les notifications comme lues par l'utilisateur {request.user.username}")
+    if not request.user.is_librarian:
+        logger.warning(f"Utilisateur non autorisé: {request.user.username}")
+        return JsonResponse({'status': 'error', 'message': 'Utilisateur non autorisé'}, status=403)
+    if request.method == 'POST':
+        try:
+            notifications = Notification.objects.filter(user=request.user, is_read=False)
+            count = notifications.update(is_read=True)
+            logger.info(f"{count} notifications marquées comme lues pour l'utilisateur {request.user.username}")
+            return JsonResponse({'status': 'success', 'count': count})
+        except Exception as e:
+            logger.error(f"Erreur lors du marquage de toutes les notifications: {str(e)}")
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+    return JsonResponse({'status': 'error', 'message': 'Méthode non autorisée'}, status=405)
 
 @login_required
 def notification_count_api(request):

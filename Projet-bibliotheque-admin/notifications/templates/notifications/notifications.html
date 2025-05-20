@@ -4,14 +4,34 @@
 {% block title %}Notifications{% endblock %}
 
 {% block content %}
+    <!-- Conteneur pour les toasts -->
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1050;">
+        <div id="notificationToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto">Notification</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body"></div>
+        </div>
+    </div>
+
     <div class="card">
-        <div class="card-header">
+        <div class="card-header d-flex justify-content-between align-items-center">
             <h3>Notifications</h3>
+            <div>
+                <select id="typeFilter" class="form-select w-auto d-inline-block me-2" onchange="filterNotifications()">
+                    <option value="all">Tous les types</option>
+                    <option value="warning">Retours proches</option>
+                    <option value="danger">Retards</option>
+                    <option value="info">Stocks faibles</option>
+                </select>
+                <button class="btn btn-primary d-inline-block" onclick="markAllAsRead()">Marquer tout comme lu</button>
+            </div>
         </div>
         <div class="card-body">
             {% if notifications %}
                 {% for notification in notifications %}
-                    <div class="alert alert-{{ notification.type }} mb-3" role="alert" id="notification-{{ notification.id }}">
+                    <div class="alert alert-{{ notification.type }} mb-3 notification" role="alert" id="notification-{{ notification.id }}" data-type="{{ notification.type }}">
                         <i class="fas fa-exclamation-triangle me-2" aria-hidden="true"></i>
                         {{ notification.message }}
                         {% if not notification.is_read %}
@@ -28,21 +48,42 @@
 
 {% block extra_js %}
     <script>
+        function showToast(message, isError = false) {
+            const toastElement = document.getElementById('notificationToast');
+            const toastBody = toastElement.querySelector('.toast-body');
+            toastBody.textContent = message;
+            toastElement.classList.remove('bg-success', 'bg-danger');
+            toastElement.classList.add(isError ? 'bg-danger' : 'bg-success');
+            const toast = new bootstrap.Toast(toastElement, { delay: 3000 });
+            toast.show();
+        }
+
+        function filterNotifications() {
+            const filter = document.getElementById('typeFilter').value;
+            document.querySelectorAll('.notification').forEach(notification => {
+                if (filter === 'all' || notification.dataset.type === filter) {
+                    notification.style.display = 'block';
+                } else {
+                    notification.style.display = 'none';
+                }
+            });
+        }
+
         function markAsRead(notificationId) {
             const csrfTokenElement = document.querySelector('meta[name="csrf-token"]');
             if (!csrfTokenElement) {
-                console.error('Balise meta CSRF non trouvée dans base.html');
-                alert('Erreur : Jeton CSRF manquant. Veuillez recharger la page.');
+                console.error('Balise meta CSRF non trouvée');
+                showToast('Erreur : Jeton CSRF manquant.', true);
                 return;
             }
             const csrfToken = csrfTokenElement.getAttribute('content');
             if (!csrfToken || csrfToken.length !== 64) {
-                console.error('Jeton CSRF invalide ou de longueur incorrecte:', csrfToken, 'Longueur:', csrfToken?.length);
-                alert('Erreur : Jeton CSRF invalide. Veuillez recharger la page.');
+                console.error('Jeton CSRF invalide:', csrfToken);
+                showToast('Erreur : Jeton CSRF invalide.', true);
                 return;
             }
 
-            console.log(`Envoi de la requête POST pour la notification ${notificationId} avec CSRF: ${csrfToken}`);
+            console.log(`Envoi de la requête POST pour la notification ${notificationId}`);
             fetch(`/notifications/mark-as-read/${notificationId}/`, {
                 method: 'POST',
                 headers: {
@@ -52,7 +93,7 @@
                 }
             })
             .then(response => {
-                console.log('Statut HTTP:', response.status, response.statusText);
+                console.log('Statut HTTP:', response.status);
                 if (!response.ok) {
                     return response.text().then(text => {
                         throw new Error(`Erreur HTTP ${response.status}: ${text || response.statusText}`);
@@ -69,15 +110,55 @@
                         button.remove();
                     }
                     updateNotificationBadges();
-                    alert('Notification marquée comme lue.');
+                    showToast('Notification marquée comme lue.');
                 } else {
                     console.error('Échec:', data.message);
-                    alert('Erreur : ' + data.message);
+                    showToast('Erreur : ' + data.message, true);
                 }
             })
             .catch(error => {
-                console.error('Erreur lors de la mise à jour:', error);
-                alert('Une erreur est survenue lors du marquage de la notification comme lue: ' + error.message);
+                console.error('Erreur:', error);
+                showToast('Erreur lors du marquage : ' + error.message, true);
+            });
+        }
+
+        function markAllAsRead() {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            if (!csrfToken) {
+                showToast('Erreur : Jeton CSRF manquant.', true);
+                return;
+            }
+
+            fetch("{% url 'mark_all_notifications_as_read' %}", {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Erreur HTTP ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.status === 'success') {
+                    document.querySelectorAll('.notification').forEach(notification => {
+                        const button = notification.querySelector('button');
+                        if (button) {
+                            button.remove();
+                        }
+                    });
+                    updateNotificationBadges();
+                    showToast(`Marqué ${data.count} notification(s) comme lue(s).`);
+                } else {
+                    showToast('Erreur : ' + data.message, true);
+                }
+            })
+            .catch(error => {
+                showToast('Erreur : ' + error.message, true);
             });
         }
     </script>
