@@ -1,2 +1,10 @@
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" crossorigin="anonymous" referrerpolicy="no-referrer" />
+J'ai corrigé le probleme, fallait mettre dans base.html:<meta name="csrf-token" content="{{ csrf_token }}"> au lieu de <meta name="csrf-token" content="{csrf_token}}">...MAIS,quand je clique sur marquer comme lu,  le navigateur envoie un message :127.0.0.1:8000 indique:Une erreur est survenue lors du marquage de la notification comme lue., je clique sur "ok" et le bouton "marquer comme lu" disparait de la notif, ce qui est tout à fait normal, mais quand je recharge la page, le bouton marquer comme lu réapparait...
+
+la console du navigateur affiche:
+
+Jeton CSRF chargé: VK3zmAnFWX61m7TZtPVRd5n6FNSOtuJfdUbWPmo0ePykvywDslx9ImR4acex7vX4 Longueur: 64
+notifications/:224 Erreur: TypeError: Cannot read properties of null (reading 'insertAdjacentHTML')
+at notifications/:211:36
+(anonyme)	@	notifications/:224
+Promise.catch
+(anonyme)	@	notifications/:223

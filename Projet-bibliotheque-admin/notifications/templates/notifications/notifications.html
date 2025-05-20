@@ -29,12 +29,20 @@
 {% block extra_js %}
     <script>
         function markAsRead(notificationId) {
-            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-            if (!csrfToken) {
-                console.error('CSRF token non trouvé. Assurez-vous que la balise meta est présente dans base.html.');
+            const csrfTokenElement = document.querySelector('meta[name="csrf-token"]');
+            if (!csrfTokenElement) {
+                console.error('Balise meta CSRF non trouvée dans base.html');
+                alert('Erreur : Jeton CSRF manquant. Veuillez recharger la page.');
+                return;
+            }
+            const csrfToken = csrfTokenElement.getAttribute('content');
+            if (!csrfToken || csrfToken.length !== 64) {
+                console.error('Jeton CSRF invalide ou de longueur incorrecte:', csrfToken, 'Longueur:', csrfToken?.length);
+                alert('Erreur : Jeton CSRF invalide. Veuillez recharger la page.');
                 return;
             }
 
+            console.log(`Envoi de la requête POST pour la notification ${notificationId} avec CSRF: ${csrfToken}`);
             fetch(`/notifications/mark-as-read/${notificationId}/`, {
                 method: 'POST',
                 headers: {
@@ -44,26 +52,32 @@
                 }
             })
             .then(response => {
+                console.log('Statut HTTP:', response.status, response.statusText);
                 if (!response.ok) {
-                    throw new Error('Erreur réseau ou réponse invalide');
+                    return response.text().then(text => {
+                        throw new Error(`Erreur HTTP ${response.status}: ${text || response.statusText}`);
+                    });
                 }
                 return response.json();
             })
             .then(data => {
-                console.log('Réponse:', data);
+                console.log('Réponse serveur:', data);
                 if (data.status === 'success') {
                     const notificationElement = document.getElementById(`notification-${notificationId}`);
                     const button = notificationElement.querySelector('button');
                     if (button) {
                         button.remove();
                     }
-                    updateNotificationBadges(); // Rafraîchir les badges immédiatement
+                    updateNotificationBadges();
+                    alert('Notification marquée comme lue.');
                 } else {
                     console.error('Échec:', data.message);
+                    alert('Erreur : ' + data.message);
                 }
             })
             .catch(error => {
                 console.error('Erreur lors de la mise à jour:', error);
+                alert('Une erreur est survenue lors du marquage de la notification comme lue: ' + error.message);
             });
         }
     </script>
