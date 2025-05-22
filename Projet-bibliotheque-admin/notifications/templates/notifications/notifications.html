@@ -25,7 +25,8 @@
                     <option value="danger">Retards</option>
                     <option value="info">Stocks faibles</option>
                 </select>
-                <button class="btn btn-primary d-inline-block" onclick="markAllAsRead()">Marquer tout comme lu</button>
+                <button class="btn btn-primary d-inline-block me-2" onclick="markAllAsRead()">Marquer tout comme lu</button>
+                <button class="btn btn-danger d-inline-block" onclick="deleteAllNotifications()">Supprimer tout</button>
             </div>
         </div>
         <div class="card-body">
@@ -34,9 +35,12 @@
                     <div class="alert alert-{{ notification.type }} mb-3 notification" role="alert" id="notification-{{ notification.id }}" data-type="{{ notification.type }}">
                         <i class="fas fa-exclamation-triangle me-2" aria-hidden="true"></i>
                         {{ notification.message }}
-                        {% if not notification.is_read %}
-                            <button class="btn btn-sm btn-secondary float-end" onclick="markAsRead({{ notification.id }})">Marquer comme lu</button>
-                        {% endif %}
+                        <div class="float-end">
+                            {% if not notification.is_read %}
+                                <button class="btn btn-sm btn-secondary me-2" onclick="markAsRead({{ notification.id }})">Marquer comme lu</button>
+                            {% endif %}
+                            <button class="btn btn-sm btn-danger" onclick="deleteNotification({{ notification.id }})">Supprimer</button>
+                        </div>
                     </div>
                 {% endfor %}
             {% else %}
@@ -49,6 +53,7 @@
 {% block extra_js %}
     <script>
         function showToast(message, isError = false) {
+            console.log(`Toast: ${message}, isError: ${isError}`);
             const toastElement = document.getElementById('notificationToast');
             const toastBody = toastElement.querySelector('.toast-body');
             toastBody.textContent = message;
@@ -70,20 +75,13 @@
         }
 
         function markAsRead(notificationId) {
-            const csrfTokenElement = document.querySelector('meta[name="csrf-token"]');
-            if (!csrfTokenElement) {
-                console.error('Balise meta CSRF non trouvée');
+            console.log(`Marquer comme lu: ID ${notificationId}`);
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            if (!csrfToken) {
                 showToast('Erreur : Jeton CSRF manquant.', true);
                 return;
             }
-            const csrfToken = csrfTokenElement.getAttribute('content');
-            if (!csrfToken || csrfToken.length !== 64) {
-                console.error('Jeton CSRF invalide:', csrfToken);
-                showToast('Erreur : Jeton CSRF invalide.', true);
-                return;
-            }
 
-            console.log(`Envoi de la requête POST pour la notification ${notificationId}`);
             fetch(`/notifications/mark-as-read/${notificationId}/`, {
                 method: 'POST',
                 headers: {
@@ -93,7 +91,7 @@
                 }
             })
             .then(response => {
-                console.log('Statut HTTP:', response.status);
+                console.log(`Réponse markAsRead: ${response.status}`);
                 if (!response.ok) {
                     return response.text().then(text => {
                         throw new Error(`Erreur HTTP ${response.status}: ${text || response.statusText}`);
@@ -102,27 +100,27 @@
                 return response.json();
             })
             .then(data => {
-                console.log('Réponse serveur:', data);
+                console.log(`Données markAsRead: ${JSON.stringify(data)}`);
                 if (data.status === 'success') {
                     const notificationElement = document.getElementById(`notification-${notificationId}`);
-                    const button = notificationElement.querySelector('button');
+                    const button = notificationElement.querySelector('.btn-secondary');
                     if (button) {
                         button.remove();
                     }
                     updateNotificationBadges();
                     showToast('Notification marquée comme lue.');
                 } else {
-                    console.error('Échec:', data.message);
                     showToast('Erreur : ' + data.message, true);
                 }
             })
             .catch(error => {
-                console.error('Erreur:', error);
-                showToast('Erreur lors du marquage : ' + error.message, true);
+                console.log(`Erreur markAsRead: ${error}`);
+                showToast('Erreur : ' + error.message, true);
             });
         }
 
         function markAllAsRead() {
+            console.log('Marquer tout comme lu');
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
             if (!csrfToken) {
                 showToast('Erreur : Jeton CSRF manquant.', true);
@@ -138,15 +136,17 @@
                 }
             })
             .then(response => {
+                console.log(`Réponse markAllAsRead: ${response.status}`);
                 if (!response.ok) {
                     throw new Error(`Erreur HTTP ${response.status}`);
                 }
                 return response.json();
             })
             .then(data => {
+                console.log(`Données markAllAsRead: ${JSON.stringify(data)}`);
                 if (data.status === 'success') {
                     document.querySelectorAll('.notification').forEach(notification => {
-                        const button = notification.querySelector('button');
+                        const button = notification.querySelector('.btn-secondary');
                         if (button) {
                             button.remove();
                         }
@@ -158,6 +158,97 @@
                 }
             })
             .catch(error => {
+                console.log(`Erreur markAllAsRead: ${error}`);
+                showToast('Erreur : ' + error.message, true);
+            });
+        }
+
+        function deleteNotification(notificationId) {
+            console.log(`Supprimer notification: ID ${notificationId}`);
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            if (!csrfToken) {
+                showToast('Erreur : Jeton CSRF manquant.', true);
+                return;
+            }
+
+            fetch(`/notifications/delete/${notificationId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                }
+            })
+            .then(response => {
+                console.log(`Réponse deleteNotification: ${response.status}`);
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        throw new Error(`Erreur HTTP ${response.status}: ${text || response.statusText}`);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(`Données deleteNotification: ${JSON.stringify(data)}`);
+                if (data.status === 'success') {
+                    const notificationElement = document.getElementById(`notification-${notificationId}`);
+                    if (notificationElement) {
+                        notificationElement.remove();
+                    }
+                    updateNotificationBadges();
+                    showToast('Notification supprimée.');
+                    const remainingNotifications = document.querySelectorAll('.notification').length;
+                    if (remainingNotifications === 0) {
+                        document.querySelector('.card-body').innerHTML = '<p class="text-center">Aucune notification pour le moment.</p>';
+                    }
+                } else {
+                    showToast('Erreur : ' + data.message, true);
+                }
+            })
+            .catch(error => {
+                console.log(`Erreur deleteNotification: ${error}`);
+                showToast('Erreur : ' + error.message, true);
+            });
+        }
+
+        function deleteAllNotifications() {
+            console.log('Supprimer toutes les notifications');
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            if (!csrfToken) {
+                showToast('Erreur : Jeton CSRF manquant.', true);
+                return;
+            }
+
+            fetch("{% url 'delete_all_notifications' %}", {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                }
+            })
+            .then(response => {
+                console.log(`Réponse deleteAllNotifications: ${response.status}`);
+                if (!response.ok) {
+                    throw new Error(`Erreur HTTP ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(`Données deleteAllNotifications: ${JSON.stringify(data)}`);
+                if (data.status === 'success') {
+                    document.querySelectorAll('.notification').forEach(notification => {
+                        notification.remove();
+                    });
+                    document.querySelector('.card-body').innerHTML = '<p class="text-center">Aucune notification pour le moment.</p>';
+                    updateNotificationBadges();
+                    showToast(`Supprimé ${data.count} notification(s).`);
+                } else {
+                    showToast('Erreur : ' + data.message, true);
+                }
+            })
+            .catch(error => {
+                console.log(`Erreur deleteAllNotifications: ${error}`);
                 showToast('Erreur : ' + error.message, true);
             });
         }

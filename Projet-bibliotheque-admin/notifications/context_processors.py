@@ -6,8 +6,7 @@ def notification_count(request):
     
     total_notifications = Notification.objects.filter(
         user=request.user, 
-        is_read=False, 
-        is_deleted=False
+        is_read=False
     ).count()
     return {
         'notification_counts': {

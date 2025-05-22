@@ -12,7 +12,6 @@ class Notification(models.Model):
         ('info', 'Info')
     ])
     is_read = models.BooleanField(default=False)
-    is_deleted = models.BooleanField(default=False)
     unique_identifier = models.CharField(max_length=64, default='', editable=False)
     created_at = models.DateTimeField(default=timezone.now)
 
@@ -30,5 +29,19 @@ class Notification(models.Model):
             models.UniqueConstraint(
                 fields=['user', 'unique_identifier', 'type'],
                 name='unique_notification'
+            )
+        ]
+
+class DeletedNotification(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='deleted_notifications')
+    unique_identifier = models.CharField(max_length=64)
+    type = models.CharField(max_length=20)
+    deleted_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'unique_identifier', 'type'],
+                name='unique_deleted_notification'
             )
         ]
