@@ -152,20 +152,16 @@ def mark_all_notifications_as_read(request):
             return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
     return JsonResponse({'status': 'error', 'message': 'Méthode non autorisée'}, status=405)
 
+
 @login_required
 def notification_count_api(request):
     if not request.user.is_librarian:
-        return JsonResponse({'total': 0, 'overdue': 0, 'late': 0, 'low_stock': 0})
+        return JsonResponse({'total': 0})
     
-    today = timezone.now().date()
-    overdue = Notification.objects.filter(user=request.user, type='warning', is_read=False, is_deleted=False).count()
-    late = Notification.objects.filter(user=request.user, type='danger', is_read=False, is_deleted=False).count()
-    low_stock = Notification.objects.filter(user=request.user, type='info', is_read=False, is_deleted=False).count()
-    total = overdue + late + low_stock
-    logger.info(f"Notification count: total={total}, overdue={overdue}, late={late}, low_stock={low_stock}")
-    return JsonResponse({
-        'total': total,
-        'overdue': overdue,
-        'late': late,
-        'low_stock': low_stock
-    })
+    total = Notification.objects.filter(
+        user=request.user, 
+        is_read=False, 
+        is_deleted=False
+    ).count()
+    logger.info(f"Notification count: total={total}")
+    return JsonResponse({'total': total})

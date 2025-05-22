@@ -30,7 +30,7 @@
                     <a class="nav-link position-relative" href="{% url 'notifications' %}">
                         <i class="fas fa-bell me-2"></i> Notifications
                         {% if notification_counts.total > 0 %}
-                            <span class="badge rounded-pill bg-danger position-absolute top-0 end-0 mt-1 me-1" style="font-size: 0.7em;">{{ notification_counts.total }}</span>
+                            <span class="badge rounded-pill bg-danger position-absolute top-0 end-0 mt-1 me-1" style="font-size: 0.7em;"></span>
                         {% endif %}
                     </a>
                     <a class="nav-link" href="{% url 'late_books' %}"><i class="fas fa-clock me-2"></i> Livres en retard</a>
@@ -107,38 +107,37 @@
         }
 
         let isUpdatingNotifications = false;
-        function updateNotificationBadges() {
-            if (isUpdatingNotifications) return;
-            isUpdatingNotifications = true;
+function updateNotificationBadges() {
+    if (isUpdatingNotifications) return;
+    isUpdatingNotifications = true;
 
-            fetch("{% url 'notification_count_api' %}", {
-                method: 'GET',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                }
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`Erreur HTTP ${response.status}: ${response.statusText}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                const totalBadge = document.querySelector('.badge.bg-danger');
-                if (totalBadge) {
-                    totalBadge.textContent = data.total || 0;
-                    totalBadge.style.display = (data.total > 0) ? 'inline' : 'none';
-                }
-            })
-            .catch(error => {
-                console.error('Erreur lors de la mise à jour des badges:', error);
-            })
-            .finally(() => {
-                isUpdatingNotifications = false;
-            });
+    fetch("{% url 'notification_count_api' %}", {
+        method: 'GET',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
         }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Erreur HTTP ${response.status}: ${response.statusText}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        const totalBadge = document.querySelector('.badge.bg-danger');
+        if (totalBadge) {
+            totalBadge.style.display = (data.total > 0) ? 'inline' : 'none';
+        }
+    })
+    .catch(error => {
+        console.error('Erreur lors de la mise à jour des badges:', error);
+    })
+    .finally(() => {
+        isUpdatingNotifications = false;
+    });
+}
 
         // Mettre à jour toutes les 5 minutes, mais uniquement si l'onglet est actif
         document.addEventListener('visibilitychange', () => {

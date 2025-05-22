@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    command: gunicorn --bind 0.0.0.0:8000 --workers 3 admin_librairy_project.wsgi:application
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis
+    environment:
+      - DATABASE_HOST=db
+      - DATABASE_NAME=library_db
+      - DATABASE_USER=library_user
+      - DATABASE_PASSWORD=library_pass
+      - REDIS_HOST=redis
+      - DJANGO_SECRET_KEY=LN3QVuTFEzwuPG9VU5GzW1tj-8qkrP6bH7EyrazjyNouAxtNLrRYSsNnZEZ_T_efLjk
+      - DJANGO_DEBUG=True
+      - ALLOWED_HOSTS=localhost,127.0.0.1
+
+  db:
+    image: mysql:8
+    environment:
+      MYSQL_DATABASE: library_db
+      MYSQL_USER: library_user
+      MYSQL_PASSWORD: library_pass
+      MYSQL_ROOT_PASSWORD: root_pass
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  redis:
+    image: redis:6
+    ports:
+      - "6379:6379"
+
+volumes:
+  mysql_data:
