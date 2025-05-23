@@ -111,3 +111,279 @@ Traceback (most recent call last):
                   ~~~~~~^^
   File "<frozen codecs>", line 325, in decode
 UnicodeDecodeError: 'utf-8' codec can't decode byte 0xe9 in position 4738: invalid continuation byte
+Watching for file changes with StatReloader
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Notification count: total=1
+Supprimé 1 notifications pour prêt retourné: livre Livre 1, utilisateur utilisateur_1
+Notification créée: ID 17, message: 'Livre 1' de utilisateur_1 est en retard (échéance: 2025-05-20).
+Total des notifications affichées: 2
+Notification count: total=1
+Tentative de marquage comme lu pour la notification ID 17 par l'utilisateur Bibliothecaire_1
+Notification marquée comme lue: ID 17
+Notification count: total=0
+Supprimé 1 notifications pour prêt retourné: livre Livre 1, utilisateur utilisateur_1
+Notification créée: ID 18, message: 'Livre 1' de utilisateur_1 est en retard (échéance: 2025-05-20).
+Total des notifications affichées: 2
+Notification count: total=1
+Notification count: total=1
+Internal Server Error: /settings/
+Traceback (most recent call last):
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\settings_app\views.py", line 15, in settings_view
+    log_content = f.read().splitlines()[-10:]  # Dernières 10 lignes
+                  ~~~~~~^^
+  File "<frozen codecs>", line 325, in decode
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xe9 in position 4738: invalid continuation byte
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Internal Server Error: /settings/
+Traceback (most recent call last):
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\settings_app\views.py", line 15, in settings_view
+    log_content = f.read().splitlines()[-10:]  # Dernières 10 lignes
+                  ~~~~~~^^
+  File "<frozen codecs>", line 325, in decode
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xe9 in position 4738: invalid continuation byte
+C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\settings_app\views.py changed, reloading.
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+Notification count: total=1
+C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\settings_app\models.py changed, reloading.
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+Notification count: total=1
+Internal Server Error: /settings/
+Traceback (most recent call last):
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader_tags.py", line 134, in render
+    compiled_parent = self.get_parent(context)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader_tags.py", line 131, in get_parent
+    return self.find_template(parent, context)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader_tags.py", line 109, in find_template
+    template, origin = context.template.engine.find_template(
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        template_name,
+        ^^^^^^^^^^^^^^
+        skip=history,
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\engine.py", line 163, in find_template
+    raise TemplateDoesNotExist(name, tried=tried)
+django.template.exceptions.TemplateDoesNotExist: base.html
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\settings_app\views.py", line 20, in settings_view
+    return render(request, 'settings_app/settings.html', {
+        'form': form,
+    })
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\backends\django.py", line 109, in render
+    reraise(exc, self.backend)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\backends\django.py", line 130, in reraise
+    raise new from exc
+django.template.exceptions.TemplateDoesNotExist: base.html
+Notification count: total=1
+Supprimé 1 notifications pour prêt retourné: livre Livre 1, utilisateur utilisateur_1
+Notification créée: ID 19, message: 'Livre 1' de utilisateur_1 est en retard (échéance: 2025-05-20).
+Total des notifications affichées: 2
+Notification count: total=1
+Supprimé 1 notifications pour prêt retourné: livre Livre 1, utilisateur utilisateur_1
+Notification créée: ID 20, message: 'Livre 1' de utilisateur_1 est en retard (échéance: 2025-05-20).
+Total des notifications affichées: 2
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Supprimé 1 notifications pour prêt retourné: livre Livre 1, utilisateur utilisateur_1
+Notification créée: ID 21, message: 'Livre 1' de utilisateur_1 est en retard (échéance: 2025-05-20).
+Total des notifications affichées: 2
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Supprimé 1 notifications pour prêt retourné: livre Livre 1, utilisateur utilisateur_1
+Notification créée: ID 22, message: 'Livre 1' de utilisateur_1 est en retard (échéance: 2025-05-20).
+Total des notifications affichées: 2
+Notification count: total=1
+Notification count: total=1
+Supprimé 1 notifications pour prêt retourné: livre Livre 1, utilisateur utilisateur_1
+Notification créée: ID 23, message: 'Livre 1' de utilisateur_1 est en retard (échéance: 2025-05-20).
+Total des notifications affichées: 2
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Supprimé 1 notifications pour prêt retourné: livre Livre 1, utilisateur utilisateur_1
+Notification créée: ID 24, message: 'Livre 1' de utilisateur_1 est en retard (échéance: 2025-05-20).
+Notification créée: ID 25, message: Il reste 1 unité(s) de 'kq' dans la bibliothèque.
+Total des notifications affichées: 3
+Notification count: total=2
+Notification count: total=2
+Notification count: total=2
+Notification count: total=2
+Notification count: total=2
+Notification count: total=2
+Internal Server Error: /settings/
+Traceback (most recent call last):
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader_tags.py", line 134, in render
+    compiled_parent = self.get_parent(context)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader_tags.py", line 131, in get_parent
+    return self.find_template(parent, context)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader_tags.py", line 109, in find_template
+    template, origin = context.template.engine.find_template(
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        template_name,
+        ^^^^^^^^^^^^^^
+        skip=history,
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\engine.py", line 163, in find_template
+    raise TemplateDoesNotExist(name, tried=tried)
+django.template.exceptions.TemplateDoesNotExist: base.html
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\settings_app\views.py", line 20, in settings_view
+    return render(request, 'settings_app/settings.html', {
+        'form': form,
+    })
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\backends\django.py", line 109, in render
+    reraise(exc, self.backend)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\backends\django.py", line 130, in reraise
+    raise new from exc
+django.template.exceptions.TemplateDoesNotExist: base.html
+Notification count: total=2
+Notification count: total=2
+Notification count: total=2
+Notification count: total=2
+Notification count: total=2
+Supprimé 1 notifications pour prêt retourné: livre Livre 1, utilisateur utilisateur_1
+Notification créée: ID 26, message: 'Livre 1' de utilisateur_1 est en retard (échéance: 2025-05-20).
+Total des notifications affichées: 3
+Notification count: total=2
+Notification count: total=2
+Notification count: total=2
+Notification count: total=2
+Notification count: total=2
+Supprimé 1 notifications pour prêt retourné: livre Livre 1, utilisateur utilisateur_1
+Notification créée: ID 27, message: 'Livre 1' de utilisateur_1 est en retard (échéance: 2025-05-20).
+Total des notifications affichées: 3
+Notification count: total=2
+Tentative de marquage de toutes les notifications comme lues par l'utilisateur Bibliothecaire_1
+2 notifications marquées comme lues
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\settings_app\models.py changed, reloading.
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+Notification count: total=0
+Supprimé 1 notifications pour prêt retourné: livre Livre 1, utilisateur utilisateur_1
+Notification créée: ID 28, message: 'Livre 1' de utilisateur_1 est en retard (échéance: 2025-05-20).
+Total des notifications affichées: 3
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Supprimé 1 notifications pour prêt retourné: livre Livre 1, utilisateur utilisateur_1
+Notification créée: ID 29, message: 'Livre 1' de utilisateur_1 est en retard (échéance: 2025-05-20).
+Total des notifications affichées: 3
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1

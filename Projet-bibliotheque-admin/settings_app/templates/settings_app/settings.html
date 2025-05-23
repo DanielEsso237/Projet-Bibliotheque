@@ -3,35 +3,143 @@
 
 {% block title %}Paramètres{% endblock %}
 
-{% block content %}
-<div class="container">
-    <h1 class="mb-4">Paramètres du système</h1>
-    
-    <div class="card mb-4">
-        <div class="card-header">
-            <h5>Configuration des notifications</h5>
-        </div>
-        <div class="card-body">
-            <form method="post">
-                {% csrf_token %}
-                <div class="mb-3">
-                    <label for="notification_cleanup_days" class="form-label">Seuil de nettoyage des notifications supprimées</label>
-                    {{ form.notification_cleanup_days }}
-                    <small class="form-text text-muted">Les notifications supprimées seront effacées après ce délai.</small>
-                </div>
-                <button type="submit" class="btn btn-primary">Enregistrer</button>
-            </form>
-        </div>
-    </div>
+{% block extra_css %}
+<style>
+    .settings-card {
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s;
+    }
+    .settings-card:hover {
+        transform: translateY(-5px);
+    }
+    .form-label {
+        font-weight: 500;
+        color: #343a40;
+    }
+    .btn-save {
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s;
+    }
+    .btn-save:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+    }
+    .btn-save::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+    .btn-save:hover::after {
+        width: 200px;
+        height: 200px;
+    }
+    .icon-section {
+        margin-right: 10px;
+        color: #007bff;
+    }
+</style>
+{% endblock %}
 
-    <div class="card">
-        <div class="card-header">
-            <h5>Derniers logs de la tâche de nettoyage</h5>
+{% block content %}
+<div class="container py-5">
+    <h1 class="mb-4 text-center fw-bold">Paramètres du système</h1>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <!-- Section Notifications -->
+        <div class="settings-card mb-4 p-4 bg-white border">
+            <h5 class="mb-3">
+                <i class="fas fa-bell icon-section"></i> Notifications
+            </h5>
+            <div class="mb-3">
+                <label for="notification_cleanup_days" class="form-label">
+                    Seuil de nettoyage
+                    <i class="fas fa-info-circle text-muted" data-bs-toggle="tooltip" title="Délai avant suppression définitive des notifications supprimées"></i>
+                </label>
+                {{ form.notification_cleanup_days }}
+            </div>
         </div>
-        <div class="card-body">
-            <pre>{% for line in log_content %}{{ line }}
-{% endfor %}</pre>
+
+        <!-- Section Stocks -->
+        <div class="settings-card mb-4 p-4 bg-white border">
+            <h5 class="mb-3">
+                <i class="fas fa-box-open icon-section"></i> Gestion des stocks
+            </h5>
+            <div class="mb-3">
+                <label for="low_stock_threshold" class="form-label">
+                    Seuil de stock minimum
+                    <i class="fas fa-info-circle text-muted" data-bs-toggle="tooltip" title="Alerte si le stock d’un livre est inférieur à ce seuil"></i>
+                </label>
+                {{ form.low_stock_threshold }}
+            </div>
+            <div class="mb-3">
+                <label for="critical_stock_threshold" class="form-label">
+                    Seuil de stock critique
+                    <i class="fas fa-info-circle text-muted" data-bs-toggle="tooltip" title="Alerte urgente si le stock est inférieur ou égal à ce seuil"></i>
+                </label>
+                {{ form.critical_stock_threshold }}
+            </div>
         </div>
-    </div>
+
+        <!-- Section Prêts -->
+        <div class="settings-card mb-4 p-4 bg-white border">
+            <h5 class="mb-3">
+                <i class="fas fa-book icon-section"></i> Gestion des prêts
+            </h5>
+            <div class="mb-3">
+                <label for="loan_warning_days" class="form-label">
+                    Alerte de retour proche
+                    <i class="fas fa-info-circle text-muted" data-bs-toggle="tooltip" title="Alerte X jours avant la date de retour d’un prêt"></i>
+                </label>
+                {{ form.loan_warning_days }}
+            </div>
+            <div class="mb-3">
+                <label for="loan_overdue_days" class="form-label">
+                    Alerte de retard
+                    <i class="fas fa-info-circle text-muted" data-bs-toggle="tooltip" title="Alerte X jours après la date de retour d’un prêt"></i>
+                </label>
+                {{ form.loan_overdue_days }}
+            </div>
+            <div class="mb-3">
+                <label for="max_loans_per_user" class="form-label">
+                    Prêts maximum par utilisateur
+                    <i class="fas fa-info-circle text-muted" data-bs-toggle="tooltip" title="Nombre maximum de livres qu’un utilisateur peut emprunter"></i>
+                </label>
+                {{ form.max_loans_per_user }}
+            </div>
+            <div class="mb-3">
+                <label for="loan_duration" class="form-label">
+                    Durée des prêts
+                    <i class="fas fa-info-circle text-muted" data-bs-toggle="tooltip" title="Durée standard d’un prêt en jours"></i>
+                </label>
+                {{ form.loan_duration }}
+            </div>
+        </div>
+
+        <!-- Bouton Enregistrer -->
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary btn-save px-5 py-2">
+                <i class="fas fa-save me-2"></i> Enregistrer
+            </button>
+        </div>
+    </form>
 </div>
+
+<script>
+    // Activer les tooltips Bootstrap
+    document.addEventListener('DOMContentLoaded', function () {
+        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+        const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+    });
+</script>
 {% endblock %}
