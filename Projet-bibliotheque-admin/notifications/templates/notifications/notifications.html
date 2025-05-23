@@ -21,19 +21,24 @@
             <div>
                 <select id="typeFilter" class="form-select w-auto d-inline-block me-2" onchange="filterNotifications()">
                     <option value="all">Tous les types</option>
-                    <option value="warning">Retours proches</option>
-                    <option value="danger">Retards</option>
-                    <option value="info">Stocks faibles</option>
+                    <option value="warning-return">Retours proches</option>
+                    <option value="warning-stock">Stocks faibles</option>
+                    <option value="danger-overdue">Retards</option>
+                    <option value="danger-stock">Stocks critiques</option>
                 </select>
                 <button class="btn btn-primary d-inline-block me-2" onclick="markAllAsRead()">Marquer tout comme lu</button>
                 <button class="btn btn-danger d-inline-block" onclick="deleteAllNotifications()">Supprimer tout</button>
             </div>
         </div>
         <div class="card-body">
+            <div id="no-notifications" class="text-center" style="display: none;">
+                <p class="text-muted">Aucune notification pour ce filtre.</p>
+            </div>
             {% if notifications %}
                 {% for notification in notifications %}
-                    <div class="alert alert-{{ notification.type }} mb-3 notification" role="alert" id="notification-{{ notification.id }}" data-type="{{ notification.type }}">
-                        <i class="fas fa-exclamation-triangle me-2" aria-hidden="true"></i>
+                    <div class="alert alert-{{ notification.type }} mb-3 notification" role="alert" id="notification-{{ notification.id }}"
+                         data-type="{% if 'Stock critique' in notification.message %}danger-stock{% elif 'Stock faible' in notification.message %}warning-stock{% elif 'Retour proche' in notification.message %}warning-return{% else %}danger-overdue{% endif %}">
+                        <i class="fas {% if 'Stock critique' in notification.message %}fa-exclamation-triangle{% elif 'Stock faible' in notification.message %}fa-exclamation-circle{% elif 'Retour proche' in notification.message %}fa-clock{% else %}fa-exclamation-triangle{% endif %} me-2" aria-hidden="true"></i>
                         {{ notification.message }}
                         <div class="float-end">
                             {% if not notification.is_read %}
@@ -44,7 +49,9 @@
                     </div>
                 {% endfor %}
             {% else %}
-                <p class="text-center">Aucune notification pour le moment.</p>
+                <div id="no-notifications" class="text-center">
+                    <p class="text-muted">Aucune notification pour le moment.</p>
+                </div>
             {% endif %}
         </div>
     </div>
@@ -65,13 +72,20 @@
 
         function filterNotifications() {
             const filter = document.getElementById('typeFilter').value;
-            document.querySelectorAll('.notification').forEach(notification => {
+            const notifications = document.querySelectorAll('.notification');
+            const noNotifications = document.getElementById('no-notifications');
+            let visibleCount = 0;
+
+            notifications.forEach(notification => {
                 if (filter === 'all' || notification.dataset.type === filter) {
                     notification.style.display = 'block';
+                    visibleCount++;
                 } else {
                     notification.style.display = 'none';
                 }
             });
+
+            noNotifications.style.display = visibleCount === 0 ? 'block' : 'none';
         }
 
         function markAsRead(notificationId) {
@@ -109,6 +123,7 @@
                     }
                     updateNotificationBadges();
                     showToast('Notification marquée comme lue.');
+                    filterNotifications(); // Réappliquer le filtre
                 } else {
                     showToast('Erreur : ' + data.message, true);
                 }
@@ -153,6 +168,7 @@
                     });
                     updateNotificationBadges();
                     showToast(`Marqué ${data.count} notification(s) comme lue(s).`);
+                    filterNotifications(); // Réappliquer le filtre
                 } else {
                     showToast('Erreur : ' + data.message, true);
                 }
@@ -197,9 +213,10 @@
                     }
                     updateNotificationBadges();
                     showToast('Notification supprimée.');
+                    filterNotifications(); // Réappliquer le filtre
                     const remainingNotifications = document.querySelectorAll('.notification').length;
                     if (remainingNotifications === 0) {
-                        document.querySelector('.card-body').innerHTML = '<p class="text-center">Aucune notification pour le moment.</p>';
+                        document.getElementById('no-notifications').style.display = 'block';
                     }
                 } else {
                     showToast('Erreur : ' + data.message, true);
@@ -240,7 +257,7 @@
                     document.querySelectorAll('.notification').forEach(notification => {
                         notification.remove();
                     });
-                    document.querySelector('.card-body').innerHTML = '<p class="text-center">Aucune notification pour le moment.</p>';
+                    document.getElementById('no-notifications').style.display = 'block';
                     updateNotificationBadges();
                     showToast(`Supprimé ${data.count} notification(s).`);
                 } else {
@@ -250,6 +267,23 @@
             .catch(error => {
                 console.log(`Erreur deleteAllNotifications: ${error}`);
                 showToast('Erreur : ' + error.message, true);
+            });
+        }
+
+        function updateNotificationBadges() {
+            fetch("{% url 'notification_count_api' %}", {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                const badge = document.querySelector('.notification-badge');
+                if (badge) {
+                    badge.textContent = data.total;
+                    badge.style.display = data.total > 0 ? 'inline' : 'none';
+                }
             });
         }
     </script>

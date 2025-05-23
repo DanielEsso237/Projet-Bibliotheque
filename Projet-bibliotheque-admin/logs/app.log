@@ -387,3 +387,185 @@ Notification count: total=1
 Notification count: total=1
 Notification count: total=1
 Notification count: total=1
+Watching for file changes with StatReloader
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Supprimé 1 notifications pour prêt retourné: livre Livre 1, utilisateur utilisateur_1
+Notification créée: ID 30, message: 'Livre 1' de utilisateur_1 est en retard (échéance: 2025-05-20).
+Notification créée: ID 31, message: Stock critique: 1 unité(s) de 'D3ZAA' restantes.
+Notification créée: ID 32, message: Stock critique: 1 unité(s) de 'kq' restantes.
+Notification créée: ID 33, message: Stock faible: 2 unité(s) de 'Livre 1' restantes.
+Notification créée: ID 34, message: Stock faible: 3 unité(s) de 'Test Book' restantes.
+Total des notifications affichées: 5
+Notification count: total=5
+Notification count: total=5
+Notification count: total=5
+Supprimé 1 notifications pour prêt retourné: livre Livre 1, utilisateur utilisateur_1
+Notification créée: ID 35, message: 'Livre 1' de utilisateur_1 est en retard (échéance: 2025-05-20).
+Total des notifications affichées: 5
+Notification count: total=5
+Supprimé 1 notifications pour prêt retourné: livre Livre 1, utilisateur utilisateur_1
+Notification créée: ID 36, message: 'Livre 1' de utilisateur_1 est en retard (échéance: 2025-05-20).
+Total des notifications affichées: 5
+Notification count: total=5
+Notification count: total=5
+Notification count: total=5
+Notification count: total=5
+Notification count: total=5
+Supprimé 1 notifications pour prêt retourné: livre Livre 1, utilisateur utilisateur_1
+Supprimé 1 notifications pour stock réapprovisionné: livre Livre 1
+Supprimé 1 notifications pour stock réapprovisionné: livre Test Book
+Notification créée: ID 37, message: 'Livre 1' de utilisateur_1 est en retard (échéance: 2025-05-20).
+Total des notifications affichées: 3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Supprimé 1 notifications pour prêt retourné: livre Livre 1, utilisateur utilisateur_1
+Notification créée: ID 38, message: 'Livre 1' de utilisateur_1 est en retard (échéance: 2025-05-20).
+Total des notifications affichées: 3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Supprimé 1 notifications pour prêt retourné: livre Livre 1, utilisateur utilisateur_1
+Notification créée: ID 39, message: 'Livre 1' de utilisateur_1 est en retard (échéance: 2025-05-20).
+Notification créée: ID 40, message: Stock faible: 2 unité(s) de 'Livre 1' restantes.
+Notification créée: ID 41, message: Stock faible: 9 unité(s) de 'Test Book' restantes.
+Total des notifications affichées: 5
+Notification count: total=5
+Tentative de marquage comme lu pour la notification ID 39 par l'utilisateur Bibliothecaire_1
+Notification marquée comme lue: ID 39
+Notification count: total=4
+Tentative de marquage de toutes les notifications comme lues par l'utilisateur Bibliothecaire_1
+4 notifications marquées comme lues
+Notification count: total=0
+Supprimé 1 notifications pour prêt retourné: livre Livre 1, utilisateur utilisateur_1
+Notification créée: ID 42, message: 'Livre 1' de utilisateur_1 est en retard (échéance: 2025-05-20).
+Total des notifications affichées: 5
+Notification count: total=1
+Tentative de suppression de la notification ID 42 par l'utilisateur Bibliothecaire_1
+Notification supprimée: ID 42, unique_identifier: 813b7d21614b91ee3df46497493ac2ae5db0cc5354b5e9d593987d9bda1986b3
+Notification count: total=0
+Notification créée: ID 43, message: 'Livre 1' de utilisateur_1 est en retard (échéance: 2025-05-20).
+Total des notifications affichées: 5
+Notification count: total=1
+Notification count: total=1
+Tentative de suppression de la notification ID 31 par l'utilisateur Bibliothecaire_1
+Notification supprimée: ID 31, unique_identifier: bd1c8aaf1172698f0680d7cde01b6d4b4b264f37c6f15ade373b3f1b19f9e1a7
+Notification count: total=1
+Supprimé 1 notifications pour prêt retourné: livre Livre 1, utilisateur utilisateur_1
+Notification créée: ID 44, message: 'Livre 1' de utilisateur_1 est en retard (échéance: 2025-05-20).
+Total des notifications affichées: 4
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Supprimé 1 notifications pour prêt retourné: livre Livre 1, utilisateur utilisateur_1
+Notification créée: ID 45, message: 'Livre 1' de utilisateur_1 est en retard (échéance: 2025-05-20).
+Total des notifications affichées: 4
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Supprimé 1 notifications pour prêt retourné: livre Livre 1, utilisateur utilisateur_1
+Notification créée: ID 46, message: 'Livre 1' de utilisateur_1 est en retard (échéance: 2025-05-20).
+Total des notifications affichées: 4
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\notifications\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\notifications\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\notifications\views.py changed, reloading.
+Watching for file changes with StatReloader
+Notification count: total=1
+Notification count: total=1
+Supprimé 1 notifications pour prêt retourné: livre Livre 1, utilisateur utilisateur_1
+Notification créée: ID 47, message: 'Livre 1' de utilisateur_1 est en retard (échéance: 2025-05-20).
+Total des notifications affichées: 1
+Notification count: total=1
+Tentative de marquage comme lu pour la notification ID 47 par l'utilisateur Bibliothecaire_1
+Notification marquée comme lue: ID 47
+Notification count: total=0
+Supprimé 1 notifications pour prêt retourné: livre Livre 1, utilisateur utilisateur_1
+Notification créée: ID 48, message: 'Livre 1' de utilisateur_1 est en retard (échéance: 2025-05-20).
+Total des notifications affichées: 1
+Notification count: total=1
+Supprimé 1 notifications pour prêt retourné: livre Livre 1, utilisateur utilisateur_1
+Notification créée: ID 49, message: 'Livre 1' de utilisateur_1 est en retard (échéance: 2025-05-20).
+Total des notifications affichées: 1
+Notification count: total=1
+Tentative de suppression de toutes les notifications par l'utilisateur Bibliothecaire_1
+6 notifications supprimées
+Notification count: total=0
+Notification créée: ID 50, message: 'Livre 1' de utilisateur_1 est en retard (échéance: 2025-05-20).
+Total des notifications affichées: 1
+Notification count: total=1
+Notification count: total=1
+Supprimé 1 notifications pour prêt retourné: livre Livre 1, utilisateur utilisateur_1
+Notification créée: ID 51, message: 'D3ZAA' de utilisateur_1 est en retard (échéance: 2025-05-22).
+Notification créée: ID 52, message: 'Livre 1' de utilisateur_1 est en retard (échéance: 2025-05-20).
+Total des notifications affichées: 2
+Notification count: total=2
+Notification count: total=2
+Tentative de marquage comme lu pour la notification ID 52 par l'utilisateur Bibliothecaire_1
+Notification marquée comme lue: ID 52
+Notification count: total=1
+Supprimé 1 notifications pour prêt retourné: livre Livre 1, utilisateur utilisateur_1
+Notification créée: ID 53, message: 'Livre 1' de utilisateur_1 est en retard (échéance: 2025-05-20).
+Total des notifications affichées: 2
+Notification count: total=2
+Supprimé 1 notifications pour prêt retourné: livre Livre 1, utilisateur utilisateur_1
+Notification créée: ID 54, message: 'Livre 1' de utilisateur_1 est en retard (échéance: 2025-05-20).
+Total des notifications affichées: 2
+Notification count: total=2
+Notification count: total=2
+Notification count: total=2
+Notification count: total=2
+Notification count: total=2
+Supprimé 1 notifications pour prêt retourné: livre Livre 1, utilisateur utilisateur_1
+Notification créée: ID 55, message: 'Livre 1' de utilisateur_1 est en retard (échéance: 2025-05-20).
+Notification créée: ID 56, message: Stock critique: 1 unité(s) de 'Livre 1' restantes.
+Total des notifications affichées: 4
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Supprimé 1 notifications pour prêt retourné: livre Livre 1, utilisateur utilisateur_1
+Notification créée: ID 57, message: Retour proche pour 'Test Book' emprunté par utilisateur_1 (échéance: 2025-05-25).
+Notification créée: ID 58, message: 'Livre 1' de utilisateur_1 est en retard (échéance: 2025-05-20).
+Notification créée: ID 59, message: Stock faible: 8 unité(s) de 'Test Book' restantes.
+Total des notifications affichées: 6
+Notification count: total=5
+Notification count: total=5
+Notification count: total=5
+Supprimé 1 notifications pour prêt retourné: livre Livre 1, utilisateur utilisateur_1
+Notification créée: ID 60, message: 'Livre 1' de utilisateur_1 est en retard (échéance: 2025-05-20).
+Total des notifications affichées: 6
+Notification count: total=5
+Tentative de suppression de la notification ID 59 par l'utilisateur Bibliothecaire_1
+Notification supprimée: ID 59, unique_identifier: 020a301a54bcf7ff1261593ca74f9a370a794c69cf2aba304d0c994588291c3c
+Notification count: total=4

@@ -14,9 +14,10 @@ logger = logging.getLogger(__name__)
 @shared_task
 def clean_deleted_notifications():
     try:
-        # Récupérer le seuil dynamique
+        # Récupérer les seuils dynamiques
         settings = SystemSettings.objects.first()
         threshold_days = settings.notification_cleanup_days if settings else 30
+        stock_threshold = settings.low_stock_threshold if settings else 5
 
         # Supprimer les entrées de plus de threshold_days jours
         threshold_date = timezone.now() - timedelta(days=threshold_days)
@@ -45,14 +46,19 @@ def clean_deleted_notifications():
                 logger.info(f"Supprimé {deleted[0]} entrées de DeletedNotification pour prêt retourné: livre {loan.book.title}, utilisateur {loan.user.username}")
 
         # Supprimer les entrées liées à des livres réapprovisionnés
-        restocked_books = Book.objects.filter(is_physical=True, is_available=True, quantity__gt=5)
+        restocked_books = Book.objects.filter(is_physical=True, is_available=True, quantity__gt=stock_threshold)
         for book in restocked_books:
             deleted = DeletedNotification.objects.filter(
                 user__is_librarian=True,
-                type='info',
-                unique_identifier=hashlib.sha256(
-                    f"Il reste {book.quantity} unité(s) de '{book.title}' dans la bibliothèque.".encode('utf-8')
-                ).hexdigest()
+                type__in=['warning', 'danger'],
+                unique_identifier__in=[
+                    hashlib.sha256(
+                        f"Stock faible: {book.quantity} unité(s) de '{book.title}' restantes.".encode('utf-8')
+                    ).hexdigest(),
+                    hashlib.sha256(
+                        f"Stock critique: {book.quantity} unité(s) de '{book.title}' restantes.".encode('utf-8')
+                    ).hexdigest()
+                ]
             ).delete()
             if deleted[0] > 0:
                 logger.info(f"Supprimé {deleted[0]} entrées de DeletedNotification pour stock réapprovisionné: livre {book.title}")

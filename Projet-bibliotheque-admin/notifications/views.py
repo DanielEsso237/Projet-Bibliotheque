@@ -8,6 +8,7 @@ from users.models import CustomUser
 from django.utils import timezone
 from datetime import timedelta
 from .models import Notification, DeletedNotification
+from settings_app.models import SystemSettings
 from django.db.models import Q
 import hashlib
 import logging
@@ -22,6 +23,11 @@ def notifications(request):
     
     today = timezone.now().date()
     notifications = []
+
+    # Récupérer les seuils dynamiques
+    settings = SystemSettings.objects.first()
+    low_stock_threshold = settings.low_stock_threshold if settings else 5
+    critical_stock_threshold = settings.critical_stock_threshold if settings else 1
 
     # Nettoyage automatique des notifications obsolètes
     # 1. Retards résolus (prêts retournés)
@@ -49,12 +55,12 @@ def notifications(request):
             ])
         ).delete()
 
-    # 2. Stocks réapprovisionnés (> 5)
-    restocked_books = Book.objects.filter(is_physical=True, is_available=True, quantity__gt=5)
+    # 2. Stocks réapprovisionnés (> low_stock_threshold)
+    restocked_books = Book.objects.filter(is_physical=True, is_available=True, quantity__gt=low_stock_threshold)
     for book in restocked_books:
         deleted = Notification.objects.filter(
             user=request.user,
-            type='info',
+            type__in=['warning', 'danger'],
             message__contains=book.title
         ).delete()
         if deleted[0] > 0:
@@ -62,9 +68,16 @@ def notifications(request):
         # Supprimer les DeletedNotification associées
         DeletedNotification.objects.filter(
             user=request.user,
-            type='info',
+            type__in=['warning', 'danger'],
             unique_identifier=hashlib.sha256(
-                f"Il reste {book.quantity} unité(s) de '{book.title}' dans la bibliothèque.".encode('utf-8')
+                f"Stock faible: {book.quantity} unité(s) de '{book.title}' restantes.".encode('utf-8')
+            ).hexdigest()
+        ).delete()
+        DeletedNotification.objects.filter(
+            user=request.user,
+            type='danger',
+            unique_identifier=hashlib.sha256(
+                f"Stock critique: {book.quantity} unité(s) de '{book.title}' restantes.".encode('utf-8')
             ).hexdigest()
         ).delete()
 
@@ -93,8 +106,10 @@ def notifications(request):
                 logger.info(f"Notification créée: ID {notification.id}, message: {message}")
                 notifications.append(notification)
             else:
-                if Notification.objects.filter(user=request.user, unique_identifier=unique_identifier, type='warning').exists():
-                    notification = Notification.objects.get(user=request.user, unique_identifier=unique_identifier, type='warning')
+                notification = Notification.objects.filter(
+                    user=request.user, unique_identifier=unique_identifier, type='warning', is_read=False
+                ).first()
+                if notification:
                     notifications.append(notification)
         except (CustomUser.DoesNotExist, Book.DoesNotExist):
             logger.error(f"Utilisateur ou livre introuvable pour le prêt ID {loan.id}.")
@@ -123,31 +138,36 @@ def notifications(request):
                 logger.info(f"Notification créée: ID {notification.id}, message: {message}")
                 notifications.append(notification)
             else:
-                if Notification.objects.filter(user=request.user, unique_identifier=unique_identifier, type='danger').exists():
-                    notification = Notification.objects.get(user=request.user, unique_identifier=unique_identifier, type='danger')
+                notification = Notification.objects.filter(
+                    user=request.user, unique_identifier=unique_identifier, type='danger', is_read=False
+                ).first()
+                if notification:
                     notifications.append(notification)
         except (CustomUser.DoesNotExist, Book.DoesNotExist):
             logger.error(f"Utilisateur ou livre introuvable pour le prêt ID {loan.id}.")
 
-    # Notifications pour les stocks faibles
-    low_stock_books = Book.objects.filter(is_physical=True, is_available=True, quantity__lte=5)
+    # Notifications pour les stocks faibles et critiques
+    low_stock_books = Book.objects.filter(is_physical=True, is_available=True, quantity__lte=low_stock_threshold)
     for book in low_stock_books:
         try:
-            message = f"Il reste {book.quantity} unité(s) de '{book.title}' dans la bibliothèque."
+            notification_type = 'danger' if book.quantity <= critical_stock_threshold else 'warning'
+            message = f"Stock {'critique' if notification_type == 'danger' else 'faible'}: {book.quantity} unité(s) de '{book.title}' restantes."
             unique_identifier = hashlib.sha256(message.encode('utf-8')).hexdigest()
-            if not (Notification.objects.filter(user=request.user, unique_identifier=unique_identifier, type='info').exists() or
-                    DeletedNotification.objects.filter(user=request.user, unique_identifier=unique_identifier, type='info').exists()):
+            if not (Notification.objects.filter(user=request.user, unique_identifier=unique_identifier, type=notification_type).exists() or
+                    DeletedNotification.objects.filter(user=request.user, unique_identifier=unique_identifier, type=notification_type).exists()):
                 notification = Notification.objects.create(
                     user=request.user,
                     message=message,
-                    type='info',
+                    type=notification_type,
                     unique_identifier=unique_identifier
                 )
                 logger.info(f"Notification créée: ID {notification.id}, message: {message}")
                 notifications.append(notification)
             else:
-                if Notification.objects.filter(user=request.user, unique_identifier=unique_identifier, type='info').exists():
-                    notification = Notification.objects.get(user=request.user, unique_identifier=unique_identifier, type='info')
+                notification = Notification.objects.filter(
+                    user=request.user, unique_identifier=unique_identifier, type=notification_type, is_read=False
+                ).first()
+                if notification:
                     notifications.append(notification)
         except Exception as e:
             logger.error(f"Erreur pour le livre ID {book.id}: {str(e)}")
