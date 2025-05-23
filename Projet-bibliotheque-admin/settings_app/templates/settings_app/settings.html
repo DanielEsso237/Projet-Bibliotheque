@@ -1,0 +1,37 @@
+{% extends 'books/base.html' %}
+{% load static %}
+
+{% block title %}Paramètres{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Paramètres du système</h1>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>Configuration des notifications</h5>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="notification_cleanup_days" class="form-label">Seuil de nettoyage des notifications supprimées</label>
+                    {{ form.notification_cleanup_days }}
+                    <small class="form-text text-muted">Les notifications supprimées seront effacées après ce délai.</small>
+                </div>
+                <button type="submit" class="btn btn-primary">Enregistrer</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h5>Derniers logs de la tâche de nettoyage</h5>
+        </div>
+        <div class="card-body">
+            <pre>{% for line in log_content %}{{ line }}
+{% endfor %}</pre>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -3,6 +3,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.views.generic import RedirectView
+from settings_app.views import settings_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -12,6 +13,7 @@ urlpatterns = [
     path('notifications/', include('notifications.urls')),  # Ajout ici
     path('', RedirectView.as_view(url='/users/login/', permanent=False), name='index'),
     path('statistics/', include('library_stats.urls')),
+    path('settings/', settings_view, name='settings'),
 ]
 
 if settings.DEBUG:
