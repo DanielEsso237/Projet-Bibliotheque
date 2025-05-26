@@ -13,6 +13,15 @@ class SystemSettingsForm(forms.ModelForm):
             'loan_duration',
             'critical_stock_threshold'
         ]
+        labels = {
+            'notification_cleanup_days': 'Durée de conservation des notifications supprimées (jours)',
+            'low_stock_threshold': 'Seuil de stock faible',
+            'loan_warning_days': 'Jours pour alerte de retour proche',
+            'loan_overdue_days': 'Délai pour alerte de retard (jours)',
+            'max_loans_per_user': 'Nombre maximum de prêts par utilisateur',
+            'loan_duration': 'Durée standard d’un prêt (jours)',
+            'critical_stock_threshold': 'Seuil de stock critique'
+        }
         widgets = {
             'notification_cleanup_days': forms.Select(choices=[
                 (15, '15 jours'), (30, '30 jours'), (60, '60 jours')

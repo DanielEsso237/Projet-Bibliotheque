@@ -27,7 +27,7 @@ INSTALLED_APPS = [
     'notifications.apps.NotificationsConfig',
     'library_stats.apps.LibraryStatsConfig',
     'channels',
-    'settings_app.apps.SettingsAppConfig',
+    'settings_app',
 ]
 
 AUTH_USER_MODEL = 'users.CustomUser'

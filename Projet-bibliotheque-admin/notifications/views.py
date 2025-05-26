@@ -28,6 +28,8 @@ def notifications(request):
     settings = SystemSettings.objects.first()
     low_stock_threshold = settings.low_stock_threshold if settings else 5
     critical_stock_threshold = settings.critical_stock_threshold if settings else 1
+    loan_warning_days = settings.loan_warning_days if settings else 2
+    loan_overdue_days = settings.loan_overdue_days if settings else 0
 
     # Nettoyage automatique des notifications obsolètes
     # 1. Retards résolus (prêts retournés)
@@ -35,16 +37,15 @@ def notifications(request):
     for loan in resolved_loans:
         deleted = Notification.objects.filter(
             Q(user=request.user) &
-            Q(type__in=['warning', 'danger']) &
+            Q(type__in=['warning-return', 'danger-overdue']) &
             Q(message__contains=loan.book.title) &
             Q(message__contains=loan.user.username)
         ).delete()
         if deleted[0] > 0:
             logger.info(f"Supprimé {deleted[0]} notifications pour prêt retourné: livre {loan.book.title}, utilisateur {loan.user.username}")
-        # Supprimer les DeletedNotification associées
         DeletedNotification.objects.filter(
             Q(user=request.user) &
-            Q(type__in=['warning', 'danger']) &
+            Q(type__in=['warning-return', 'danger-overdue']) &
             Q(unique_identifier__in=[
                 hashlib.sha256(
                     f"Retour proche pour '{loan.book.title}' emprunté par {loan.user.username} (échéance: {loan.due_date.date()}).".encode('utf-8')
@@ -60,22 +61,21 @@ def notifications(request):
     for book in restocked_books:
         deleted = Notification.objects.filter(
             user=request.user,
-            type__in=['warning', 'danger'],
+            type__in=['warning-stock', 'danger-stock'],
             message__contains=book.title
         ).delete()
         if deleted[0] > 0:
             logger.info(f"Supprimé {deleted[0]} notifications pour stock réapprovisionné: livre {book.title}")
-        # Supprimer les DeletedNotification associées
         DeletedNotification.objects.filter(
             user=request.user,
-            type__in=['warning', 'danger'],
+            type__in=['warning-stock', 'danger-stock'],
             unique_identifier=hashlib.sha256(
                 f"Stock faible: {book.quantity} unité(s) de '{book.title}' restantes.".encode('utf-8')
             ).hexdigest()
         ).delete()
         DeletedNotification.objects.filter(
             user=request.user,
-            type='danger',
+            type='danger-stock',
             unique_identifier=hashlib.sha256(
                 f"Stock critique: {book.quantity} unité(s) de '{book.title}' restantes.".encode('utf-8')
             ).hexdigest()
@@ -85,7 +85,7 @@ def notifications(request):
     overdue_loans = Loan.objects.filter(
         is_returned=False,
         due_date__gte=timezone.make_aware(timezone.datetime.combine(today, timezone.datetime.min.time())),
-        due_date__lte=timezone.make_aware(timezone.datetime.combine(today + timedelta(days=7), timezone.datetime.max.time()))
+        due_date__lte=timezone.make_aware(timezone.datetime.combine(today + timedelta(days=loan_warning_days), timezone.datetime.max.time()))
     ).select_related('user', 'book')
 
     for loan in overdue_loans:
@@ -95,19 +95,19 @@ def notifications(request):
             due_date_as_date = loan.due_date.date()
             message = f"Retour proche pour '{book.title}' emprunté par {user.username} (échéance: {due_date_as_date})."
             unique_identifier = hashlib.sha256(message.encode('utf-8')).hexdigest()
-            if not (Notification.objects.filter(user=request.user, unique_identifier=unique_identifier, type='warning').exists() or
-                    DeletedNotification.objects.filter(user=request.user, unique_identifier=unique_identifier, type='warning').exists()):
+            if not (Notification.objects.filter(user=request.user, unique_identifier=unique_identifier, type='warning-return').exists() or
+                    DeletedNotification.objects.filter(user=request.user, unique_identifier=unique_identifier, type='warning-return').exists()):
                 notification = Notification.objects.create(
                     user=request.user,
                     message=message,
-                    type='warning',
+                    type='warning-return',
                     unique_identifier=unique_identifier
                 )
                 logger.info(f"Notification créée: ID {notification.id}, message: {message}")
                 notifications.append(notification)
             else:
                 notification = Notification.objects.filter(
-                    user=request.user, unique_identifier=unique_identifier, type='warning', is_read=False
+                    user=request.user, unique_identifier=unique_identifier, type='warning-return', is_read=False
                 ).first()
                 if notification:
                     notifications.append(notification)
@@ -117,7 +117,7 @@ def notifications(request):
     # Notifications pour les retards
     late_loans = Loan.objects.filter(
         is_returned=False,
-        due_date__lt=timezone.make_aware(timezone.datetime.combine(today, timezone.datetime.min.time()))
+        due_date__lt=timezone.make_aware(timezone.datetime.combine(today - timedelta(days=loan_overdue_days), timezone.datetime.min.time()))
     ).select_related('user', 'book')
 
     for loan in late_loans:
@@ -127,19 +127,19 @@ def notifications(request):
             due_date_as_date = loan.due_date.date()
             message = f"'{book.title}' de {user.username} est en retard (échéance: {due_date_as_date})."
             unique_identifier = hashlib.sha256(message.encode('utf-8')).hexdigest()
-            if not (Notification.objects.filter(user=request.user, unique_identifier=unique_identifier, type='danger').exists() or
-                    DeletedNotification.objects.filter(user=request.user, unique_identifier=unique_identifier, type='danger').exists()):
+            if not (Notification.objects.filter(user=request.user, unique_identifier=unique_identifier, type='danger-overdue').exists() or
+                    DeletedNotification.objects.filter(user=request.user, unique_identifier=unique_identifier, type='danger-overdue').exists()):
                 notification = Notification.objects.create(
                     user=request.user,
                     message=message,
-                    type='danger',
+                    type='danger-overdue',
                     unique_identifier=unique_identifier
                 )
                 logger.info(f"Notification créée: ID {notification.id}, message: {message}")
                 notifications.append(notification)
             else:
                 notification = Notification.objects.filter(
-                    user=request.user, unique_identifier=unique_identifier, type='danger', is_read=False
+                    user=request.user, unique_identifier=unique_identifier, type='danger-overdue', is_read=False
                 ).first()
                 if notification:
                     notifications.append(notification)
@@ -150,8 +150,8 @@ def notifications(request):
     low_stock_books = Book.objects.filter(is_physical=True, is_available=True, quantity__lte=low_stock_threshold)
     for book in low_stock_books:
         try:
-            notification_type = 'danger' if book.quantity <= critical_stock_threshold else 'warning'
-            message = f"Stock {'critique' if notification_type == 'danger' else 'faible'}: {book.quantity} unité(s) de '{book.title}' restantes."
+            notification_type = 'danger-stock' if book.quantity <= critical_stock_threshold else 'warning-stock'
+            message = f"Stock {'critique' if notification_type == 'danger-stock' else 'faible'}: {book.quantity} unité(s) de '{book.title}' restantes."
             unique_identifier = hashlib.sha256(message.encode('utf-8')).hexdigest()
             if not (Notification.objects.filter(user=request.user, unique_identifier=unique_identifier, type=notification_type).exists() or
                     DeletedNotification.objects.filter(user=request.user, unique_identifier=unique_identifier, type=notification_type).exists()):
@@ -176,11 +176,90 @@ def notifications(request):
     return render(request, 'notifications/notifications.html', {'notifications': notifications})
 
 @login_required
+def user_notifications(request):
+    if request.user.is_librarian:
+        messages.error(request, "Cette page est réservée aux utilisateurs non-bibliothécaires.")
+        return redirect('notifications')
+    
+    today = timezone.now().date()
+    notifications = []
+
+    # Récupérer les seuils dynamiques
+    settings = SystemSettings.objects.first()
+    loan_warning_days = settings.loan_warning_days if settings else 2
+    loan_overdue_days = settings.loan_overdue_days if settings else 0
+
+    # Notifications pour les retours proches de l'utilisateur
+    overdue_loans = Loan.objects.filter(
+        is_returned=False,
+        user=request.user,
+        due_date__gte=timezone.make_aware(timezone.datetime.combine(today, timezone.datetime.min.time())),
+        due_date__lte=timezone.make_aware(timezone.datetime.combine(today + timedelta(days=loan_warning_days), timezone.datetime.max.time()))
+    ).select_related('book')
+
+    for loan in overdue_loans:
+        try:
+            book = loan.book
+            due_date_as_date = loan.due_date.date()
+            message = f"Retour proche pour '{book.title}' (échéance: {due_date_as_date})."
+            unique_identifier = hashlib.sha256(message.encode('utf-8')).hexdigest()
+            if not (Notification.objects.filter(user=request.user, unique_identifier=unique_identifier, type='warning-return').exists() or
+                    DeletedNotification.objects.filter(user=request.user, unique_identifier=unique_identifier, type='warning-return').exists()):
+                notification = Notification.objects.create(
+                    user=request.user,
+                    message=message,
+                    type='warning-return',
+                    unique_identifier=unique_identifier
+                )
+                logger.info(f"Notification utilisateur créée: ID {notification.id}, message: {message}")
+                notifications.append(notification)
+            else:
+                notification = Notification.objects.filter(
+                    user=request.user, unique_identifier=unique_identifier, type='warning-return', is_read=False
+                ).first()
+                if notification:
+                    notifications.append(notification)
+        except Book.DoesNotExist:
+            logger.error(f"Livre introuvable pour le prêt ID {loan.id}.")
+
+    # Notifications pour les retards de l'utilisateur
+    late_loans = Loan.objects.filter(
+        is_returned=False,
+        user=request.user,
+        due_date__lt=timezone.make_aware(timezone.datetime.combine(today - timedelta(days=loan_overdue_days), timezone.datetime.min.time()))
+    ).select_related('book')
+
+    for loan in late_loans:
+        try:
+            book = loan.book
+            due_date_as_date = loan.due_date.date()
+            message = f"'{book.title}' est en retard (échéance: {due_date_as_date})."
+            unique_identifier = hashlib.sha256(message.encode('utf-8')).hexdigest()
+            if not (Notification.objects.filter(user=request.user, unique_identifier=unique_identifier, type='danger-overdue').exists() or
+                    DeletedNotification.objects.filter(user=request.user, unique_identifier=unique_identifier, type='danger-overdue').exists()):
+                notification = Notification.objects.create(
+                    user=request.user,
+                    message=message,
+                    type='danger-overdue',
+                    unique_identifier=unique_identifier
+                )
+                logger.info(f"Notification utilisateur créée: ID {notification.id}, message: {message}")
+                notifications.append(notification)
+            else:
+                notification = Notification.objects.filter(
+                    user=request.user, unique_identifier=unique_identifier, type='danger-overdue', is_read=False
+                ).first()
+                if notification:
+                    notifications.append(notification)
+        except Book.DoesNotExist:
+            logger.error(f"Livre introuvable pour le prêt ID {loan.id}.")
+
+    logger.info(f"Total des notifications utilisateur affichées: {len(notifications)}")
+    return render(request, 'notifications/user_notifications.html', {'notifications': notifications})
+
+@login_required
 def mark_notification_as_read(request, notification_id):
     logger.info(f"Tentative de marquage comme lu pour la notification ID {notification_id} par l'utilisateur {request.user.username}")
-    if not request.user.is_librarian:
-        logger.warning(f"Utilisateur non autorisé: {request.user.username}")
-        return JsonResponse({'status': 'error', 'message': 'Utilisateur non autorisé'}, status=403)
     try:
         notification = get_object_or_404(Notification, id=notification_id, user=request.user)
         notification.is_read = True
@@ -197,9 +276,6 @@ def mark_notification_as_read(request, notification_id):
 @login_required
 def mark_all_notifications_as_read(request):
     logger.info(f"Tentative de marquage de toutes les notifications comme lues par l'utilisateur {request.user.username}")
-    if not request.user.is_librarian:
-        logger.warning(f"Utilisateur non autorisé: {request.user.username}")
-        return JsonResponse({'status': 'error', 'message': 'Utilisateur non autorisé'}, status=403)
     if request.method == 'POST':
         try:
             notifications = Notification.objects.filter(user=request.user, is_read=False)
@@ -214,9 +290,6 @@ def mark_all_notifications_as_read(request):
 @login_required
 def delete_notification(request, notification_id):
     logger.info(f"Tentative de suppression de la notification ID {notification_id} par l'utilisateur {request.user.username}")
-    if not request.user.is_librarian:
-        logger.warning(f"Utilisateur non autorisé: {request.user.username}")
-        return JsonResponse({'status': 'error', 'message': 'Utilisateur non autorisé'}, status=403)
     try:
         notification = get_object_or_404(Notification, id=notification_id, user=request.user)
         DeletedNotification.objects.create(
@@ -237,9 +310,6 @@ def delete_notification(request, notification_id):
 @login_required
 def delete_all_notifications(request):
     logger.info(f"Tentative de suppression de toutes les notifications par l'utilisateur {request.user.username}")
-    if not request.user.is_librarian:
-        logger.warning(f"Utilisateur non autorisé: {request.user.username}")
-        return JsonResponse({'status': 'error', 'message': 'Utilisateur non autorisé'}, status=403)
     if request.method == 'POST':
         try:
             notifications = Notification.objects.filter(user=request.user)
@@ -260,9 +330,6 @@ def delete_all_notifications(request):
 
 @login_required
 def notification_count_api(request):
-    if not request.user.is_librarian:
-        return JsonResponse({'total': 0})
-    
     total = Notification.objects.filter(
         user=request.user, 
         is_read=False
