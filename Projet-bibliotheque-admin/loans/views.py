@@ -102,6 +102,7 @@ def return_book(request, loan_id):
     else:  # GET request
         return render(request, 'loans/return_book.html', {'loan': loan})
 
+
 @login_required
 def create_loan(request):
     if not request.user.is_librarian:
@@ -110,64 +111,93 @@ def create_loan(request):
     
     if request.method == 'POST':
         user_id = request.POST.get('user')
-        book_id = request.POST.get('book')
+        book_ids = request.POST.getlist('book_ids')  # Liste des IDs de livres
         due_date_str = request.POST.get('due_date')
 
-        # Vérifier que user_id et book_id ne sont pas vides
-        if not user_id or not book_id:
-            messages.error(request, "Veuillez sélectionner un utilisateur et un livre.")
-            return redirect('create_loan')
-
+        # Validation des entrées
+        if not user_id:
+            messages.error(request, "Veuillez sélectionner un utilisateur.")
+            return redirect('loans:create_loan')
+        
+        if not book_ids:
+            messages.error(request, "Veuillez sélectionner au moins un livre.")
+            return redirect('loans:create_loan')
+        
         try:
-            user_id = int(user_id)  # Convertir en entier
-            book_id = int(book_id)  # Convertir en entier
+            user_id = int(user_id)
+            book_ids = [int(book_id) for book_id in book_ids if book_id]
         except (ValueError, TypeError):
-            messages.error(request, "Les identifiants de l'utilisateur ou du livre sont invalides.")
-            return redirect('create_loan')
+            messages.error(request, "Identifiants invalides pour l'utilisateur ou les livres.")
+            return redirect('loans:create_loan')
 
-        user = get_object_or_404(CustomUser, id=user_id)
-        book = get_object_or_404(Book, id=book_id)
-
-        # Convertir due_date en datetime conscient
         if not due_date_str:
             messages.error(request, "Veuillez entrer une date de retour.")
-            return redirect('create_loan')
+            return redirect('loans:create_loan')
         
         try:
             due_date_naive = datetime.strptime(due_date_str, '%Y-%m-%d')
             due_date = timezone.make_aware(due_date_naive)
+            if due_date.date() < timezone.now().date():
+                messages.error(request, "La date de retour ne peut pas être dans le passé.")
+                return redirect('loans:create_loan')
         except ValueError:
             messages.error(request, "Format de date invalide. Utilisez AAAA-MM-JJ.")
-            return redirect('create_loan')
+            return redirect('loans:create_loan')
 
-        if not book.is_physical:
-            messages.error(request, "Seuls les livres physiques peuvent être empruntés.")
-            return redirect('create_loan')
-        
-        if not book.is_available:
-            messages.error(request, "Ce livre n'est pas disponible pour l'emprunt.")
-            return redirect('create_loan')
-        
-        if book.is_physical and book.quantity <= 0:
-            messages.error(request, "Aucun exemplaire physique disponible pour cet emprunt.")
-            return redirect('create_loan')
+        user = get_object_or_404(CustomUser, id=user_id)
+        if user.is_librarian:
+            messages.error(request, "Les bibliothécaires ne peuvent pas emprunter de livres.")
+            return redirect('loans:create_loan')
 
-        loan = Loan.objects.create(
-            user=user,
-            book=book,
-            due_date=due_date,
-            loan_date=timezone.now()
-        )
-        book.quantity -= 1
-        if book.quantity == 0:
-            book.is_available = False
-        book.save()
-        messages.success(request, f"L'emprunt du livre '{book.title}' pour {user.username} a été enregistré.")
-        return redirect('loan_list')
+        # Vérifier max_loans_per_user
+        settings = SystemSettings.objects.first()
+        max_loans_per_user = settings.max_loans_per_user if settings else 3
+        active_loans_count = Loan.objects.filter(user=user, is_returned=False).count()
+        new_loans_count = len(set(book_ids))  # Compter les livres uniques
+        if active_loans_count + new_loans_count > max_loans_per_user:
+            messages.error(request, f"L'utilisateur {user.username} a déjà {active_loans_count} prêt(s) actif(s). " +
+                                  f"Avec {new_loans_count} nouveau(x) prêt(s), la limite de {max_loans_per_user} serait dépassée.")
+            return redirect('loans:create_loan')
 
-    users = CustomUser.objects.filter(is_standard_user=True)
-    books = Book.objects.filter(is_physical=True, is_available=True)
-    return render(request, 'loans/create_loan.html', {'users': users, 'books': books})
+        # Vérifier les livres
+        books = Book.objects.filter(id__in=book_ids, is_physical=True, is_available=True)
+        if len(books) != len(set(book_ids)):
+            messages.error(request, "Certains livres ne sont pas disponibles ou ne sont pas physiques.")
+            return redirect('loans:create_loan')
+
+        # Vérifier le stock et créer les prêts
+        errors = []
+        loans_created = []
+        for book in books:
+            if book.quantity <= 0:
+                errors.append(f"Aucun exemplaire disponible pour '{book.title}'.")
+                continue
+            try:
+                loan = Loan.objects.create(
+                    user=user,
+                    book=book,
+                    due_date=due_date,
+                    loan_date=timezone.now(),
+                    is_physical=True
+                )
+                book.quantity -= 1
+                book.is_available = book.quantity > 0
+                book.save()
+                loans_created.append(loan)
+            except Exception as e:
+                errors.append(f"Erreur lors de l'emprunt de '{book.title}' : {str(e)}")
+
+        if errors:
+            for error in errors:
+                messages.error(request, error)
+            if not loans_created:
+                return redirect('loans:create_loan')
+
+        if loans_created:
+            messages.success(request, f"{len(loans_created)} emprunt(s) enregistré(s) avec succès pour {user.username}.")
+        return redirect('loans:loan_list')
+
+    return render(request, 'loans/create_loan.html')
 
 @login_required
 def late_books(request):

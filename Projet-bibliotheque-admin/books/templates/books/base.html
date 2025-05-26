@@ -25,15 +25,15 @@
                 {% if user.is_authenticated %}
                     <a class="nav-link" href="{% url 'librarian_dashboard' %}"><i class="fas fa-home me-2"></i> Tableau de bord</a>
                     <a class="nav-link" href="{% url 'add_book' %}"><i class="fas fa-plus-circle me-2"></i> Ajouter un livre</a>
-                    <a class="nav-link" href="{% url 'loan_list' %}"><i class="fas fa-undo-alt me-2"></i> Gérer les retours</a>
-                    <a class="nav-link" href="{% url 'create_loan' %}"><i class="fas fa-book me-2"></i> Réaliser un emprunt</a>              
+                    <a class="nav-link" href="{% url 'loans:loan_list' %}"><i class="fas fa-undo-alt me-2"></i> Gérer les retours</a>
+                    <a class="nav-link" href="{% url 'loans:create_loan' %}"><i class="fas fa-book me-2"></i> Réaliser un emprunt</a>              
                     <a class="nav-link position-relative" href="{% url 'notifications' %}">
                         <i class="fas fa-bell me-2"></i> Notifications
                         {% if notification_counts.total > 0 %}
                             <span class="badge rounded-pill bg-danger position-absolute top-0 end-0 mt-1 me-1" style="font-size: 0.7em;"></span>
                         {% endif %}
                     </a>
-                    <a class="nav-link" href="{% url 'late_books' %}"><i class="fas fa-clock me-2"></i> Livres en retard</a>
+                    <a class="nav-link" href="{% url 'loans:late_books' %}"><i class="fas fa-clock me-2"></i> Livres en retard</a>
                     <a class="nav-link" href="{% url 'manage_users' %}"><i class="fas fa-users-cog me-2"></i> Gérer les utilisateurs</a>
                     <a class="nav-link" href="{% url 'statistics' %}"><i class="fas fa-chart-line me-2"></i> Statistiques</a>
                     <a class="nav-link" href="{% url 'settings' %}"><i class="fas fa-cog me-2"></i> Paramètres</a>
@@ -107,37 +107,37 @@
         }
 
         let isUpdatingNotifications = false;
-function updateNotificationBadges() {
-    if (isUpdatingNotifications) return;
-    isUpdatingNotifications = true;
+        function updateNotificationBadges() {
+            if (isUpdatingNotifications) return;
+            isUpdatingNotifications = true;
 
-    fetch("{% url 'notification_count_api' %}", {
-        method: 'GET',
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest',
-            'Content-Type': 'application/json',
-            'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            fetch("{% url 'notification_count_api' %}", {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Erreur HTTP ${response.status}: ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                const totalBadge = document.querySelector('.badge.bg-danger');
+                if (totalBadge) {
+                    totalBadge.style.display = (data.total > 0) ? 'inline' : 'none';
+                }
+            })
+            .catch(error => {
+                console.error('Erreur lors de la mise à jour des badges:', error);
+            })
+            .finally(() => {
+                isUpdatingNotifications = false;
+            });
         }
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`Erreur HTTP ${response.status}: ${response.statusText}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        const totalBadge = document.querySelector('.badge.bg-danger');
-        if (totalBadge) {
-            totalBadge.style.display = (data.total > 0) ? 'inline' : 'none';
-        }
-    })
-    .catch(error => {
-        console.error('Erreur lors de la mise à jour des badges:', error);
-    })
-    .finally(() => {
-        isUpdatingNotifications = false;
-    });
-}
 
         // Mettre à jour toutes les 5 minutes, mais uniquement si l'onglet est actif
         document.addEventListener('visibilitychange', () => {

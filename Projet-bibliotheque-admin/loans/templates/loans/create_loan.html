@@ -20,7 +20,7 @@
 
         <div class="card shadow-sm">
             <div class="card-body">
-                <form method="post">
+                <form method="post" id="loanForm">
                     {% csrf_token %}
                     <div class="mb-3 position-relative">
                         <label for="userInput" class="form-label">Utilisateur</label>
@@ -28,20 +28,30 @@
                         <input type="hidden" id="userId" name="user" required>
                         <div id="userSuggestions" class="dropdown-menu w-100" style="max-height: 200px; overflow-y: auto;"></div>
                     </div>
-                    <div class="mb-3 position-relative">
-                        <label for="bookInput" class="form-label">Livre</label>
-                        <input type="text" class="form-control" id="bookInput" placeholder="Rechercher par titre ou auteur..." required>
-                        <input type="hidden" id="bookId" name="book" required>
-                        <div id="bookSuggestions" class="dropdown-menu w-100" style="max-height: 200px; overflow-y: auto;"></div>
+
+                    <div id="booksContainer">
+                        <div class="book-entry mb-3 position-relative">
+                            <label for="bookInput_0" class="form-label">Livre</label>
+                            <input type="text" class="form-control book-input" id="bookInput_0" name="books" placeholder="Rechercher par titre ou auteur..." required>
+                            <input type="hidden" class="book-id" id="bookId_0" name="book_ids" required>
+                            <div class="book-suggestions dropdown-menu w-100" id="bookSuggestions_0" style="max-height: 200px; overflow-y: auto;"></div>
+                            <button type="button" class="btn btn-danger btn-sm remove-book mt-2 d-none">Supprimer</button>
+                        </div>
                     </div>
+
+                    <button type="button" class="btn btn-secondary mb-3" id="addBookBtn">
+                        <i class="fas fa-plus"></i> Ajouter un livre
+                    </button>
+
                     <div class="mb-3">
                         <label for="due_date" class="form-label">Date limite de retour</label>
                         <input type="date" class="form-control" id="due_date" name="due_date" required>
                     </div>
+
                     <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-book"></i> Enregistrer l'emprunt
+                        <i class="fas fa-book"></i> Enregistrer les emprunts
                     </button>
-                    <a href="{% url 'loan_list' %}" class="btn btn-secondary">
+                    <a href="{% url 'loans:loan_list' %}" class="btn btn-secondary">
                         <i class="fas fa-arrow-left"></i> Retour
                     </a>
                 </form>
@@ -56,20 +66,20 @@
             const userInput = document.getElementById('userInput');
             const userIdInput = document.getElementById('userId');
             const userSuggestions = document.getElementById('userSuggestions');
-            const bookInput = document.getElementById('bookInput');
-            const bookIdInput = document.getElementById('bookId');
-            const bookSuggestions = document.getElementById('bookSuggestions');
-            const form = document.querySelector('form');
+            const booksContainer = document.getElementById('booksContainer');
+            const addBookBtn = document.getElementById('addBookBtn');
+            const form = document.getElementById('loanForm');
             const errorMessage = document.getElementById('jsErrorMessage');
+            let bookIndex = 1;
 
             // Fonction pour afficher une erreur côté client
             function showError(message) {
                 errorMessage.textContent = message;
                 errorMessage.classList.remove('d-none');
-                setTimeout(() => errorMessage.classList.add('d-none'), 5000); // Cacher après 5 secondes
+                setTimeout(() => errorMessage.classList.add('d-none'), 5000);
             }
 
-            // Fonction pour gérer l'autocomplétion des utilisateurs
+            // Autocomplétion des utilisateurs
             userInput.addEventListener('input', debounce(function () {
                 const query = userInput.value.trim();
                 if (query.length < 1) {
@@ -78,7 +88,7 @@
                     return;
                 }
 
-                fetch(`{% url 'search_users_api' %}?query=${encodeURIComponent(query)}`, {
+                fetch(`{% url 'loans:search_users_api' %}?query=${encodeURIComponent(query)}`, {
                     headers: {
                         'X-Requested-With': 'XMLHttpRequest',
                         'Content-Type': 'application/json'
@@ -109,74 +119,133 @@
                         userSuggestions.classList.add('show');
                     }
                 })
-                .catch(error => {
-                    console.error('Erreur lors de la recherche des utilisateurs:', error);
-                });
+                .catch(error => console.error('Erreur:', error));
             }, 300));
 
-            // Fonction pour gérer l'autocomplétion des livres
-            bookInput.addEventListener('input', debounce(function () {
-                const query = bookInput.value.trim();
-                if (query.length < 1) {
-                    bookSuggestions.innerHTML = '';
-                    bookSuggestions.classList.remove('show');
-                    return;
-                }
-
-                fetch(`{% url 'search_books_api' %}?query=${encodeURIComponent(query)}`, {
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'Content-Type': 'application/json'
+            // Fonction pour initialiser l'autocomplétion d'un champ livre
+            function initializeBookAutocomplete(bookInput, bookIdInput, suggestionsDiv, index) {
+                bookInput.addEventListener('input', debounce(function () {
+                    const query = bookInput.value.trim();
+                    if (query.length < 1) {
+                        suggestionsDiv.innerHTML = '';
+                        suggestionsDiv.classList.remove('show');
+                        return;
                     }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    bookSuggestions.innerHTML = '';
-                    if (data.books.length > 0) {
-                        data.books.forEach(book => {
-                            const suggestionItem = document.createElement('div');
-                            suggestionItem.className = 'dropdown-item';
-                            suggestionItem.textContent = `${book.title} (${book.author})`;
-                            suggestionItem.addEventListener('click', () => {
-                                bookInput.value = `${book.title} (${book.author})`;
-                                bookIdInput.value = book.id;
-                                bookSuggestions.innerHTML = '';
-                                bookSuggestions.classList.remove('show');
+
+                    fetch(`{% url 'loans:search_books_api' %}?query=${encodeURIComponent(query)}`, {
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        suggestionsDiv.innerHTML = '';
+                        if (data.books.length > 0) {
+                            data.books.forEach(book => {
+                                const suggestionItem = document.createElement('div');
+                                suggestionItem.className = 'dropdown-item';
+                                suggestionItem.textContent = `${book.title} (${book.author})`;
+                                suggestionItem.addEventListener('click', () => {
+                                    bookInput.value = `${book.title} (${book.author})`;
+                                    bookIdInput.value = book.id;
+                                    suggestionsDiv.innerHTML = '';
+                                    suggestionsDiv.classList.remove('show');
+                                });
+                                suggestionsDiv.appendChild(suggestionItem);
                             });
-                            bookSuggestions.appendChild(suggestionItem);
-                        });
-                        bookSuggestions.classList.add('show');
-                    } else {
-                        const noResultItem = document.createElement('div');
-                        noResultItem.className = 'dropdown-item text-danger';
-                        noResultItem.textContent = 'Aucun livre trouvé';
-                        bookSuggestions.appendChild(noResultItem);
-                        bookSuggestions.classList.add('show');
-                    }
-                })
-                .catch(error => {
-                    console.error('Erreur lors de la recherche des livres:', error);
-                });
-            }, 300));
+                            suggestionsDiv.classList.add('show');
+                        } else {
+                            const noResultItem = document.createElement('div');
+                            noResultItem.className = 'dropdown-item text-danger';
+                            noResultItem.textContent = 'Aucun livre trouvé';
+                            suggestionsDiv.appendChild(noResultItem);
+                            suggestionsDiv.classList.add('show');
+                        }
+                    })
+                    .catch(error => console.error('Erreur:', error));
+                }, 300));
+            }
 
-            // Cacher les suggestions si on clique ailleurs
+            // Initialiser l'autocomplétion pour le premier champ livre
+            const firstBookInput = document.getElementById('bookInput_0');
+            const firstBookIdInput = document.getElementById('bookId_0');
+            const firstBookSuggestions = document.getElementById('bookSuggestions_0');
+            initializeBookAutocomplete(firstBookInput, firstBookIdInput, firstBookSuggestions, 0);
+
+            // Ajouter un nouveau champ livre
+            addBookBtn.addEventListener('click', function () {
+                const bookEntry = document.createElement('div');
+                bookEntry.className = 'book-entry mb-3 position-relative';
+                bookEntry.innerHTML = `
+                    <label for="bookInput_${bookIndex}" class="form-label">Livre</label>
+                    <input type="text" class="form-control book-input" id="bookInput_${bookIndex}" name="books" placeholder="Rechercher par titre ou auteur..." required>
+                    <input type="hidden" class="book-id" id="bookId_${bookIndex}" name="book_ids" required>
+                    <div class="book-suggestions dropdown-menu w-100" id="bookSuggestions_${bookIndex}" style="max-height: 200px; overflow-y: auto;"></div>
+                    <button type="button" class="btn btn-danger btn-sm remove-book mt-2">Supprimer</button>
+                `;
+                booksContainer.appendChild(bookEntry);
+
+                const newBookInput = document.getElementById(`bookInput_${bookIndex}`);
+                const newBookIdInput = document.getElementById(`bookId_${bookIndex}`);
+                const newBookSuggestions = document.getElementById(`bookSuggestions_${bookIndex}`);
+                initializeBookAutocomplete(newBookInput, newBookIdInput, newBookSuggestions, bookIndex);
+
+                // Activer les boutons de suppression
+                updateRemoveButtons();
+                bookIndex++;
+            });
+
+            // Supprimer un champ livre
+            booksContainer.addEventListener('click', function (e) {
+                if (e.target.classList.contains('remove-book')) {
+                    e.target.closest('.book-entry').remove();
+                    updateRemoveButtons();
+                }
+            });
+
+            // Mettre à jour la visibilité des boutons de suppression
+            function updateRemoveButtons() {
+                const bookEntries = booksContainer.querySelectorAll('.book-entry');
+                bookEntries.forEach((entry, index) => {
+                    const removeBtn = entry.querySelector('.remove-book');
+                    if (bookEntries.length === 1) {
+                        removeBtn.classList.add('d-none');
+                    } else {
+                        removeBtn.classList.remove('d-none');
+                    }
+                });
+            }
+
+            // Cacher les suggestions si clic ailleurs
             document.addEventListener('click', function (e) {
                 if (!userInput.contains(e.target) && !userSuggestions.contains(e.target)) {
                     userSuggestions.classList.remove('show');
                 }
-                if (!bookInput.contains(e.target) && !bookSuggestions.contains(e.target)) {
-                    bookSuggestions.classList.remove('show');
-                }
+                const bookInputs = booksContainer.querySelectorAll('.book-input');
+                const bookSuggestions = booksContainer.querySelectorAll('.book-suggestions');
+                bookInputs.forEach((input, index) => {
+                    if (!input.contains(e.target) && !bookSuggestions[index].contains(e.target)) {
+                        bookSuggestions[index].classList.remove('show');
+                    }
+                });
             });
 
             // Validation avant soumission
             form.addEventListener('submit', function (e) {
-                if (!userIdInput.value || !bookIdInput.value) {
+                if (!userIdInput.value) {
                     e.preventDefault();
-                    showError('Veuillez sélectionner un utilisateur et un livre valides.');
+                    showError('Veuillez sélectionner un utilisateur valide.');
                     return;
                 }
-                // Vérifier que due_date est rempli (déjà géré par required)
+                const bookIdInputs = booksContainer.querySelectorAll('.book-id');
+                for (let input of bookIdInputs) {
+                    if (!input.value) {
+                        e.preventDefault();
+                        showError('Veuillez sélectionner un livre valide pour chaque champ.');
+                        return;
+                    }
+                }
                 const dueDate = document.getElementById('due_date').value;
                 if (!dueDate) {
                     e.preventDefault();
@@ -185,7 +254,7 @@
                 }
             });
 
-            // Fonction de debounce pour limiter les requêtes
+            // Fonction de debounce
             function debounce(func, wait) {
                 let timeout;
                 return function (...args) {
