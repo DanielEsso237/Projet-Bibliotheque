@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from .forms import CustomUserCreationForm  # Changement ici
+from .forms import CustomUserCreationForm
 from users.models import CustomUser
 
 def register_view(request):
@@ -9,8 +9,8 @@ def register_view(request):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
-            user.is_standard_user = True  # Utilisateur standard
-            user.is_librarian = False     # Pas bibliothécaire
+            user.is_standard_user = True
+            user.is_librarian = False
             user.save()
             messages.success(request, "Inscription réussie ! Vous pouvez maintenant vous connecter.")
             return redirect('readers_login')
@@ -44,4 +44,4 @@ def logout_view(request):
 def home(request):
     if not request.user.is_authenticated or not request.user.is_standard_user:
         return redirect('readers_login')
-    return render(request, 'readers/home.html')
+    return render(request, 'books/dashboard.html')

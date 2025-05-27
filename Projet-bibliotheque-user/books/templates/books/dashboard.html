@@ -1,0 +1,25 @@
+{% extends "readers/base.html" %}
+{% block title %}Tableau de bord{% endblock %}
+{% block content %}
+    <h2 class="text-center my-4">Bienvenue, {{ request.user.username }} !</h2>
+    <div class="row">
+        <div class="col-12 col-md-6 mb-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Rechercher un livre</h5>
+                    <p class="card-text">Trouvez des livres par titre, auteur ou catégorie.</p>
+                    <a href="{% url 'books:search' %}" class="btn btn-primary"><i class="fas fa-search me-1"></i> Rechercher</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 mb-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Mes emprunts</h5>
+                    <p class="card-text">Consultez vos emprunts en cours et votre historique.</p>
+                    <a href="{% url 'books:loans' %}" class="btn btn-primary"><i class="fas fa-book me-1"></i> Voir emprunts</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
