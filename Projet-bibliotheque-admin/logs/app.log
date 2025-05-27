@@ -1420,3 +1420,638 @@ Watching for file changes with StatReloader
 Not Found: /favicon.ico
 Notification count: total=3
 Notification count: total=3
+Watching for file changes with StatReloader
+Notification count: total=3
+Notification count: total=3
+Internal Server Error: /loans/create/
+Traceback (most recent call last):
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\loans\views.py", line 153, in create_loan
+    settings = SystemSettings.objects.first()
+               ^^^^^^^^^^^^^^
+NameError: name 'SystemSettings' is not defined
+Total des notifications affichées: 2
+Notification count: total=3
+Notification count: total=3
+Watching for file changes with StatReloader
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Total des notifications affichées: 2
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Total des notifications affichées: 2
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Internal Server Error: /loans/late/
+Traceback (most recent call last):
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\loans\views.py", line 246, in late_books
+    return render(request, 'loans/late_books.html', {
+        'loans': page_obj,
+        'now': now
+    })
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\defaulttags.py", line 327, in render
+    return nodelist.render(context)
+           ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\defaulttags.py", line 243, in render
+    nodelist.append(node.render_annotated(context))
+                    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\urls\base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\urls\resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'return_book' not found. 'return_book' is not a valid view function or pattern name.
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Internal Server Error: /loans/
+Traceback (most recent call last):
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\loans\views.py", line 38, in loan_list
+    return render(request, 'loans/loan_list.html', {'loans': loans, 'now': timezone.now()})
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\defaulttags.py", line 327, in render
+    return nodelist.render(context)
+           ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\defaulttags.py", line 243, in render
+    nodelist.append(node.render_annotated(context))
+                    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\urls\base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\urls\resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'return_book' not found. 'return_book' is not a valid view function or pattern name.
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Internal Server Error: /loans/
+Traceback (most recent call last):
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\loans\views.py", line 38, in loan_list
+    return render(request, 'loans/loan_list.html', {'loans': loans, 'now': timezone.now()})
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\defaulttags.py", line 327, in render
+    return nodelist.render(context)
+           ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\defaulttags.py", line 243, in render
+    nodelist.append(node.render_annotated(context))
+                    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\urls\base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\urls\resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'return_book' not found. 'return_book' is not a valid view function or pattern name.
+Watching for file changes with StatReloader
+Internal Server Error: /loans/
+Traceback (most recent call last):
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\loans\views.py", line 38, in loan_list
+    return render(request, 'loans/loan_list.html', {'loans': loans, 'now': timezone.now()})
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\defaulttags.py", line 327, in render
+    return nodelist.render(context)
+           ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\defaulttags.py", line 243, in render
+    nodelist.append(node.render_annotated(context))
+                    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\urls\base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\urls\resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'return_book' not found. 'return_book' is not a valid view function or pattern name.
+Watching for file changes with StatReloader
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Total des notifications affichées: 2
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Internal Server Error: /loans/return/1/
+Traceback (most recent call last):
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\loans\views.py", line 103, in return_book
+    return render(request, 'loans/return_book.html', {'loan': loan})
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\urls\base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\urls\resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'loan_list' not found. 'loan_list' is not a valid view function or pattern name.
+Notification count: total=3
+Internal Server Error: /loans/return/2/
+Traceback (most recent call last):
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\loans\views.py", line 103, in return_book
+    return render(request, 'loans/return_book.html', {'loan': loan})
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\urls\base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\urls\resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'loan_list' not found. 'loan_list' is not a valid view function or pattern name.
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Supprimé 1 notifications pour prêt retourné: livre livre 2, utilisateur utilisateur_2
+Supprimé 1 notifications pour prêt retourné: livre Livre 1, utilisateur utilisateur_1
+Notification créée: ID 6, message: Stock faible: 3 unité(s) de 'Livre 1' restantes.
+Total des notifications affichées: 1
+Notification count: total=2
+Notification count: total=2
+Notification count: total=2
+Notification count: total=2
+Notification count: total=2
+Notification count: total=2
+Notification count: total=2
+Notification count: total=2
+Notification count: total=2
+Notification count: total=2
+Notification count: total=2
+Notification count: total=2
+Watching for file changes with StatReloader
+Notification count: total=2
+Notification count: total=2
+Notification count: total=2
+Notification count: total=2
+Notification count: total=2
+Notification count: total=2
+Notification count: total=2
+Notification count: total=2
+Notification count: total=2
+Notification count: total=2
+Notification count: total=2
+Notification count: total=2
+Notification count: total=2
+Notification count: total=2
+Notification count: total=2
+Notification count: total=2
+Notification count: total=2
+Notification count: total=2
+Notification count: total=2
+Notification count: total=2
+Watching for file changes with StatReloader
+Not Found: /favicon.ico
+Notification count: total=2
+Notification créée: ID 7, message: Retour proche pour 'livre 2' emprunté par utilisateur_1 (échéance: 2025-05-28).
+Total des notifications affichées: 2
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Total des notifications affichées: 2
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Total des notifications affichées: 2
+Notification count: total=3
+Notification count: total=3
+Total des notifications affichées: 2
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification créée: ID 8, message: Retour proche pour 'Livre 1' emprunté par utilisateur_1 (échéance: 2025-05-27).
+Total des notifications affichées: 2
+Notification count: total=4
+Notification count: total=4
+Notification count: total=4
+Notification count: total=4
+Notification count: total=4
+Notification count: total=4
+Notification count: total=4
+Notification count: total=4
+Notification count: total=4
+Notification count: total=4
+Supprimé 1 notifications pour prêt retourné: livre Livre 1, utilisateur utilisateur_1
+Notification créée: ID 9, message: Stock critique: 1 unité(s) de 'Livre 1' restantes.
+Total des notifications affichées: 2
+Notification count: total=4
+Tentative de marquage de toutes les notifications comme lues par l'utilisateur Bibliothecaire_1
+4 notifications marquées comme lues
+Notification count: total=0
+Total des notifications affichées: 0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Total des notifications affichées: 0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Total des notifications affichées: 0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Watching for file changes with StatReloader
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Total des notifications affichées: 0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Total des notifications affichées: 0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Watching for file changes with StatReloader
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Total des notifications affichées: 0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0

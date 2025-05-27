@@ -1,17 +1,31 @@
 {% extends 'books/base.html' %}
+{% load static %}
 
 {% block title %}Confirmer le retour{% endblock %}
 
 {% block content %}
     <div class="container-fluid">
         <h1 class="h3 mb-4">📚 Confirmer le retour</h1>
-        <div class="card">
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} text-center" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="card shadow-sm">
             <div class="card-body">
                 <p>Êtes-vous sûr de vouloir marquer comme rendu le livre "<strong>{{ loan.book.title }}</strong>" emprunté par <strong>{{ loan.user.username }}</strong> ?</p>
                 <form method="POST">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-success">Confirmer</button>
-                    <a href="{% url 'loan_list' %}" class="btn btn-secondary">Annuler</a>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-undo"></i> Confirmer
+                    </button>
+                    <a href="{% url 'loans:loan_list' %}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Annuler
+                    </a>
                 </form>
             </div>
         </div>

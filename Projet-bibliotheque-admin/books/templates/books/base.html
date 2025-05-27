@@ -55,33 +55,60 @@
 
     {% if messages %}
         {% for message in messages %}
-            <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="successModalLabel">Succès</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body text-center">
-                            <div class="checkmark-container">
-                                <span class="checkmark">✔</span>
+            {% with message_index=forloop.counter %}
+                <div class="modal fade" id="messageModal{{ message_index }}" tabindex="-1" aria-labelledby="messageModalLabel{{ message_index }}" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="messageModalLabel{{ message_index }}">
+                                    {% if 'success' in message.tags %}Succès
+                                    {% elif 'error' in message.tags %}Erreur
+                                    {% elif 'warning' in message.tags %}Avertissement
+                                    {% elif 'info' in message.tags %}Information
+                                    {% else %}Notification{% endif %}
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                            <p class="mt-3">{{ message }}</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-success" data-bs-dismiss="modal" onclick="window.location.href = '{{ redirect_url|escapejs }}';">OK</button>
+                            <div class="modal-body text-center">
+                                {% if 'success' in message.tags %}
+                                    <div class="checkmark-container">
+                                        <span class="checkmark">✔</span>
+                                    </div>
+                                {% elif 'error' in message.tags %}
+                                    <div class="error-container">
+                                        <span class="error-icon">✖</span>
+                                    </div>
+                                {% elif 'warning' in message.tags %}
+                                    <div class="warning-container">
+                                        <span class="warning-icon">⚠</span>
+                                    </div>
+                                {% elif 'info' in message.tags %}
+                                    <div class="info-container">
+                                        <span class="info-icon">ℹ</span>
+                                    </div>
+                                {% endif %}
+                                <p class="mt-3">{{ message }}</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn {% if 'success' in message.tags %}btn-success{% elif 'error' in message.tags %}btn-danger{% elif 'warning' in message.tags %}btn-warning{% elif 'info' in message.tags %}btn-info{% else %}btn-primary{% endif %}" data-bs-dismiss="modal">OK</button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            {% endwith %}
         {% endfor %}
+        <!-- django-template -->
         <script>
             document.addEventListener('DOMContentLoaded', function () {
-                const successModal = document.getElementById('successModal');
-                if (successModal) {
-                    const modal = new bootstrap.Modal(successModal);
-                    modal.show();
-                }
+                {% for message in messages %}
+                    {% with message_index=forloop.counter %}
+                        const modal{{ message_index }} = document.getElementById('messageModal{{ message_index }}');
+                        if (modal{{ message_index }}) {
+                            const modalInstance = new bootstrap.Modal(modal{{ message_index }});
+                            modalInstance.show();
+                        }
+                    {% endwith %}
+                {% endfor %}
             });
         </script>
     {% endif %}

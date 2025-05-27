@@ -1,4 +1,3 @@
-# loans/views.py
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -10,6 +9,7 @@ from .models import Loan
 from books.models import Book
 from users.models import CustomUser
 from django.http import JsonResponse
+from settings_app.models import SystemSettings
 
 @login_required
 def loan_list(request):
@@ -92,16 +92,15 @@ def return_book(request, loan_id):
     if request.method == 'POST':
         loan.return_date = timezone.now()
         loan.is_returned = True
-        loan.book.is_available = True
         if loan.book.is_physical:
             loan.book.quantity += 1
-        loan.book.save()
+            loan.book.is_available = loan.book.quantity > 0
+            loan.book.save()
         loan.save()
         messages.success(request, f"Le livre '{loan.book.title}' a été rendu avec succès.")
-        return redirect('loan_list')
-    else:  # GET request
+        return redirect('loans:loan_list')
+    else:
         return render(request, 'loans/return_book.html', {'loan': loan})
-
 
 @login_required
 def create_loan(request):
@@ -111,7 +110,8 @@ def create_loan(request):
     
     if request.method == 'POST':
         user_id = request.POST.get('user')
-        book_ids = request.POST.getlist('book_ids')  # Liste des IDs de livres
+        book_ids = request.POST.getlist('book_ids')
+        quantities = request.POST.getlist('quantities')
         due_date_str = request.POST.get('due_date')
 
         # Validation des entrées
@@ -119,15 +119,25 @@ def create_loan(request):
             messages.error(request, "Veuillez sélectionner un utilisateur.")
             return redirect('loans:create_loan')
         
-        if not book_ids:
-            messages.error(request, "Veuillez sélectionner au moins un livre.")
+        if not book_ids or not quantities or len(book_ids) != len(quantities):
+            messages.error(request, "Veuillez sélectionner au moins un livre avec une quantité valide.")
             return redirect('loans:create_loan')
         
         try:
             user_id = int(user_id)
             book_ids = [int(book_id) for book_id in book_ids if book_id]
+            quantities = [int(qty) for qty in quantities if qty]
         except (ValueError, TypeError):
-            messages.error(request, "Identifiants invalides pour l'utilisateur ou les livres.")
+            messages.error(request, "Identifiants ou quantités invalides.")
+            return redirect('loans:create_loan')
+
+        if len(book_ids) != len(quantities):
+            messages.error(request, "Le nombre de livres et de quantités ne correspond pas.")
+            return redirect('loans:create_loan')
+
+        # Vérifier l'unicité des livres
+        if len(set(book_ids)) != len(book_ids):
+            messages.error(request, "Chaque livre ne peut être sélectionné qu'une seule fois.")
             return redirect('loans:create_loan')
 
         if not due_date_str:
@@ -153,37 +163,47 @@ def create_loan(request):
         settings = SystemSettings.objects.first()
         max_loans_per_user = settings.max_loans_per_user if settings else 3
         active_loans_count = Loan.objects.filter(user=user, is_returned=False).count()
-        new_loans_count = len(set(book_ids))  # Compter les livres uniques
-        if active_loans_count + new_loans_count > max_loans_per_user:
+        total_new_loans = sum(quantities)
+        if active_loans_count + total_new_loans > max_loans_per_user:
             messages.error(request, f"L'utilisateur {user.username} a déjà {active_loans_count} prêt(s) actif(s). " +
-                                  f"Avec {new_loans_count} nouveau(x) prêt(s), la limite de {max_loans_per_user} serait dépassée.")
+                                  f"Avec {total_new_loans} nouveau(x) prêt(s), la limite de {max_loans_per_user} serait dépassée.")
             return redirect('loans:create_loan')
 
-        # Vérifier les livres
+        # Vérifier les livres et leurs quantités
         books = Book.objects.filter(id__in=book_ids, is_physical=True, is_available=True)
-        if len(books) != len(set(book_ids)):
+        if len(books) != len(book_ids):
             messages.error(request, "Certains livres ne sont pas disponibles ou ne sont pas physiques.")
             return redirect('loans:create_loan')
 
-        # Vérifier le stock et créer les prêts
+        # Créer une liste de tuples (book, quantity)
+        book_quantities = []
+        for book_id, qty in zip(book_ids, quantities):
+            book = books.get(id=book_id)
+            if qty <= 0:
+                messages.error(request, f"La quantité pour '{book.title}' doit être supérieure à 0.")
+                return redirect('loans:create_loan')
+            if qty > book.quantity:
+                messages.error(request, f"Quantité demandée ({qty}) pour '{book.title}' dépasse le stock ({book.quantity}).")
+                return redirect('loans:create_loan')
+            book_quantities.append((book, qty))
+
+        # Créer les prêts
         errors = []
         loans_created = []
-        for book in books:
-            if book.quantity <= 0:
-                errors.append(f"Aucun exemplaire disponible pour '{book.title}'.")
-                continue
+        for book, qty in book_quantities:
             try:
-                loan = Loan.objects.create(
-                    user=user,
-                    book=book,
-                    due_date=due_date,
-                    loan_date=timezone.now(),
-                    is_physical=True
-                )
-                book.quantity -= 1
+                for _ in range(qty):
+                    loan = Loan.objects.create(
+                        user=user,
+                        book=book,
+                        due_date=due_date,
+                        loan_date=timezone.now(),
+                        is_physical=True
+                    )
+                    loans_created.append(loan)
+                book.quantity -= qty
                 book.is_available = book.quantity > 0
                 book.save()
-                loans_created.append(loan)
             except Exception as e:
                 errors.append(f"Erreur lors de l'emprunt de '{book.title}' : {str(e)}")
 
@@ -205,13 +225,11 @@ def late_books(request):
         messages.error(request, "Seuls les bibliothécaires peuvent accéder à cette page.")
         return redirect('login')
 
-    # Liste des emprunts en retard (due_date < maintenant et non rendus)
     late_loans = Loan.objects.filter(
         is_returned=False,
         due_date__lt=timezone.now()
     ).select_related('user', 'book').order_by('due_date')
 
-    # Calculer les jours de retard pour chaque prêt
     now = timezone.now()
     loans_with_days_late = []
     for loan in late_loans:
@@ -221,8 +239,7 @@ def late_books(request):
             'days_late': days_late
         })
 
-    # Pagination
-    paginator = Paginator(loans_with_days_late, 10)  # 10 emprunts par page
+    paginator = Paginator(loans_with_days_late, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
@@ -230,7 +247,6 @@ def late_books(request):
         'loans': page_obj,
         'now': now
     })
-    
 
 @login_required
 def search_users_api(request):
@@ -253,7 +269,7 @@ def search_users_api(request):
             'id': user.id,
             'username': user.username,
             'email': user.email
-        } for user in users[:10]  # Limite à 10 résultats pour éviter une liste trop longue
+        } for user in users[:10]
     ]
 
     return JsonResponse({'users': users_list})
@@ -278,8 +294,9 @@ def search_books_api(request):
         {
             'id': book.id,
             'title': book.title,
-            'author': book.author
-        } for book in books[:10]  # Limite à 10 résultats
+            'author': book.author,
+            'quantity': book.quantity
+        } for book in books[:10]
     ]
 
     return JsonResponse({'books': books_list})

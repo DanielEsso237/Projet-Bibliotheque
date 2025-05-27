@@ -61,7 +61,7 @@
                                         {% endif %}
                                     </td>
                                     <td>
-                                        <a href="{% url 'return_book' loan.id %}" class="btn btn-sm btn-success">
+                                        <a href="{% url 'loans:return_book' loan.id %}" class="btn btn-sm btn-success">
                                             <i class="fas fa-undo"></i> Marquer comme rendu
                                         </a>
                                     </td>
@@ -110,13 +110,16 @@
 
 {% block extra_js %}
     <script>
+        // Passer l'URL de return_book à JavaScript
+        const returnBookUrlBase = "{% url 'loans:return_book' 0 %}".replace('/0/', '/');
+
         document.addEventListener('DOMContentLoaded', function () {
             const searchInput = document.getElementById('searchInput');
             const statusFilter = document.getElementById('statusFilter');
             const loansList = document.getElementById('loansList');
             const paginationContainer = document.getElementById('paginationContainer');
 
-            let loansContainer = document.getElementById('loansContainer'); // Initialisation
+            let loansContainer = document.getElementById('loansContainer');
 
             // Créer l'élément noResultsMessage s'il n'existe pas
             let noResultsMessage = document.getElementById('noResultsMessage');
@@ -165,7 +168,7 @@
                             </table>`;
                         loansList.innerHTML = '';
                         loansList.appendChild(tableWrapper);
-                        loansContainer = document.getElementById('loansContainer'); // Mettre à jour la référence
+                        loansContainer = document.getElementById('loansContainer');
                     }
 
                     // Vider uniquement le contenu de loansContainer
@@ -189,7 +192,7 @@
                                         `<span class="badge bg-success">En cours</span>`}
                                 </td>
                                 <td>
-                                    <a href="/loans/return/${loan.id}/" class="btn btn-sm btn-success">
+                                    <a href="${returnBookUrlBase}${loan.id}/" class="btn btn-sm btn-success">
                                         <i class="fas fa-undo"></i> Marquer comme rendu
                                     </a>
                                 </td>`;
@@ -245,7 +248,7 @@
 
             // Écouteurs pour la recherche et le filtrage
             searchInput.addEventListener('input', () => {
-                const debounce = setTimeout(fetchLoans, 300); // Débouncer pour éviter trop de requêtes
+                const debounce = setTimeout(fetchLoans, 300);
                 return () => clearTimeout(debounce);
             });
             statusFilter.addEventListener('change', fetchLoans);

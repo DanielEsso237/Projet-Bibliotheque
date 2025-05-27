@@ -35,6 +35,11 @@
                             <input type="text" class="form-control book-input" id="bookInput_0" name="books" placeholder="Rechercher par titre ou auteur..." required>
                             <input type="hidden" class="book-id" id="bookId_0" name="book_ids" required>
                             <div class="book-suggestions dropdown-menu w-100" id="bookSuggestions_0" style="max-height: 200px; overflow-y: auto;"></div>
+                            <div class="mt-2">
+                                <label for="quantity_0" class="form-label">Quantité</label>
+                                <input type="number" class="form-control quantity-input" id="quantity_0" name="quantities" min="1" value="1" data-max-quantity="0" required>
+                                <small class="text-muted" id="stockInfo_0">Stock disponible : chargement...</small>
+                            </div>
                             <button type="button" class="btn btn-danger btn-sm remove-book mt-2 d-none">Supprimer</button>
                         </div>
                     </div>
@@ -77,6 +82,49 @@
                 errorMessage.textContent = message;
                 errorMessage.classList.remove('d-none');
                 setTimeout(() => errorMessage.classList.add('d-none'), 5000);
+            }
+
+            // Liste des livres sélectionnés pour vérifier l'unicité
+            let selectedBookIds = [];
+
+            // Mettre à jour la liste des livres sélectionnés
+            function updateSelectedBookIds() {
+                selectedBookIds = [];
+                const bookIdInputs = booksContainer.querySelectorAll('.book-id');
+                bookIdInputs.forEach(input => {
+                    if (input.value) {
+                        selectedBookIds.push(input.value);
+                    }
+                });
+            }
+
+            // Mettre à jour le stock disponible
+            function updateStockInfo(bookIdInput, stockInfoElement, quantityInput) {
+                if (bookIdInput.value) {
+                    fetch(`/books/api/book/${bookIdInput.value}/`, {
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        const stock = data.quantity || 0;
+                        stockInfoElement.textContent = `Stock disponible : ${stock}`;
+                        quantityInput.setAttribute('data-max-quantity', stock);
+                        quantityInput.max = stock;
+                        if (parseInt(quantityInput.value) > stock) {
+                            quantityInput.value = stock;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erreur:', error);
+                        stockInfoElement.textContent = 'Erreur de chargement du stock';
+                    });
+                } else {
+                    stockInfoElement.textContent = 'Stock disponible : sélectionnez un livre';
+                    quantityInput.setAttribute('data-max-quantity', '0');
+                    quantityInput.removeAttribute('max');
+                }
             }
 
             // Autocomplétion des utilisateurs
@@ -123,12 +171,13 @@
             }, 300));
 
             // Fonction pour initialiser l'autocomplétion d'un champ livre
-            function initializeBookAutocomplete(bookInput, bookIdInput, suggestionsDiv, index) {
+            function initializeBookAutocomplete(bookInput, bookIdInput, suggestionsDiv, stockInfo, quantityInput, index) {
                 bookInput.addEventListener('input', debounce(function () {
                     const query = bookInput.value.trim();
                     if (query.length < 1) {
                         suggestionsDiv.innerHTML = '';
                         suggestionsDiv.classList.remove('show');
+                        updateStockInfo(bookIdInput, stockInfo, quantityInput);
                         return;
                     }
 
@@ -142,19 +191,30 @@
                     .then(data => {
                         suggestionsDiv.innerHTML = '';
                         if (data.books.length > 0) {
-                            data.books.forEach(book => {
-                                const suggestionItem = document.createElement('div');
-                                suggestionItem.className = 'dropdown-item';
-                                suggestionItem.textContent = `${book.title} (${book.author})`;
-                                suggestionItem.addEventListener('click', () => {
-                                    bookInput.value = `${book.title} (${book.author})`;
-                                    bookIdInput.value = book.id;
-                                    suggestionsDiv.innerHTML = '';
-                                    suggestionsDiv.classList.remove('show');
+                            const filteredBooks = data.books.filter(book => !selectedBookIds.includes(book.id.toString()) || book.id.toString() === bookIdInput.value);
+                            if (filteredBooks.length > 0) {
+                                filteredBooks.forEach(book => {
+                                    const suggestionItem = document.createElement('div');
+                                    suggestionItem.className = 'dropdown-item';
+                                    suggestionItem.textContent = `${book.title} (${book.author})`;
+                                    suggestionItem.addEventListener('click', () => {
+                                        bookInput.value = `${book.title} (${book.author})`;
+                                        bookIdInput.value = book.id;
+                                        updateSelectedBookIds();
+                                        updateStockInfo(bookIdInput, stockInfo, quantityInput);
+                                        suggestionsDiv.innerHTML = '';
+                                        suggestionsDiv.classList.remove('show');
+                                    });
+                                    suggestionsDiv.appendChild(suggestionItem);
                                 });
-                                suggestionsDiv.appendChild(suggestionItem);
-                            });
-                            suggestionsDiv.classList.add('show');
+                                suggestionsDiv.classList.add('show');
+                            } else {
+                                const noResultItem = document.createElement('div');
+                                noResultItem.className = 'dropdown-item text-danger';
+                                noResultItem.textContent = 'Aucun livre disponible';
+                                suggestionsDiv.appendChild(noResultItem);
+                                suggestionsDiv.classList.add('show');
+                            }
                         } else {
                             const noResultItem = document.createElement('div');
                             noResultItem.className = 'dropdown-item text-danger';
@@ -165,13 +225,21 @@
                     })
                     .catch(error => console.error('Erreur:', error));
                 }, 300));
+
+                // Mettre à jour le stock lors de la sélection
+                bookIdInput.addEventListener('change', () => {
+                    updateStockInfo(bookIdInput, stockInfo, quantityInput);
+                });
             }
 
             // Initialiser l'autocomplétion pour le premier champ livre
             const firstBookInput = document.getElementById('bookInput_0');
             const firstBookIdInput = document.getElementById('bookId_0');
             const firstBookSuggestions = document.getElementById('bookSuggestions_0');
-            initializeBookAutocomplete(firstBookInput, firstBookIdInput, firstBookSuggestions, 0);
+            const firstStockInfo = document.getElementById('stockInfo_0');
+            const firstQuantityInput = document.getElementById('quantity_0');
+            initializeBookAutocomplete(firstBookInput, firstBookIdInput, firstBookSuggestions, firstStockInfo, firstQuantityInput, 0);
+            updateSelectedBookIds();
 
             // Ajouter un nouveau champ livre
             addBookBtn.addEventListener('click', function () {
@@ -182,6 +250,11 @@
                     <input type="text" class="form-control book-input" id="bookInput_${bookIndex}" name="books" placeholder="Rechercher par titre ou auteur..." required>
                     <input type="hidden" class="book-id" id="bookId_${bookIndex}" name="book_ids" required>
                     <div class="book-suggestions dropdown-menu w-100" id="bookSuggestions_${bookIndex}" style="max-height: 200px; overflow-y: auto;"></div>
+                    <div class="mt-2">
+                        <label for="quantity_${bookIndex}" class="form-label">Quantité</label>
+                        <input type="number" class="form-control quantity-input" id="quantity_${bookIndex}" name="quantities" min="1" value="1" data-max-quantity="0" required>
+                        <small class="text-muted" id="stockInfo_${bookIndex}">Stock disponible : sélectionnez un livre</small>
+                    </div>
                     <button type="button" class="btn btn-danger btn-sm remove-book mt-2">Supprimer</button>
                 `;
                 booksContainer.appendChild(bookEntry);
@@ -189,10 +262,12 @@
                 const newBookInput = document.getElementById(`bookInput_${bookIndex}`);
                 const newBookIdInput = document.getElementById(`bookId_${bookIndex}`);
                 const newBookSuggestions = document.getElementById(`bookSuggestions_${bookIndex}`);
-                initializeBookAutocomplete(newBookInput, newBookIdInput, newBookSuggestions, bookIndex);
+                const newStockInfo = document.getElementById(`stockInfo_${bookIndex}`);
+                const newQuantityInput = document.getElementById(`quantity_${bookIndex}`);
+                initializeBookAutocomplete(newBookInput, newBookIdInput, newBookSuggestions, newStockInfo, newQuantityInput, bookIndex);
 
-                // Activer les boutons de suppression
                 updateRemoveButtons();
+                updateSelectedBookIds();
                 bookIndex++;
             });
 
@@ -201,6 +276,7 @@
                 if (e.target.classList.contains('remove-book')) {
                     e.target.closest('.book-entry').remove();
                     updateRemoveButtons();
+                    updateSelectedBookIds();
                 }
             });
 
@@ -243,6 +319,21 @@
                     if (!input.value) {
                         e.preventDefault();
                         showError('Veuillez sélectionner un livre valide pour chaque champ.');
+                        return;
+                    }
+                }
+                const quantityInputs = booksContainer.querySelectorAll('.quantity-input');
+                for (let input of quantityInputs) {
+                    const qty = parseInt(input.value);
+                    const maxQty = parseInt(input.getAttribute('data-max-quantity'));
+                    if (!qty || qty < 1) {
+                        e.preventDefault();
+                        showError('Veuillez entrer une quantité valide (au moins 1) pour chaque livre.');
+                        return;
+                    }
+                    if (qty > maxQty) {
+                        e.preventDefault();
+                        showError(`La quantité pour un livre dépasse le stock disponible (${maxQty}).`);
                         return;
                     }
                 }
