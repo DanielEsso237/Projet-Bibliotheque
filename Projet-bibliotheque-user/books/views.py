@@ -24,8 +24,7 @@ def search_view(request):
     }
     return render(request, 'books/search.html', context)
 
-def loans_view(request):
-    return render(request, 'books/loans.html')
+
 
 def book_detail_view(request, pk):
     return render(request, 'books/book_detail.html')

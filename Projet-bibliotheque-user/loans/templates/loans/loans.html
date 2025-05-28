@@ -1,0 +1,50 @@
+{% extends 'readers/base.html' %}
+{% load static %}
+{% block title %}Mes emprunts{% endblock %}
+{% block content %}
+    <div class="container my-4">
+        <h2 class="text-center mb-4">Mes emprunts</h2>
+
+        {% if loans %}
+            <div class="row row-cols-1 row-cols-md-2 g-4">
+                {% for loan in loans %}
+                    <div class="col">
+                        <div class="card h-100">
+                            {% if loan.book.cover_image %}
+                                <img src="{{ loan.book.cover_image.url }}" class="card-img-top" alt="{{ loan.book.title }}" style="height: 200px; object-fit: cover;">
+                            {% else %}
+                                <img src="{% static 'images/book-placeholder.png' %}" class="card-img-top" alt="Placeholder" style="height: 200px; object-fit: cover;">
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">{{ loan.book.title }}</h5>
+                                <p class="card-text"><strong>Auteur :</strong> {{ loan.book.author }}</p>
+                                <p class="card-text"><strong>Type :</strong> {% if loan.is_physical %}Physique{% else %}E-book{% endif %}</p>
+                                <p class="card-text"><strong>Date d'emprunt :</strong> {{ loan.loan_date|date:"d/m/Y H:i" }}</p>
+                                <p class="card-text"><strong>Date de retour prévue :</strong> {{ loan.due_date|date:"d/m/Y H:i" }}</p>
+                                {% if loan.fine %}
+                                    <p class="card-text"><strong>Amende :</strong> {{ loan.fine }} €</p>
+                                {% endif %}
+                                <p class="card-text"><strong>État :</strong> 
+                                    {% if loan.is_returned %}
+                                        <span class="badge bg-success">Retourné</span>
+                                    {% elif loan.due_date|date:"Y-m-d" < today|date:"Y-m-d" %}
+                                        <span class="badge bg-danger">En retard</span>
+                                    {% else %}
+                                        <span class="badge bg-primary">En cours</span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                            <div class="card-footer text-center">
+                                <a href="{% url 'books:detail' loan.book.id %}" class="btn btn-primary btn-sm w-100">
+                                    <i class="fas fa-info-circle me-1"></i> Détails du livre
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-center">Vous n'avez aucun emprunt en cours.</p>
+        {% endif %}
+    </div>
+{% endblock %}
