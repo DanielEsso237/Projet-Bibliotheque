@@ -1,0 +1,63 @@
+{% extends 'readers/base.html' %}
+{% load static %}
+{% block title %}Recherche de livres{% endblock %}
+{% block content %}
+    <div class="container my-4">
+        <h2 class="text-center mb-4">Rechercher un livre</h2>
+
+        <!-- Barre de recherche et filtres -->
+        <form method="get" class="mb-4">
+            <div class="row g-2">
+                <div class="col-12 col-md-6">
+                    <input type="text" name="q" value="{{ request.GET.q }}" class="form-control" placeholder="Titre ou auteur..." aria-label="Recherche">
+                </div>
+                <div class="col-6 col-md-3">
+                    <select name="category" class="form-select" aria-label="Catégorie">
+                        <option value="">Toutes catégories</option>
+                        {% for category in categories %}
+                            <option value="{{ category }}" {% if request.GET.category == category %}selected{% endif %}>{{ category }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="form-check mt-2">
+                        <input type="checkbox" name="available" id="available" class="form-check-input" {% if request.GET.available %}checked{% endif %}>
+                        <label for="available" class="form-check-label">Disponible uniquement</label>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary w-100 mt-2"><i class="fas fa-search me-1"></i> Rechercher</button>
+        </form>
+
+        <!-- Liste des livres -->
+        {% if books %}
+            <div class="row row-cols-1 row-cols-md-3 g-3">
+                {% for book in books %}
+                    <div class="col">
+                        <div class="card h-100">
+                            {% if book.cover_image %}
+                                <img src="{{ book.cover_image.url }}" class="card-img-top" alt="{{ book.title }}" style="height: 200px; object-fit: cover;">
+                            {% else %}
+                                <img src="{% static 'images/book-placeholder.png' %}" class="card-img-top" alt="Placeholder" style="height: 200px; object-fit: cover;">
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">{{ book.title }}</h5>
+                                <p class="card-text">Auteur : {{ book.author }}</p>
+                                <p class="card-text">Catégorie : {{ book.category|default:"Non spécifiée" }}</p>
+                                <p class="card-text">{% if book.is_available %}<span class="badge bg-success">Disponible</span>{% else %}<span class="badge bg-danger">Non disponible</span>{% endif %}</p>
+                            </div>
+                            <div class="card-footer text-center">
+                                {% if not book.is_physical and book.ebook_file %}
+                                    <a href="{{ book.ebook_file.url }}" class="btn btn-success btn-sm mb-2 w-100" target="_blank"><i class="fas fa-book-open me-1"></i> Lire PDF</a>
+                                {% endif %}
+                                <a href="{% url 'books:detail' book.id %}" class="btn btn-primary btn-sm w-100"><i class="fas fa-info-circle me-1"></i> Détails</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-center">Aucun livre trouvé.</p>
+        {% endif %}
+    </div>
+{% endblock %}
