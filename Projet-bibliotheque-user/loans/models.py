@@ -20,3 +20,18 @@ class Loan(models.Model):
         managed = False  # Table gérée par l'admin
         db_table = 'loans_loan'  # Nom de la table dans librairy_db
         ordering = ['-loan_date']
+        
+class History(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='history')
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='history')
+    genre = models.CharField(max_length=50)
+    loan_date = models.DateTimeField()
+    is_physical = models.BooleanField()
+
+    def __str__(self):
+        return f"{self.user.username} - {self.book.title} ({self.genre})"
+
+    class Meta:
+        managed = False
+        db_table = 'loans_history'
+        ordering = ['-loan_date']

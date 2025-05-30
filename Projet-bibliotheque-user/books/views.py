@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
-from django.db.models import Q
+from django.db.models import Q, Count
 from .models import Book
-from loans.models import Loan
+from loans.models import Loan, History
 from django.contrib.auth.decorators import login_required
 
 @login_required
@@ -52,8 +52,31 @@ def new_arrivals_view(request):
     }
     return render(request, 'books/new_arrivals.html', context)
 
+@login_required
 def recommendations_view(request):
-    return render(request, 'books/recommendations.html', {'message': 'Page en cours de développement'})
+    # Récupérer les genres les plus empruntés
+    genre_counts = (History.objects
+                    .filter(user=request.user)
+                    .values('genre')
+                    .annotate(genre_count=Count('genre'))
+                    .order_by('-genre_count'))
+    
+    # Extraire les 3 genres principaux en Python
+    top_genres = [item['genre'] for item in genre_counts[:3]]
+    
+    # Suggérer des livres disponibles dans ces genres
+    recommended_books = []
+    if top_genres:
+        recommended_books = (Book.objects
+                            .filter(category__in=top_genres, is_available=True)
+                            .order_by('-created_at')[:10])
+    
+    context = {
+        'recommended_books': recommended_books,
+        'message': 'Aucun livre recommandé pour le moment.' if not recommended_books else ''
+    }
+    return render(request, 'books/recommendations.html', context)
 
+@login_required
 def favorites_view(request):
     return render(request, 'books/favorites.html', {'message': 'Page en cours de développement'})

@@ -1,8 +1,34 @@
 {% extends "readers/base.html" %}
+{% load static %}
 {% block title %}Recommandations{% endblock %}
 {% block content %}
     <div class="container my-4">
         <h2 class="text-center mb-4">Recommandations</h2>
-        <p class="text-center">{{ message }}</p>
+        {% if recommended_books %}
+            <div class="row g-4">
+                {% for book in recommended_books %}
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="card h-100">
+                            {% if book.cover_image %}
+                                <img src="{{ book.cover_image.url }}" class="card-img-top" alt="{{ book.title }}" style="height: 200px; object-fit: cover;">
+                            {% else %}
+                                <img src="{% static 'images/default_cover.jpg' %}" class="card-img-top" alt="Alt de couverture par défaut" style="height: 200px; object-fit: cover;">
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">{{ book.title }}</h5>
+                                <p class="card-text">Auteur : {{ book.author }}</p>
+                                <p class="card-text">Catégorie : {{ book.category|default:"Non spécifiée" }}</p>
+                                <p class="card-text">
+                                    <span class="badge bg-success">Disponible</span>
+                                </p>
+                                <a href="{% url 'books:detail' book.pk %}"><i class="btn btn-primary fa fa-info-circle me-1"></i> Détails</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-center">{{ message }}</p>
+        {% endif %}
     </div>
 {% endblock %}
