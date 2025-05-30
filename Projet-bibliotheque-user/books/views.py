@@ -44,8 +44,13 @@ def book_detail_view(request, pk):
     context = {'book': book}
     return render(request, 'books/book_detail.html', context)
 
+@login_required
 def new_arrivals_view(request):
-    return render(request, 'books/new_arrivals.html', {'message': 'Page en cours de développement'})
+    recent_books = Book.objects.order_by('-created_at')[:10]
+    context = {
+        'recent_books': recent_books,
+    }
+    return render(request, 'books/new_arrivals.html', context)
 
 def recommendations_view(request):
     return render(request, 'books/recommendations.html', {'message': 'Page en cours de développement'})

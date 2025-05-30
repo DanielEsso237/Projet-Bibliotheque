@@ -1,8 +1,38 @@
 {% extends "readers/base.html" %}
+{% load static %}
 {% block title %}Nouveautés{% endblock %}
 {% block content %}
     <div class="container my-4">
         <h2 class="text-center mb-4">Nouveautés</h2>
-        <p class="text-center">{{ message }}</p>
+        {% if recent_books %}
+            <div class="row g-4">
+                {% for book in recent_books %}
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="card h-100">
+                            {% if book.cover_image %}
+                                <img src="{{ book.cover_image.url }}" class="card-img-top" alt="{{ book.title }}" style="height: 200px; object-fit: cover;">
+                            {% else %}
+                                <img src="{% static 'images/default_cover.jpg' %}" class="card-img-top" alt="Pas de couverture" style="height: 200px; object-fit: cover;">
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">{{ book.title }}</h5>
+                                <p class="card-text">Auteur : {{ book.author }}</p>
+                                <p class="card-text">Catégorie : {{ book.category|default:"Non spécifiée" }}</p>
+                                <p class="card-text">
+                                    {% if book.is_available %}
+                                        <span class="badge bg-success">Disponible</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Non disponible</span>
+                                    {% endif %}
+                                </p>
+                                <a href="{% url 'books:detail' book.pk %}" class="btn btn-primary"><i class="fas fa-info-circle me-1"></i> Détails</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-center">Aucun livre récent trouvé.</p>
+        {% endif %}
     </div>
 {% endblock %}
