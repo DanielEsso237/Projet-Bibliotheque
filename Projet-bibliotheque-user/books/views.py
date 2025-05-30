@@ -1,6 +1,21 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.db.models import Q
 from .models import Book
+from loans.models import Loan
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def dashboard_view(request):
+    loans_count = Loan.objects.filter(user=request.user, is_returned=False).count()
+    notifications_count = 0
+    favorites_count = 0
+
+    context = {
+        'loans_count': loans_count,
+        'notifications_count': notifications_count,
+        'favorites_count': favorites_count,
+    }
+    return render(request, 'books/dashboard.html', context)
 
 def search_view(request):
     query = request.GET.get('q', '')
@@ -24,7 +39,16 @@ def search_view(request):
     }
     return render(request, 'books/search.html', context)
 
-
-
 def book_detail_view(request, pk):
-    return render(request, 'books/book_detail.html')
+    book = get_object_or_404(Book, pk=pk)
+    context = {'book': book}
+    return render(request, 'books/book_detail.html', context)
+
+def new_arrivals_view(request):
+    return render(request, 'books/new_arrivals.html', {'message': 'Page en cours de développement'})
+
+def recommendations_view(request):
+    return render(request, 'books/recommendations.html', {'message': 'Page en cours de développement'})
+
+def favorites_view(request):
+    return render(request, 'books/favorites.html', {'message': 'Page en cours de développement'})

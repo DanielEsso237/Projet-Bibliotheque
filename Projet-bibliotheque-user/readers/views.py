@@ -1,8 +1,16 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from .forms import CustomUserCreationForm
 from users.models import CustomUser
+
+@login_required
+def home(request):
+    if not request.user.is_standard_user:
+        messages.error(request, "Accès réservé aux utilisateurs standard.")
+        return redirect('readers:login')
+    return redirect('books:dashboard')
 
 def register_view(request):
     if request.method == 'POST':
@@ -13,7 +21,7 @@ def register_view(request):
             user.is_librarian = False
             user.save()
             messages.success(request, "Inscription réussie ! Vous pouvez maintenant vous connecter.")
-            return redirect('readers_login')
+            return redirect('readers:login')
         else:
             messages.error(request, "Erreur dans le formulaire.")
     else:
@@ -29,7 +37,7 @@ def login_view(request):
             if user.is_standard_user:
                 login(request, user)
                 messages.success(request, "Connexion réussie !")
-                return redirect('readers_home')
+                return redirect('readers:home')
             else:
                 messages.error(request, "Vous n'êtes pas un utilisateur standard.")
         else:
@@ -39,9 +47,18 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     messages.success(request, "Déconnexion réussie.")
-    return redirect('readers_login')
+    return redirect('readers:login')
 
-def home(request):
-    if not request.user.is_authenticated or not request.user.is_standard_user:
-        return redirect('readers_login')
-    return render(request, 'books/dashboard.html')
+@login_required
+def notifications_view(request):
+    if not request.user.is_standard_user:
+        messages.error(request, "Accès réservé aux utilisateurs standard.")
+        return redirect('readers:login')
+    return render(request, 'readers/notifications.html', {'message': 'Page en cours de développement'})
+
+@login_required
+def profile_view(request):
+    if not request.user.is_standard_user:
+        messages.error(request, "Accès réservé aux utilisateurs standard.")
+        return redirect('readers:login')
+    return render(request, 'readers/profile.html', {'message': 'Page en cours de développement'})

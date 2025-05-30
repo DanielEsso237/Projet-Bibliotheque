@@ -12,6 +12,9 @@
         body {
             background-color: #f8f9fa;
             font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
         .navbar {
             background-color: #343a40;
@@ -34,6 +37,7 @@
         .container {
             padding: 1rem;
             max-width: 100%;
+            flex: 1;
         }
         .alert {
             margin: 1rem 0;
@@ -42,6 +46,20 @@
         .btn {
             font-size: 1rem;
             padding: 0.5rem 1rem;
+        }
+        footer {
+            background-color: #343a40;
+            color: white;
+            padding: 1rem 0;
+            text-align: center;
+            margin-top: auto;
+        }
+        footer a {
+            color: #ccc;
+            text-decoration: none;
+        }
+        footer a:hover {
+            color: white;
         }
         @media (max-width: 576px) {
             .navbar-brand {
@@ -65,7 +83,7 @@
 <body>
     <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
-            <a class="navbar-brand" href="{% url 'readers_home' %}">📚 Bibliothèque</a>
+            <a class="navbar-brand" href="{% url 'readers:home' %}">📚 Bibliothèque</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -73,7 +91,7 @@
                 <ul class="navbar-nav ms-auto">
                     {% if user.is_authenticated and user.is_standard_user %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'readers_home' %}"><i class="fas fa-home me-1"></i> Accueil</a>
+                            <a class="nav-link" href="{% url 'readers:home' %}"><i class="fas fa-home me-1"></i> Accueil</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'books:search' %}"><i class="fas fa-search me-1"></i> Rechercher</a>
@@ -82,20 +100,23 @@
                             <a class="nav-link" href="{% url 'loans:list' %}"><i class="fas fa-book me-1"></i> Mes emprunts</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#"><i class="fas fa-bell me-1"></i> Notifications</a>
+                            <a class="nav-link" href="{% url 'readers:notifications' %}"><i class="fas fa-bell me-1"></i> Notifications</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#"><i class="fas fa-user me-1"></i> Profil</a>
+                            <a class="nav-link" href="{% url 'books:favorites' %}"><i class="fas fa-star me-1"></i> Favoris</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-danger" href="{% url 'readers_logout' %}"><i class="fas fa-sign-out-alt me-1"></i> Déconnexion</a>
+                            <a class="nav-link" href="{% url 'readers:profile' %}"><i class="fas fa-user me-1"></i> Profil</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-danger" href="{% url 'readers:logout' %}"><i class="fas fa-sign-out-alt me-1"></i> Déconnexion</a>
                         </li>
                     {% else %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'readers_login' %}"><i class="fas fa-sign-in-alt me-1"></i> Connexion</a>
+                            <a class="nav-link" href="{% url 'readers:login' %}"><i class="fas fa-sign-in-alt me-1"></i> Connexion</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'readers_register' %}"><i class="fas fa-user-plus me-1"></i> Inscription</a>
+                            <a class="nav-link" href="{% url 'readers:register' %}"><i class="fas fa-user-plus me-1"></i> Inscription</a>
                         </li>
                     {% endif %}
                 </ul>
@@ -118,6 +139,18 @@
         {% block content %}
         {% endblock %}
     </div>
+
+    <footer>
+        <div class="container">
+            <p>© 2025 Bibliothèque. Tous droits réservés.</p>
+            <p>
+                <a href="{% url 'readers:home' %}">Accueil</a> | 
+                <a href="{% url 'books:search' %}">Rechercher</a> | 
+                <a href="{% url 'loans:list' %}">Emprunts</a> | 
+                <a href="#">Contact</a>
+            </p>
+        </div>
+    </footer>
 
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
     {% block extra_js %}{% endblock %}
