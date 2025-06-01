@@ -7,7 +7,7 @@ from users.models import CustomUser
 
 @login_required
 def home(request):
-    if not request.user.is_standard_user:
+    if not request.user.is_authenticated or not request.user.is_standard_user:
         messages.error(request, "Accès réservé aux utilisateurs standard.")
         return redirect('readers:login')
     return redirect('books:dashboard')

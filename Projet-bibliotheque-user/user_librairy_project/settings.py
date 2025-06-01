@@ -84,3 +84,8 @@ MEDIA_ROOT = Path('C:/Users/T.SHIGARAKI/Desktop/Projet-Bibliotheque/Projet-bibli
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'users.CustomUser'
+
+# Authentication settings
+LOGIN_URL = 'readers:login'  # Nom de l'URL pour la connexion
+LOGIN_REDIRECT_URL = 'books:dashboard'  # Redirection après connexion
+LOGOUT_REDIRECT_URL = 'readers:home'  # Redirection après déconnexion
