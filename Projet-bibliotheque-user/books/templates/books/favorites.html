@@ -1,8 +1,62 @@
 {% extends "readers/base.html" %}
-{% block title %}Favoris{% endblock %}
+{% load static %}
+{% block title %}Mes Favoris{% endblock %}
 {% block content %}
     <div class="container my-4">
-        <h2 class="text-center mb-4">Mes Favoris</h2>
-        <p class="text-center">{{ message }}</p>
+        <h2 class="text-center mb-4">Mes favoris</h2>
+        {% if favorite_books %}
+            <div class="row">
+                {% for book in favorite_books %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            {% if book.cover_image %}
+                                <img src="{{ book.cover_image.url }}" class="card-img-top" alt="{{ book.title }}">
+                            {% else %}
+                                <img src="{% static 'images/default_book.jpg' %}" class="card-img-top" alt="Default cover">
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">{{ book.title }}</h5>
+                                <p class="card-text">Auteur: {{ book.author }}</p>
+                                <p class="card-text">Catégorie: {{ book.category }}</p>
+                                <a href="{% url 'books:book_detail' book.pk %}" class="btn btn-primary">Voir détails</a>
+                                <button class="btn btn-link favorite-btn" data-book-id="{{ book.id }}" title="Retirer des favoris">
+                                    <i class="fas fa-star text-warning"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-center">{{ message }}</p>
+        {% endif %}
     </div>
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script>
+        $(document).ready(function() {
+            $('.favorite-btn').click(function() {
+                const bookId = $(this).data('book-id');
+                const icon = $(this).find('i');
+                $.ajax({
+                    url: '{% url 'books:toggle_favorite' %}',
+                    method: 'POST',
+                    data: {
+                        book_id: bookId,
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    success: function(response) {
+                        if (response.added) {
+                            icon.removeClass('text-muted').addClass('text-warning');
+                        } else {
+                            icon.removeClass('text-warning').addClass('text-muted');
+                            $(this).closest('.card').parent().remove(); // Supprime la carte
+                        }
+                    },
+                    error: function() {
+                        alert('Erreur lors de la mise à jour des favoris.');
+                    }
+                });
+            });
+        });
+    </script>
 {% endblock %}
