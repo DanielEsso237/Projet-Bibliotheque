@@ -1,8 +1,65 @@
-{% extends "readers/base.html" %}
-{% block title %}Profil{% endblock %}
+{% extends 'readers/base.html' %}
+{% load static %}
+{% block title %}Mon Profil{% endblock %}
 {% block content %}
     <div class="container my-4">
         <h2 class="text-center mb-4">Mon Profil</h2>
-        <p class="text-center">{{ message }}</p>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} text-center" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="row">
+            <!-- Informations du profil -->
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Informations personnelles</h5>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Nom d'utilisateur :</strong> {{ user.username }}</p>
+                        <p><strong>Email :</strong> {{ user.email|default:"Non défini" }}</p>
+                        <p><strong>Date d'inscription :</strong> {{ user.date_joined|date:"d/m/Y" }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistiques -->
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Statistiques</h5>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Emprunts en cours :</strong> {{ loans_count }}</p>
+                        <p><strong>Livres en favoris :</strong> {{ favorites_count }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Formulaire de changement de mot de passe -->
+        <div class="row">
+            <div class="col-md-6 mx-auto">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Modifier le mot de passe</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="post">
+                            {% csrf_token %}
+                            {{ password_form.as_p }}
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-lock me-1"></i> Changer le mot de passe
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}

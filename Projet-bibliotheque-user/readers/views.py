@@ -1,9 +1,12 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import PasswordChangeForm
 from .forms import CustomUserCreationForm
 from users.models import CustomUser
+from loans.models import Loan
+from books.models import UserFavorite
 
 @login_required
 def home(request):
@@ -61,4 +64,25 @@ def profile_view(request):
     if not request.user.is_standard_user:
         messages.error(request, "Accès réservé aux utilisateurs standard.")
         return redirect('readers:login')
-    return render(request, 'readers/profile.html', {'message': 'Page en cours de développement'})
+    
+    if request.method == 'POST':
+        password_form = PasswordChangeForm(user=request.user, data=request.POST)
+        if password_form.is_valid():
+            password_form.save()
+            update_session_auth_hash(request, password_form.user)
+            messages.success(request, "Mot de passe modifié avec succès.")
+            return redirect('readers:profile')
+        else:
+            messages.error(request, "Erreur dans le formulaire de modification.")
+    else:
+        password_form = PasswordChangeForm(user=request.user)
+    
+    loans_count = Loan.objects.filter(user=request.user, is_returned=False).count()
+    favorites_count = UserFavorite.objects.filter(user=request.user).count()
+    context = {
+        'user': request.user,
+        'loans_count': loans_count,
+        'favorites_count': favorites_count,
+        'password_form': password_form,
+    }
+    return render(request, 'readers/profile.html', context)
