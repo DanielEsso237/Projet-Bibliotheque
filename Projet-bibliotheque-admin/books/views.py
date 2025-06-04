@@ -19,9 +19,15 @@ def librarian_dashboard(request):
     if availability:
         books_list = books_list.filter(is_available=(availability.lower() == 'true'))
     paginator = Paginator(books_list, 9)
-    page_number = request.GET.get('page')
+    page_number = request.GET.get('book_page')
     books = paginator.get_page(page_number)
-    return render(request, 'books/librarian_dashboard.html', {'books': books})
+    document_types = Document.DOCUMENT_TYPES
+    academic_levels = Document.ACADEMIC_LEVELS
+    return render(request, 'books/librarian_dashboard.html', {
+        'books': books,
+        'document_types': document_types,
+        'academic_levels': academic_levels
+    })
 
 def stats_api(request):
     total_books = Book.objects.count()
@@ -33,6 +39,16 @@ def stats_api(request):
         'available_books': available_books,
         'ebooks': ebooks,
         'physical_books': physical_books
+    })
+
+def doc_stats_api(request):
+    total_docs = Document.objects.count()
+    levels_count = Document.objects.values('academic_level').distinct().count()
+    types_count = Document.objects.values('document_type').distinct().count()
+    return JsonResponse({
+        'total_docs': total_docs,
+        'levels_count': levels_count,
+        'types_count': types_count
     })
 
 def search_books_api(request):
@@ -49,7 +65,6 @@ def search_books_api(request):
     elif type_filter == 'ebook':
         books_list = books_list.filter(is_physical=False)
     
-    # Tri
     sort_field = request.GET.get('sort', 'title')
     sort_order = request.GET.get('order', 'asc')
     if sort_field in ['title', 'author']:
@@ -81,6 +96,84 @@ def search_books_api(request):
         'current_page': page_obj.number,
         'paginator': {'num_pages': page_obj.paginator.num_pages}
     })
+
+def search_docs_api(request):
+    docs_list = Document.objects.all()
+    search_query = request.GET.get('search', '')
+    if search_query:
+        docs_list = docs_list.filter(title__icontains=search_query)
+    type_filter = request.GET.get('type', '')
+    if type_filter:
+        docs_list = docs_list.filter(document_type=type_filter)
+    level_filter = request.GET.get('level', '')
+    if level_filter:
+        docs_list = docs_list.filter(academic_level=level_filter)
+    
+    sort_field = request.GET.get('sort', 'title')
+    sort_order = request.GET.get('order', 'asc')
+    if sort_field in ['title']:
+        if sort_order == 'desc':
+            sort_field = f'-{sort_field}'
+        docs_list = docs_list.order_by(sort_field)
+
+    paginator = Paginator(docs_list, 9)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+    documents = [
+        {
+            'id': doc.id,
+            'title': doc.title,
+            'document_type': doc.document_type,
+            'document_type_display': doc.get_document_type_display(),
+            'academic_level': doc.academic_level,
+            'academic_level_display': doc.get_academic_level_display(),
+            'file_url': doc.file.url if doc.file else None
+        } for doc in page_obj
+    ]
+    return JsonResponse({
+        'documents': documents,
+        'has_previous': page_obj.has_previous(),
+        'has_next': page_obj.has_next(),
+        'previous_page_number': page_obj.previous_page_number() if page_obj.has_previous() else None,
+        'next_page_number': page_obj.next_page_number() if page_obj.has_next() else None,
+        'page_range': list(page_obj.paginator.page_range),
+        'current_page': page_obj.number,
+        'paginator': {'num_pages': page_obj.paginator.num_pages}
+    })
+
+def doc_api(request, doc_id):
+    doc = get_object_or_404(Document, id=doc_id)
+    data = {
+        'title': doc.title,
+        'document_type': doc.document_type,
+        'document_type_display': doc.get_document_type_display(),
+        'academic_level': doc.academic_level,
+        'academic_level_display': doc.get_academic_level_display(),
+        'file_url': doc.file.url if doc.file else None
+    }
+    return JsonResponse(data)
+
+def delete_doc(request, doc_id):
+    doc = get_object_or_404(Document, id=doc_id)
+    if request.method == 'POST':
+        doc.delete()
+        messages.success(request, 'Document supprimé avec succès !')
+        return redirect('books:librarian_dashboard')
+    return redirect('books:librarian_dashboard')
+
+def edit_doc(request, doc_id):
+    doc = get_object_or_404(Document, id=doc_id)
+    if request.method == 'POST':
+        form = DocumentForm(request.POST, request.FILES, instance=doc)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Document modifié avec succès !')
+            return redirect('books:librarian_dashboard')
+        else:
+            messages.error(request, 'Veuillez corriger les erreurs ci-dessous.')
+    else:
+        form = DocumentForm(instance=doc)
+    return render(request, 'books/edit_doc.html', {'form': form, 'doc': doc})
 
 def choose_document_type(request):
     return render(request, 'books/choose_document_type.html')

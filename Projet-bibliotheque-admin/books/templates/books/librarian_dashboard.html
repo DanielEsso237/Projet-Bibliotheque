@@ -5,10 +5,10 @@
 
 {% block extra_css %}
     <style>
-        .stats-card {
+        .stats-card, .doc-stats-card {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        .stats-card:hover {
+        .stats-card:hover, .doc-stats-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
@@ -31,6 +31,14 @@
             from { opacity: 0; }
             to { opacity: 1; }
         }
+        .nav-tabs .nav-link {
+            color: var(--text-color);
+        }
+        .nav-tabs .nav-link.active {
+            background-color: var(--card-bg);
+            border-color: var(--card-border);
+            color: var(--btn-primary-bg);
+        }
     </style>
 {% endblock %}
 
@@ -49,109 +57,211 @@
             </div>
         </div>
 
-        <!-- Statistiques -->
-        <div class="row mb-4">
-            <div class="col-md-3 col-sm-6 mb-3">
-                <div class="card stats-card bg-primary text-white">
-                    <div class="card-body d-flex align-items-center">
-                        <i class="fas fa-books fa-2x me-3"></i>
-                        <div>
-                            <h5 class="card-title mb-0">Total Livres</h5>
-                            <p class="card-text fs-4" id="totalBooks">0</p>
+        <!-- Onglets Livres/Documents -->
+        <ul class="nav nav-tabs mb-4">
+            <li class="nav-item">
+                <a class="nav-link active" id="books-tab" data-bs-toggle="tab" href="#books-content" role="tab">Livres</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="docs-tab" data-bs-toggle="tab" href="#docs-content" role="tab">Documents</a>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <!-- Livres -->
+            <div class="tab-pane fade show active" id="books-content" role="tabpanel">
+                <!-- Statistiques Livres -->
+                <div class="row mb-4">
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <div class="card stats-card bg-primary text-white">
+                            <div class="card-body d-flex align-items-center">
+                                <i class="fas fa-books fa-2x me-3"></i>
+                                <div>
+                                    <h5 class="card-title mb-0">Total Livres</h5>
+                                    <p class="card-text fs-4" id="totalBooks">0</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <div class="card stats-card bg-success text-white">
+                            <div class="card-body d-flex align-items-center">
+                                <i class="fas fa-check-circle fa-2x me-3"></i>
+                                <div>
+                                    <h5 class="card-title mb-0">Disponibles</h5>
+                                    <p class="card-text fs-4" id="availableBooks">0</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <div class="card stats-card bg-warning text-dark">
+                            <div class="card-body d-flex align-items-center">
+                                <i class="fas fa-book-open fa-2x me-3"></i>
+                                <div>
+                                    <h5 class="card-title mb-0">E-books</h5>
+                                    <p class="card-text fs-4" id="ebooks">0</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <div class="card stats-card bg-info text-white">
+                            <div class="card-body d-flex align-items-center">
+                                <i class="fas fa-box-open fa-2x me-3"></i>
+                                <div>
+                                    <h5 class="card-title mb-0">Physiques</h5>
+                                    <p class="card-text fs-4" id="physicalBooks">0</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-3 col-sm-6 mb-3">
-                <div class="card stats-card bg-success text-white">
-                    <div class="card-body d-flex align-items-center">
-                        <i class="fas fa-check-circle fa-2x me-3"></i>
-                        <div>
-                            <h5 class="card-title mb-0">Disponibles</h5>
-                            <p class="card-text fs-4" id="availableBooks">0</p>
+
+                <!-- Filtres et Recherche Livres -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <input type="text" id="searchInput" class="form-control" placeholder="Rechercher par titre ou auteur..." value="{{ request.GET.search|default:'' }}">
+                            </div>
+                            <div class="col-md-3">
+                                <select id="availabilityFilter" class="form-select">
+                                    <option value="">Tous les statuts</option>
+                                    <option value="true" {% if request.GET.availability == 'true' %}selected{% endif %}>Disponible</option>
+                                    <option value="false" {% if request.GET.availability == 'false' %}selected{% endif %}>Indisponible</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <select id="typeFilter" class="form-select">
+                                    <option value="">Tous les types</option>
+                                    <option value="physical">Physique</option>
+                                    <option value="ebook">E-book</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2 d-flex align-items-center">
+                                <button class="btn btn-outline-primary view-toggle-btn" id="viewToggleBtn" title="Basculer vue">
+                                    <i class="fas fa-table"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- Liste des livres -->
+                <div class="table-container fade-in">
+                    <div id="booksList">
+                        <table class="table table-hover" id="booksTable" style="display: none;">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="sortable" data-sort="title">Titre <i class="fas fa-sort"></i></th>
+                                    <th scope="col" class="sortable" data-sort="author">Auteur <i class="fas fa-sort"></i></th>
+                                    <th scope="col">Type</th>
+                                    <th scope="col">Quantité</th>
+                                    <th scope="col">Disponibilité</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="booksTableBody"></tbody>
+                        </table>
+                        <div class="row row-cols-1 row-cols-md-3 g-4" id="booksCards"></div>
+                    </div>
+                    <div id="noBooksMessage" class="alert alert-info" style="display: none;">Aucun livre trouvé.</div>
+                    <nav aria-label="Page navigation" class="mt-4">
+                        <ul class="pagination justify-content-center" id="booksPagination"></ul>
+                    </nav>
+                </div>
             </div>
-            <div class="col-md-3 col-sm-6 mb-3">
-                <div class="card stats-card bg-warning text-dark">
-                    <div class="card-body d-flex align-items-center">
-                        <i class="fas fa-book-open fa-2x me-3"></i>
-                        <div>
-                            <h5 class="card-title mb-0">E-books</h5>
-                            <p class="card-text fs-4" id="ebooks">0</p>
+
+            <!-- Documents -->
+            <div class="tab-pane fade" id="docs-content" role="tabpanel">
+                <!-- Statistiques Documents -->
+                <div class="row mb-4">
+                    <div class="col-md-4 col-sm-6 mb-3">
+                        <div class="card doc-stats-card bg-primary text-white">
+                            <div class="card-body d-flex align-items-center">
+                                <i class="fas fa-file-alt fa-2x me-3"></i>
+                                <div>
+                                    <h5 class="card-title mb-0">Total Documents</h5>
+                                    <p class="card-text fs-4" id="totalDocs">0</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-6 mb-3">
+                        <div class="card doc-stats-card bg-success text-white">
+                            <div class="card-body d-flex align-items-center">
+                                <i class="fas fa-graduation-cap fa-2x me-3"></i>
+                                <div>
+                                    <h5 class="card-title mb-0">Par Niveau</h5>
+                                    <p class="card-text fs-4" id="docsByLevel">0</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-6 mb-3">
+                        <div class="card doc-stats-card bg-info text-white">
+                            <div class="card-body d-flex align-items-center">
+                                <i class="fas fa-folder-open fa-2x me-3"></i>
+                                <div>
+                                    <h5 class="card-title mb-0">Par Type</h5>
+                                    <p class="card-text fs-4" id="docsByType">0</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-3 col-sm-6 mb-3">
-                <div class="card stats-card bg-info text-white">
-                    <div class="card-body d-flex align-items-center">
-                        <i class="fas fa-box-open fa-2x me-3"></i>
-                        <div>
-                            <h5 class="card-title mb-0">Physiques</h5>
-                            <p class="card-text fs-4" id="physicalBooks">0</p>
+
+                <!-- Filtres Documents -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <input type="text" id="docSearchInput" class="form-control" placeholder="Rechercher par titre...">
+                            </div>
+                            <div class="col-md-4">
+                                <select id="docTypeFilter" class="form-select">
+                                    <option value="">Tous les types</option>
+                                    {% for type in document_types %}
+                                        <option value="{{ type.0 }}">{{ type.1 }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <select id="docLevelFilter" class="form-select">
+                                    <option value="">Tous les niveaux</option>
+                                    {% for level in academic_levels %}
+                                        <option value="{{ level.0 }}">{{ level.1 }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
                         </div>
                     </div>
+                </div>
+
+                <!-- Liste des documents -->
+                <div class="table-container fade-in">
+                    <table class="table table-hover" id="docsTable">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="sortable" data-sort="title">Titre <i class="fas fa-sort"></i></th>
+                                <th scope="col">Type</th>
+                                <th scope="col">Niveau</th>
+                                <th scope="col">Fichier</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="docsTableBody"></tbody>
+                    </table>
+                    <div id="noDocsMessage" class="alert alert-info" style="display: none;">Aucun document trouvé.</div>
+                    <nav aria-label="Page navigation" class="mt-4">
+                        <ul class="pagination justify-content-center" id="docsPagination"></ul>
+                    </nav>
                 </div>
             </div>
         </div>
 
-        <!-- Filtres et Recherche -->
-        <div class="card mb-4">
-            <div class="card-body">
-                <div class="row g-3">
-                    <div class="col-md-4">
-                        <input type="text" id="searchInput" class="form-control" placeholder="Rechercher par titre ou auteur..." value="{{ request.GET.search|default:'' }}">
-                    </div>
-                    <div class="col-md-3">
-                        <select id="availabilityFilter" class="form-select">
-                            <option value="">Tous les statuts</option>
-                            <option value="true" {% if request.GET.availability == 'true' %}selected{% endif %}>Disponible</option>
-                            <option value="false" {% if request.GET.availability == 'false' %}selected{% endif %}>Indisponible</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <select id="typeFilter" class="form-select">
-                            <option value="">Tous les types</option>
-                            <option value="physical">Physique</option>
-                            <option value="ebook">E-book</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2 d-flex align-items-center">
-                        <button class="btn btn-outline-primary view-toggle-btn" id="viewToggleBtn" title="Basculer vue">
-                            <i class="fas fa-table"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Liste des livres -->
-        <div class="table-container fade-in">
-            <div id="booksList">
-                <table class="table table-hover" id="booksTable" style="display: none;">
-                    <thead>
-                        <tr>
-                            <th scope="col" class="sortable" data-sort="title">Titre <i class="fas fa-sort"></i></th>
-                            <th scope="col" class="sortable" data-sort="author">Auteur <i class="fas fa-sort"></i></th>
-                            <th scope="col">Type</th>
-                            <th scope="col">Quantité</th>
-                            <th scope="col">Disponibilité</th>
-                            <th scope="col">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="booksTableBody"></tbody>
-                </table>
-                <div class="row row-cols-1 row-cols-md-3 g-4" id="booksCards"></div>
-            </div>
-            <div id="noResultsMessage" class="alert alert-info" style="display: none;">Aucun livre trouvé.</div>
-            <nav aria-label="Page navigation" class="mt-4">
-                <ul class="pagination justify-content-center" id="paginationContainer"></ul>
-            </nav>
-        </div>
-
-        <!-- Modales -->
+        <!-- Modales Livres -->
         <div class="modal fade" id="deleteBookModal" tabindex="-1" aria-labelledby="deleteBookModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -173,24 +283,24 @@
             </div>
         </div>
 
-        <div class="modal fade" id="viewDetailsModal" tabindex="-1" aria-labelledby="viewDetailsModalLabel" aria-hidden="true">
+        <div class="modal fade" id="viewBookModal" tabindex="-1" aria-labelledby="viewBookModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="viewDetailsModalLabel">Détails du livre</h5>
+                        <h5 class="modal-title" id="viewBookModalLabel">Détails du livre</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div class="text-center mb-3">
-                            <img id="detailCover" src="" alt="Couverture" class="img-fluid rounded" style="max-height: 150px; display: none;">
-                            <span id="detailCoverText" class="text-muted"></span>
+                            <img id="bookCover" src="" alt="Couverture" class="img-fluid rounded" style="max-height: 150px; display: none;">
+                            <span id="bookCoverText" class="text-muted"></span>
                         </div>
-                        <p><strong>Titre :</strong> <span id="detailTitle"></span></p>
-                        <p><strong>Auteur :</strong> <span id="detailAuthor"></span></p>
-                        <p><strong>Type :</strong> <span id="detailType"></span></p>
-                        <p><strong>Quantité :</strong> <span id="detailQuantity"></span></p>
-                        <p><strong>Disponibilité :</strong> <span id="detailAvailability"></span></p>
-                        <p id="ebookFileContainer" style="display: none;"><strong>PDF :</strong> <a id="detailEbookFile" href="#" target="_blank">Voir</a></p>
+                        <p><strong>Titre :</strong> <span id="bookTitleDetail"></span></p>
+                        <p><strong>Auteur :</strong> <span id="bookAuthor"></span></p>
+                        <p><strong>Type :</strong> <span id="bookType"></span></p>
+                        <p><strong>Quantité :</strong> <span id="bookQuantity"></span></p>
+                        <p><strong>Disponibilité :</strong> <span id="bookAvailability"></span></p>
+                        <p id="bookEbookContainer" style="display: none;"><strong>PDF :</strong> <a id="bookEbookFile" href="#" target="_blank">Voir</a></p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
@@ -210,46 +320,129 @@
                         <form id="editBookForm" method="post" enctype="multipart/form-data">
                             {% csrf_token %}
                             <div class="mb-3">
-                                <label for="editTitle" class="form-label">Titre</label>
-                                <input type="text" class="form-control" id="editTitle" name="title" required>
+                                <label for="editBookTitle" class="form-label">Titre</label>
+                                <input type="text" class="form-control" id="editBookTitle" name="title" required>
                             </div>
                             <div class="mb-3">
-                                <label for="editAuthor" class="form-label">Auteur</label>
-                                <input type="text" class="form-control" id="editAuthor" name="author" required>
+                                <label for="editBookAuthor" class="form-label">Auteur</label>
+                                <input type="text" class="form-control" id="editBookAuthor" name="author" required>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Type</label>
                                 <div class="form-check form-check-inline">
-                                    <input type="radio" class="form-check-input type-radio" id="editIsPhysicalYes" name="is_physical" value="True" data-toggle="physical">
-                                    <label class="form-check-label" for="editIsPhysicalYes">Physique</label>
+                                    <input type="radio" class="form-check-input book-type-radio" id="editBookPhysicalYes" name="is_physical" value="True" data-toggle="physical">
+                                    <label class="form-check-label" for="editBookPhysicalYes">Physique</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input type="radio" class="form-check-input type-radio" id="editIsPhysicalNo" name="is_physical" value="False" data-toggle="ebook">
-                                    <label class="form-check-label" for="editIsPhysicalNo">E-book</label>
+                                    <input type="radio" class="form-check-input book-type-radio" id="editBookPhysicalNo" name="is_physical" value="False" data-toggle="ebook">
+                                    <label class="form-check-label" for="editBookPhysicalNo">E-book</label>
                                 </div>
                             </div>
-                            <div class="mb-3" id="quantityField">
-                                <label for="editQuantity" class="form-label">Quantité</label>
-                                <input type="number" class="form-control" id="editQuantity" name="quantity" min="1">
+                            <div class="mb-3" id="bookQuantityField">
+                                <label for="editBookQuantity" class="form-label">Quantité</label>
+                                <input type="number" class="form-control" id="editBookQuantity" name="quantity" min="1">
                             </div>
-                            <div class="mb-3" id="ebookFileField" style="display: none;">
-                                <label for="editEbookFile" class="form-label">Fichier PDF</label>
-                                <input type="file" class="form-control" id="editEbookFile" name="ebook_file" accept=".pdf">
+                            <div class="mb-3" id="bookEbookField" style="display: none;">
+                                <label for="editBookEbookFile" class="form-label">Fichier PDF</label>
+                                <input type="file" class="form-control" id="editBookEbookFile" name="ebook_file" accept=".pdf">
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Disponibilité</label>
                                 <div class="form-check form-check-inline">
-                                    <input type="radio" class="form-check-input" id="editIsAvailableYes" name="is_available" value="True">
-                                    <label class="form-check-label" for="editIsAvailableYes">Disponible</label>
+                                    <input type="radio" class="form-check-input" id="editBookAvailableYes" name="is_available" value="True">
+                                    <label class="form-check-label" for="editBookAvailableYes">Disponible</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input type="radio" class="form-check-input" id="editIsAvailableNo" name="is_available" value="False">
-                                    <label class="form-check-label" for="editIsAvailableNo">Indisponible</label>
+                                    <input type="radio" class="form-check-input" id="editBookAvailableNo" name="is_available" value="False">
+                                    <label class="form-check-label" for="editBookAvailableNo">Indisponible</label>
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <label for="editCoverImage" class="form-label">Couverture</label>
-                                <input type="file" class="form-control" id="editCoverImage" name="cover_image">
+                                <label for="editBookCoverImage" class="form-label">Couverture</label>
+                                <input type="file" class="form-control" id="editBookCoverImage" name="cover_image">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Enregistrer</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modales Documents -->
+        <div class="modal fade" id="deleteDocModal" tabindex="-1" aria-labelledby="deleteDocModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteDocModalLabel">Confirmer la suppression</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Êtes-vous sûr de vouloir supprimer "<span id="docTitle"></span>" ? Cette action est irréversible.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                        <form id="deleteDocForm" method="post" action="">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Supprimer</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="viewDocModal" tabindex="-1" aria-labelledby="viewDocModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="viewDocModalLabel">Détails du document</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p><strong>Titre :</strong> <span id="docTitleDetail"></span></p>
+                        <p><strong>Type :</strong> <span id="docType"></span></p>
+                        <p><strong>Niveau :</strong> <span id="docLevel"></span></p>
+                        <p><strong>Fichier :</strong> <a id="docFile" href="#" target="_blank">Voir</a></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="editDocModal" tabindex="-1" aria-labelledby="editDocModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editDocModalLabel">Modifier le document</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editDocForm" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="editDocTitle" class="form-label">Titre</label>
+                                <input type="text" class="form-control" id="editDocTitle" name="title" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editDocType" class="form-label">Type</label>
+                                <select class="form-select" id="editDocType" name="document_type" required>
+                                    {% for type in document_types %}
+                                        <option value="{{ type.0 }}">{{ type.1 }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editDocLevel" class="form-label">Niveau</label>
+                                <select class="form-select" id="editDocLevel" name="academic_level" required>
+                                    {% for level in academic_levels %}
+                                        <option value="{{ level.0 }}">{{ level.1 }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editDocFile" class="form-label">Fichier</label>
+                                <input type="file" class="form-control" id="editDocFile" name="file" accept=".pdf">
                             </div>
                             <button type="submit" class="btn btn-primary">Enregistrer</button>
                         </form>
@@ -266,18 +459,26 @@
             const searchInput = document.getElementById('searchInput');
             const availabilityFilter = document.getElementById('availabilityFilter');
             const typeFilter = document.getElementById('typeFilter');
+            const docSearchInput = document.getElementById('docSearchInput');
+            const docTypeFilter = document.getElementById('docTypeFilter');
+            const docLevelFilter = document.getElementById('docLevelFilter');
             const booksTable = document.getElementById('booksTable');
             const booksTableBody = document.getElementById('booksTableBody');
             const booksCards = document.getElementById('booksCards');
-            const noResultsMessage = document.getElementById('noResultsMessage');
-            const paginationContainer = document.getElementById('paginationContainer');
+            const docsTableBody = document.getElementById('docsTableBody');
+            const noBooksMessage = document.getElementById('noBooksMessage');
+            const noDocsMessage = document.getElementById('noDocsMessage');
+            const booksPagination = document.getElementById('booksPagination');
+            const docsPagination = document.getElementById('docsPagination');
             const viewToggleBtn = document.getElementById('viewToggleBtn');
             let isTableView = false;
-            let sortField = 'title';
-            let sortOrder = 'asc';
+            let bookSortField = 'title';
+            let bookSortOrder = 'asc';
+            let docSortField = 'title';
+            let docSortOrder = 'asc';
 
-            // Charger les stats
-            function fetchStats() {
+            // Charger les stats livres
+            function fetchBookStats() {
                 fetch('/books/api/stats/', {
                     headers: { 'X-Requested-With': 'XMLHttpRequest' }
                 })
@@ -288,7 +489,21 @@
                     document.getElementById('ebooks').textContent = data.ebooks || 0;
                     document.getElementById('physicalBooks').textContent = data.physical_books || 0;
                 })
-                .catch(error => console.error('Erreur stats:', error));
+                .catch(error => console.error('Erreur stats livres:', error));
+            }
+
+            // Charger les stats documents
+            function fetchDocStats() {
+                fetch('/books/api/doc_stats/', {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('totalDocs').textContent = data.total_docs || 0;
+                    document.getElementById('docsByLevel').textContent = data.levels_count || 0;
+                    document.getElementById('docsByType').textContent = data.types_count || 0;
+                })
+                .catch(error => console.error('Erreur stats documents:', error));
             }
 
             // Charger les livres
@@ -296,22 +511,21 @@
                 const search = searchInput.value;
                 const availability = availabilityFilter.value;
                 const type = typeFilter.value;
-                const page = new URLSearchParams(window.location.search).get('page') || '1';
+                const page = new URLSearchParams(window.location.search).get('book_page') || '1';
 
-                fetch(`/books/api/search/?search=${encodeURIComponent(search)}&availability=${availability}&type=${type}&page=${page}&sort=${sortField}&order=${sortOrder}`, {
+                fetch(`/books/api/search/?search=${encodeURIComponent(search)}&availability=${availability}&type=${type}&page=${page}&sort=${bookSortField}&order=${bookSortOrder}`, {
                     headers: { 'X-Requested-With': 'XMLHttpRequest' }
                 })
                 .then(response => response.json())
                 .then(data => {
-                    // Mettre à jour la liste
                     booksTableBody.innerHTML = '';
                     booksCards.innerHTML = '';
                     if (data.books.length === 0) {
-                        noResultsMessage.style.display = 'block';
+                        noBooksMessage.style.display = 'block';
                         booksTable.style.display = 'none';
                         booksCards.style.display = 'none';
                     } else {
-                        noResultsMessage.style.display = 'none';
+                        noBooksMessage.style.display = 'none';
                         if (isTableView) {
                             booksTable.style.display = 'table';
                             booksCards.style.display = 'none';
@@ -326,7 +540,7 @@
                                     <td>
                                         <a href="#" class="btn btn-sm btn-primary edit-book-btn" data-bs-toggle="modal" data-bs-target="#editBookModal" data-book-id="${book.id}"><i class="fas fa-edit"></i></a>
                                         <a href="#" class="btn btn-sm btn-danger delete-book-btn" data-bs-toggle="modal" data-bs-target="#deleteBookModal" data-book-id="${book.id}" data-book-title="${book.title}"><i class="fas fa-trash"></i></a>
-                                        <a href="#" class="btn btn-sm btn-info view-details-btn" data-bs-toggle="modal" data-bs-target="#viewDetailsModal" data-book-id="${book.id}"><i class="fas fa-info-circle"></i></a>
+                                        <a href="#" class="btn btn-sm btn-info view-book-btn" data-bs-toggle="modal" data-bs-target="#viewBookModal" data-book-id="${book.id}"><i class="fas fa-info-circle"></i></a>
                                     </td>`;
                                 booksTableBody.appendChild(row);
                             });
@@ -344,12 +558,12 @@
                                         <div class="card-body d-flex flex-column">
                                             <h5 class="card-title text-truncate" title="${book.title}">${book.title}</h5>
                                             <p class="card-text text-muted text-truncate" title="${book.author}">${book.author}</p>
-                                            <p class="card-text">${book.is_physical ? `Physique (Quantité: ${book.quantity})` : 'E-book'}</p>
-                                            <p class="card-text"><span class="badge bg-${book.is_available ? 'success' : 'danger'}">${book.is_available ? 'Disponible' : 'Indisponible'}</span></p>
+                                            <p>${book.is_physical ? `Physique (Quantité: ${book.quantity})` : 'E-book'}</p>
+                                            <p><span class="badge bg-${book.is_available ? 'success' : 'danger'}">${book.is_available ? 'Disponible' : 'Indisponible'}</span></p>
                                             <div class="mt-auto d-flex gap-1">
                                                 <a href="#" class="btn btn-sm btn-primary edit-book-btn" data-bs-toggle="modal" data-bs-target="#editBookModal" data-book-id="${book.id}"><i class="fas fa-edit"></i></a>
                                                 <a href="#" class="btn btn-sm btn-danger delete-book-btn" data-bs-toggle="modal" data-bs-target="#deleteBookModal" data-book-id="${book.id}" data-book-title="${book.title}"><i class="fas fa-trash"></i></a>
-                                                <a href="#" class="btn btn-sm btn-info view-details-btn" data-bs-toggle="modal" data-bs-target="#viewDetailsModal" data-book-id="${book.id}"><i class="fas fa-info-circle"></i></a>
+                                                <a href="#" class="btn btn-sm btn-info view-book-btn" data-bs-toggle="modal" data-bs-target="#viewBookModal" data-book-id="${book.id}"><i class="fas fa-info-circle"></i></a>
                                             </div>
                                         </div>
                                     </div>`;
@@ -358,66 +572,145 @@
                         }
                     }
 
-                    // Mettre à jour la pagination
-                    paginationContainer.innerHTML = '';
+                    booksPagination.innerHTML = '';
                     if (data.paginator.num_pages > 1) {
                         const ul = document.createElement('ul');
                         ul.className = 'pagination justify-content-center';
                         if (data.has_previous) {
                             ul.innerHTML += `
-                                <li class="page-item"><a class="page-link" href="?page=1&search=${encodeURIComponent(search)}&availability=${availability}&type=${type}">«</a></li>
-                                <li class="page-item"><a class="page-link" href="?page=${data.previous_page_number}&search=${encodeURIComponent(search)}&availability=${availability}&type=${type}">Précédent</a></li>`;
+                                <li class="page-item"><a class="page-link book-page" href="?book_page=1">«</a></li>
+                                <li class="page-item"><a class="page-link book-page" href="?book_page=${data.previous_page_number}">Précédent</a></li>`;
                         }
                         data.page_range.forEach(num => {
                             ul.innerHTML += `
                                 <li class="page-item ${num === data.current_page ? 'active' : ''}">
-                                    <a class="page-link" href="?page=${num}&search=${encodeURIComponent(search)}&availability=${availability}&type=${type}">${num}</a>
+                                    <a class="page-link book-page" href="?book_page=${num}">${num}</a>
                                 </li>`;
                         });
                         if (data.has_next) {
                             ul.innerHTML += `
-                                <li class="page-item"><a class="page-link" href="?page=${data.next_page_number}&search=${encodeURIComponent(search)}&availability=${availability}&type=${type}">Suivant</a></li>
-                                <li class="page-item"><a class="page-link" href="?page=${data.paginator.num_pages}&search=${encodeURIComponent(search)}&availability=${availability}&type=${type}">»</a></li>`;
+                                <li class="page-item"><a class="page-link book-page" href="?book_page=${data.next_page_number}">Suivant</a></li>
+                                <li class="page-item"><a class="page-link book-page" href="?book_page=${data.paginator.num_pages}">»</a></li>`;
                         }
-                        paginationContainer.appendChild(ul);
+                        booksPagination.appendChild(ul);
                     }
-                })
-                .catch(error => console.error('Erreur livres:', error));
+                });
             }
 
-            // Toggle vue table/cartes
+            // Charger les documents
+            function fetchDocs() {
+                const search = docSearchInput.value;
+                const type = docTypeFilter.value;
+                const level = docLevelFilter.value;
+                const page = new URLSearchParams(window.location.search).get('doc_page') || '1';
+
+                fetch(`/books/api/doc_search/?search=${encodeURIComponent(search)}&type=${type}&level=${level}&page=${page}&sort=${docSortField}&order=${docSortOrder}`, {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    docsTableBody.innerHTML = '';
+                    if (data.documents.length === 0) {
+                        noDocsMessage.style.display = 'block';
+                    } else {
+                        noDocsMessage.style.display = 'none';
+                        data.documents.forEach(doc => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${doc.title}</td>
+                                <td>${doc.document_type_display}</td>
+                                <td>${doc.academic_level_display}</td>
+                                <td><a href="${doc.file_url}" target="_blank">Voir</a></td>
+                                <td>
+                                    <a href="#" class="btn btn-sm btn-primary edit-doc-btn" data-bs-toggle="modal" data-bs-target="#editDocModal" data-doc-id="${doc.id}"><i class="fas fa-edit"></i></a>
+                                    <a href="#" class="btn btn-sm btn-danger delete-doc-btn" data-bs-toggle="modal" data-bs-target="#deleteDocModal" data-doc-id="${doc.id}" data-doc-title="${doc.title}"><i class="fas fa-trash"></i></a>
+                                    <a href="#" class="btn btn-sm btn-info view-doc-btn" data-bs-toggle="modal" data-bs-target="#viewDocModal" data-doc-id="${doc.id}"><i class="fas fa-info-circle"></i></a>
+                                </td>`;
+                            docsTableBody.appendChild(row);
+                        });
+                    }
+
+                    docsPagination.innerHTML = '';
+                    if (data.paginator.num_pages > 1) {
+                        const ul = document.createElement('ul');
+                        ul.className = 'pagination justify-content-center';
+                        if (data.has_previous) {
+                            ul.innerHTML += `
+                                <li class="page-item"><a class="page-link doc-page" href="?doc_page=1">«</a></li>
+                                <li class="page-item"><a class="page-link doc-page" href="?doc_page=${data.previous_page_number}">Précédent</a></li>`;
+                        }
+                        data.page_range.forEach(num => {
+                            ul.innerHTML += `
+                                <li class="page-item ${num === data.current_page ? 'active' : ''}">
+                                    <a class="page-link doc-page" href="?doc_page=${num}">${num}</a>
+                                </li>`;
+                        });
+                        if (data.has_next) {
+                            ul.innerHTML += `
+                                <li class="page-item"><a class="page-link doc-page" href="?doc_page=${data.next_page_number}">Suivant</a></li>
+                                <li class="page-item"><a class="page-link doc-page" href="?doc_page=${data.paginator.num_pages}">»</a></li>`;
+                        }
+                        docsPagination.appendChild(ul);
+                    }
+                });
+            }
+
+            // Toggle vue livres
             viewToggleBtn.addEventListener('click', () => {
                 isTableView = !isTableView;
                 viewToggleBtn.innerHTML = `<i class="fas fa-${isTableView ? 'th' : 'table'}"></i>`;
                 fetchBooks();
             });
 
-            // Tri des colonnes
-            document.querySelectorAll('.sortable').forEach(th => {
+            // Tri livres
+            booksTable.querySelectorAll('.sortable').forEach(th => {
                 th.addEventListener('click', () => {
                     const field = th.dataset.sort;
-                    if (sortField === field) {
-                        sortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+                    if (bookSortField === field) {
+                        bookSortOrder = bookSortOrder === 'asc' ? 'desc' : 'asc';
                     } else {
-                        sortField = field;
-                        sortOrder = 'asc';
+                        bookSortField = field;
+                        bookSortOrder = 'asc';
                     }
-                    th.querySelector('i').className = `fas fa-sort${sortOrder === 'asc' ? '-up' : '-down'}`;
-                    document.querySelectorAll('.sortable').forEach(otherTh => {
+                    th.querySelector('i').className = `fas fa-sort${bookSortOrder === 'asc' ? '-up' : '-down'}`;
+                    booksTable.querySelectorAll('.sortable').forEach(otherTh => {
                         if (otherTh !== th) otherTh.querySelector('i').className = 'fas fa-sort';
                     });
                     fetchBooks();
                 });
             });
 
-            // Écouteurs pour filtres
+            // Tri documents
+            document.querySelectorAll('#docsTable .sortable').forEach(dt => {
+                dt.addEventListener('click', () => {
+                    const field = dt.dataset.sort;
+                    if (docSortField === field) {
+                        docSortOrder = docSortOrder === 'asc' ? 'desc' : 'asc';
+                    } else {
+                        docSortField = field;
+                        docSortOrder = 'asc';
+                    }
+                    dt.querySelector('i').className = `fas fa-sort${docSortOrder === 'asc' ? '-up' : '-down'}`;
+                    document.querySelectorAll('#docsTable .sortable').forEach(otherDt => {
+                        if (otherDt !== dt) otherDt.querySelector('i').className = 'fas fa-sort';
+                    });
+                    fetchDocs();
+                });
+            });
+
+            // Filtres livres
             searchInput.addEventListener('input', fetchBooks);
             availabilityFilter.addEventListener('change', fetchBooks);
             typeFilter.addEventListener('change', fetchBooks);
 
-            // Pagination
-            paginationContainer.addEventListener('click', e => {
-                if (e.target.classList.contains('page-link')) {
+            // Filtres documents
+            docSearchInput.addEventListener('input', fetchDocs);
+            docTypeFilter.addEventListener('change', fetchDocs);
+            docLevelFilter.addEventListener('change', fetchDocs);
+
+            // Pagination livres
+            booksPagination.addEventListener('click', e => {
+                if (e.target.classList.contains('book-page')) {
                     e.preventDefault();
                     const url = new URL(e.target.href);
                     const params = new URLSearchParams(url.search);
@@ -426,7 +719,18 @@
                 }
             });
 
-            // Suppression
+            // Pagination documents
+            docsPagination.addEventListener('click', e => {
+                if (e.target.classList.contains('doc-page')) {
+                    e.preventDefault();
+                    const url = new URL(e.target.href);
+                    const params = new URLSearchParams(url.search);
+                    window.history.pushState({}, '', `?${params.toString()}`);
+                    fetchDocs();
+                }
+            });
+
+            // Suppression livre
             document.addEventListener('click', e => {
                 if (e.target.closest('.delete-book-btn')) {
                     const btn = e.target.closest('.delete-book-btn');
@@ -437,21 +741,21 @@
                 }
             });
 
-            // Détails
+            // Détails livre
             document.addEventListener('click', e => {
-                if (e.target.closest('.view-details-btn')) {
-                    const btn = e.target.closest('.view-details-btn');
+                if (e.target.closest('.view-book-btn')) {
+                    const btn = e.target.closest('.view-book-btn');
                     const bookId = btn.dataset.bookId;
                     fetch(`/books/api/book/${bookId}/`)
                         .then(response => response.json())
                         .then(data => {
-                            document.getElementById('detailTitle').textContent = data.title || 'N/A';
-                            document.getElementById('detailAuthor').textContent = data.author || 'N/A';
-                            document.getElementById('detailType').textContent = data.is_physical ? 'Physique' : 'E-book';
-                            document.getElementById('detailQuantity').textContent = data.quantity || 'N/A';
-                            document.getElementById('detailAvailability').textContent = data.is_available ? 'Disponible' : 'Indisponible';
-                            const cover = document.getElementById('detailCover');
-                            const coverText = document.getElementById('detailCoverText');
+                            document.getElementById('bookTitleDetail').textContent = data.title || 'N/A';
+                            document.getElementById('bookAuthor').textContent = data.author || 'N/A';
+                            document.getElementById('bookType').textContent = data.is_physical ? 'Physique' : 'E-book';
+                            document.getElementById('bookQuantity').textContent = data.quantity || 'N/A';
+                            document.getElementById('bookAvailability').textContent = data.is_available ? 'Disponible' : 'Indisponible';
+                            const cover = document.getElementById('bookCover');
+                            const coverText = document.getElementById('bookCoverText');
                             if (data.cover_image) {
                                 cover.src = data.cover_image;
                                 cover.style.display = 'inline-block';
@@ -460,8 +764,8 @@
                                 cover.style.display = 'none';
                                 coverText.textContent = 'Aucune couverture';
                             }
-                            const ebookContainer = document.getElementById('ebookFileContainer');
-                            const ebookLink = document.getElementById('detailEbookFile');
+                            const ebookContainer = document.getElementById('bookEbookContainer');
+                            const ebookLink = document.getElementById('bookEbookFile');
                             if (data.ebook_file && !data.is_physical) {
                                 ebookLink.href = data.ebook_file;
                                 ebookContainer.style.display = 'block';
@@ -472,7 +776,7 @@
                 }
             });
 
-            // Modification
+            // Modification livre
             document.addEventListener('click', e => {
                 if (e.target.closest('.edit-book-btn')) {
                     const btn = e.target.closest('.edit-book-btn');
@@ -482,52 +786,101 @@
                         .then(data => {
                             const form = document.getElementById('editBookForm');
                             form.action = `/books/edit/${bookId}/`;
-                            document.getElementById('editTitle').value = data.title || '';
-                            document.getElementById('editAuthor').value = data.author || '';
-                            document.getElementById('editIsPhysicalYes').checked = data.is_physical;
-                            document.getElementById('editIsPhysicalNo').checked = !data.is_physical;
-                            document.getElementById('editIsAvailableYes').checked = data.is_available;
-                            document.getElementById('editIsAvailableNo').checked = !data.is_available;
-                            document.getElementById('editQuantity').value = data.quantity || 1;
-                            const quantityField = document.getElementById('quantityField');
-                            const ebookField = document.getElementById('ebookFileField');
+                            document.getElementById('editBookTitle').value = data.title || '';
+                            document.getElementById('editBookAuthor').value = data.author || '';
+                            document.getElementById('editBookPhysicalYes').checked = data.is_physical;
+                            document.getElementById('editBookPhysicalNo').checked = !data.is_physical;
+                            document.getElementById('editBookAvailableYes').checked = data.is_available;
+                            document.getElementById('editBookAvailableNo').checked = !data.is_available;
+                            document.getElementById('editBookQuantity').value = data.quantity || 1;
+                            const quantityField = document.getElementById('bookQuantityField');
+                            const ebookField = document.getElementById('bookEbookField');
                             if (data.is_physical) {
                                 quantityField.style.display = 'block';
                                 ebookField.style.display = 'none';
-                                document.getElementById('editQuantity').required = true;
-                                document.getElementById('editEbookFile').required = false;
+                                document.getElementById('editBookQuantity').required = true;
+                                document.getElementById('editBookEbookFile').required = false;
                             } else {
                                 quantityField.style.display = 'none';
                                 ebookField.style.display = 'block';
-                                document.getElementById('editQuantity').required = false;
-                                document.getElementById('editEbookFile').required = false;
+                                document.getElementById('editBookQuantity').required = false;
+                                document.getElementById('editBookEbookFile').required = false;
                             }
                         });
                 }
             });
 
-            // Gestion du type (physique/e-book)
-            document.querySelectorAll('.type-radio').forEach(radio => {
+            // Gestion type livre
+            document.querySelectorAll('.book-type-radio').forEach(radio => {
                 radio.addEventListener('change', () => {
-                    const quantityField = document.getElementById('quantityField');
-                    const ebookField = document.getElementById('ebookFileField');
+                    const quantityField = document.getElementById('bookQuantityField');
+                    const ebookField = document.getElementById('bookEbookField');
                     if (radio.value === 'True') {
                         quantityField.style.display = 'block';
                         ebookField.style.display = 'none';
-                        document.getElementById('editQuantity').required = true;
-                        document.getElementById('editEbookFile').required = false;
+                        document.getElementById('editBookQuantity').required = true;
+                        document.getElementById('editBookEbookFile').required = false;
                     } else {
                         quantityField.style.display = 'none';
                         ebookField.style.display = 'block';
-                        document.getElementById('editQuantity').required = false;
-                        document.getElementById('editEbookFile').required = false;
+                        document.getElementById('editBookQuantity').required = false;
+                        document.getElementById('editBookEbookFile').required = false;
                     }
                 });
             });
 
+            // Suppression document
+            document.addEventListener('click', e => {
+                if (e.target.closest('.delete-doc-btn')) {
+                    const btn = e.target.closest('.delete-doc-btn');
+                    const docId = btn.dataset.docId;
+                    const docTitle = btn.dataset.docTitle;
+                    document.getElementById('docTitle').textContent = docTitle;
+                    document.getElementById('deleteDocForm').action = `/books/delete_doc/${docId}/`;
+                }
+            });
+
+            // Détails document
+            document.addEventListener('click', e => {
+                if (e.target.closest('.view-doc-btn')) {
+                    const btn = e.target.closest('.view-doc-btn');
+                    const docId = btn.dataset.docId;
+                    fetch(`/books/api/doc/${docId}/`)
+                        .then(response => response.json())
+                        .then(data => {
+                            document.getElementById('docTitleDetail').textContent = data.title || 'N/A';
+                            document.getElementById('docType').textContent = data.document_type_display || 'N/A';
+                            document.getElementById('docLevel').textContent = data.academic_level_display || 'N/A';
+                            document.getElementById('docFile').href = data.file_url || '#';
+                        });
+                }
+            });
+
+            // Modification document
+            document.addEventListener('click', e => {
+                if (e.target.closest('.edit-doc-btn')) {
+                    const btn = e.target.closest('.edit-doc-btn');
+                    const docId = btn.dataset.docId;
+                    fetch(`/books/api/doc/${docId}/`)
+                        .then(response => response.json())
+                        .then(data => {
+                            const form = document.getElementById('editDocForm');
+                            form.action = `/books/edit_doc/${docId}/`;
+                            document.getElementById('editDocTitle').value = data.title || '';
+                            document.getElementById('editDocType').value = data.document_type || '';
+                            document.getElementById('editDocLevel').value = data.academic_level || '';
+                        });
+                }
+            });
+
             // Initialisation
-            fetchStats();
+            fetchBookStats();
+            fetchDocStats();
             fetchBooks();
+            fetchDocs();
+
+            // Rafraîchir documents lors de l'activation de l'onglet
+            document.getElementById('docs-tab').addEventListener('shown.bs.tab', fetchDocs);
         });
     </script>
 {% endblock %}
