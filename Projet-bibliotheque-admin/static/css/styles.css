@@ -45,6 +45,15 @@ body {
     font-size: 1rem;
 }
 
+/* En-têtes centrés */
+h5.text-center {
+    margin-top: 1rem;
+    margin-bottom: 1.5rem;
+    font-size: 1.25rem;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 0.5rem;
+}
+
 /* Media queries pour mobile */
 @media (max-width: 576px) {
     .container {
@@ -87,5 +96,10 @@ body {
 
     #imagePreview {
         max-height: 120px;
+    }
+
+    h5.text-center {
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
     }
 }

@@ -56,33 +56,24 @@ def search_books_api(request):
 def choose_document_type(request):
     return render(request, 'books/choose_document_type.html')
 
+@login_required
 def select_document_category(request):
-    document_types = Document.DOCUMENT_TYPES
-    academic_levels = Document.ACADEMIC_LEVELS
     if request.method == 'POST':
         document_type = request.POST.get('document_type')
-        academic_level = request.POST.get('academic_level', 'N/A')
-        if not document_type:
-            messages.error(request, "Veuillez sélectionner un type de document.")
-            return render(request, 'books/select_document_category.html', {
-                'document_types': document_types,
-                'academic_levels': academic_levels
-            })
-        if document_type != 'ebook' and academic_level == 'N/A':
-            messages.error(request, "Veuillez sélectionner un niveau académique.")
-            return render(request, 'books/select_document_category.html', {
-                'document_types': document_types,
-                'academic_levels': academic_levels
-            })
-        return render(request, 'books/add_document.html', {
-            'form': DocumentForm(initial={'document_type': document_type, 'academic_level': academic_level}),
-            'document_type': document_type,
-            'document_type_label': dict(document_types).get(document_type),
-            'academic_level': academic_level
-        })
+        academic_level = request.POST.get('academic_level')
+        if document_type:
+            if document_type == 'ebook':
+                academic_level = 'N/A'  # Ignorer le niveau pour e-book
+            elif not academic_level:
+                messages.error(request, 'Veuillez sélectionner un niveau académique.')
+                return render(request, 'books/select_document_category.html', {
+                    'document_types': Document.DOCUMENT_TYPES,
+                    'academic_levels': Document.ACADEMIC_LEVELS,
+                })
+            return redirect('books:add_document', document_type=document_type, academic_level=academic_level)
     return render(request, 'books/select_document_category.html', {
-        'document_types': document_types,
-        'academic_levels': academic_levels
+        'document_types': Document.DOCUMENT_TYPES,
+        'academic_levels': Document.ACADEMIC_LEVELS,
     })
 
 @login_required

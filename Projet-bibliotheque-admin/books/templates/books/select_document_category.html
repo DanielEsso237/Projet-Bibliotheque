@@ -13,7 +13,7 @@
             <form method="post" id="categoryForm">
                 {% csrf_token %}
                 <!-- Sélection du type -->
-                <h5 class="mb-3 text-primary"><i class="fas fa-tags me-2"></i>Type de document</h5>
+                <h5 class="mb-3 text-primary text-center fw-bold"><i class="fas fa-tags me-2"></i>Type de document</h5>
                 <div class="row g-2 mb-4">
                     {% for value, label in document_types %}
                         <div class="col-6 col-md-4">
@@ -28,20 +28,22 @@
                     {% endfor %}
                 </div>
 
-                <!-- Sélection du niveau -->
-                <h5 class="mb-3 text-primary"><i class="fas fa-graduation-cap me-2"></i>Niveau académique</h5>
-                <div class="row g-2">
-                    {% for value, label in academic_levels %}
-                        <div class="col-6 col-md-3">
-                            <div class="card h-100 border-0 shadow-sm level-card" data-value="{{ value }}">
-                                <div class="card-body text-center p-3">
-                                    <i class="fas fa-user-graduate fa-2x mb-2 text-primary"></i>
-                                    <h6 class="card-title">{{ label }}</h6>
-                                    <input type="radio" name="academic_level" value="{{ value }}" class="d-none" required>
+                <!-- Sélection du niveau (cachée pour e-book) -->
+                <div id="academicLevelSection">
+                    <h5 class="mb-3 text-primary text-center fw-bold"><i class="fas fa-graduation-cap me-2"></i>Niveau académique</h5>
+                    <div class="row g-2">
+                        {% for value, label in academic_levels %}
+                            <div class="col-6 col-md-3">
+                                <div class="card h-100 border-0 shadow-sm level-card" data-value="{{ value }}">
+                                    <div class="card-body text-center p-3">
+                                        <i class="fas fa-user-graduate fa-2x mb-2 text-primary"></i>
+                                        <h6 class="card-title">{{ label }}</h6>
+                                        <input type="radio" name="academic_level" value="{{ value }}" class="d-none" required>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    {% endfor %}
+                        {% endfor %}
+                    </div>
                 </div>
 
                 <div class="text-center mt-4">
@@ -56,40 +58,64 @@
 
 {% block extra_js %}
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', () => {
         const typeCards = document.querySelectorAll('.type-card');
         const levelCards = document.querySelectorAll('.level-card');
+        const academicLevelSection = document.getElementById('academicLevelSection');
         const submitBtn = document.getElementById('submitBtn');
+
+        function toggleAcademicLevel(show) {
+            academicLevelSection.style.display = show ? 'block' : 'none';
+            // Décocher les niveaux si cachés
+            if (!show) {
+                levelCards.forEach(card => {
+                    card.classList.remove('border-primary', 'bg-primary-subtle');
+                    card.querySelector('input').checked = false;
+                });
+            }
+        }
 
         function checkSelection() {
             const typeSelected = document.querySelector('input[name="document_type"]:checked');
             const levelSelected = document.querySelector('input[name="academic_level"]:checked');
-            submitBtn.disabled = !(typeSelected && levelSelected);
+            const isEbook = typeSelected && typeSelected.value === 'ebook';
+            submitBtn.disabled = isEbook ? !typeSelected : !(typeSelected && levelSelected);
         }
 
         typeCards.forEach(card => {
-            card.addEventListener('click', function () {
+            card.addEventListener('click', () => {
                 typeCards.forEach(c => {
                     c.classList.remove('border-primary', 'bg-primary-subtle');
                     c.querySelector('input').checked = false;
                 });
-                this.classList.add('border-primary', 'bg-primary-subtle');
-                this.querySelector('input').checked = true;
+                card.classList.add('border-primary', 'bg-primary-subtle');
+                card.querySelector('input').checked = true;
+
+                // Masquer ou afficher les niveaux
+                const isEbook = card.querySelector('input').value === 'ebook';
+                toggleAcademicLevel(!isEbook);
                 checkSelection();
             });
         });
 
         levelCards.forEach(card => {
-            card.addEventListener('click', function () {
+            card.addEventListener('click', () => {
                 levelCards.forEach(c => {
                     c.classList.remove('border-primary', 'bg-primary-subtle');
                     c.querySelector('input').checked = false;
                 });
-                this.classList.add('border-primary', 'bg-primary-subtle');
-                this.querySelector('input').checked = true;
+                card.classList.add('border-primary', 'bg-primary-subtle');
+                card.querySelector('input').checked = true;
                 checkSelection();
             });
         });
+
+        // Initialiser : masquer les niveaux si e-book est sélectionné
+        const initialType = document.querySelector('input[name="document_type"]:checked');
+        if (initialType && initialType.value === 'ebook') {
+            toggleAcademicLevel(false);
+        }
+        checkSelection();
     });
 </script>
 {% endblock %}
