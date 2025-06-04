@@ -112,6 +112,7 @@
             <nav class="nav flex-column">
                 {% if user.is_authenticated %}
                     <a class="nav-link" href="{% url 'books:librarian_dashboard' %}"><i class="fas fa-home me-2"></i> Tableau de bord</a>
+                    <a class="nav-link" href="{% url 'books:add_book' %}"><i class="fas fa-plus-circle me-2"></i> Ajouter un livre</a>
                     <a class="nav-link" href="{% url 'books:choose_document_type' %}"><i class="fas fa-plus-circle me-2"></i> Ajouter un document</a>
                     <a class="nav-link" href="{% url 'loans:loan_list' %}"><i class="fas fa-undo-alt me-2"></i> Gérer les retours</a>
                     <a class="nav-link" href="{% url 'loans:create_loan' %}"><i class="fas fa-book me-2"></i> Réaliser un emprunt</a>              
