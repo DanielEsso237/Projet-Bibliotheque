@@ -1,0 +1,91 @@
+/* Styles généraux pour mobile */
+body {
+    font-size: 16px; /* Taille de texte lisible */
+    -webkit-tap-highlight-color: transparent; /* Supprime les surbrillances au tap */
+}
+
+/* Boutons plus grands pour mobile */
+.btn-lg {
+    padding: 0.75rem 1.5rem;
+    font-size: 1.1rem;
+    min-height: 48px; /* Taille minimale pour les taps */
+}
+
+/* Cartes responsive */
+.type-card, .level-card {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    margin-bottom: 1rem;
+}
+
+.type-card:hover, .level-card:hover {
+    transform: scale(1.05);
+}
+
+.type-card.border-primary, .level-card.border-primary {
+    background-color: #e7f1ff;
+}
+
+/* Prévisualisation d'image */
+#imagePreview img {
+    max-width: 100%;
+    max-height: 150px;
+    object-fit: contain;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* Formulaires */
+.form-control, .form-check-input {
+    font-size: 1rem;
+    padding: 0.75rem;
+}
+
+.form-check-label {
+    font-size: 1rem;
+}
+
+/* Media queries pour mobile */
+@media (max-width: 576px) {
+    .container {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+
+    .card-header h3 {
+        font-size: 1.5rem;
+    }
+
+    .card-body {
+        padding: 1.5rem !important;
+    }
+
+    .type-card, .level-card {
+        padding: 0.5rem;
+    }
+
+    .type-card i, .level-card i {
+        font-size: 1.5rem;
+    }
+
+    .type-card h6, .level-card h6 {
+        font-size: 0.95rem;
+    }
+
+    .form-label {
+        font-size: 0.95rem;
+    }
+
+    .btn-lg {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+
+    .text-center .btn-secondary {
+        width: 100%;
+    }
+
+    #imagePreview {
+        max-height: 120px;
+    }
+}

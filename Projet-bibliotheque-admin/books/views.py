@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.http import JsonResponse
 from .models import Book, Document
 from .forms import BookForm, DocumentForm
+from django.contrib.auth.decorators import login_required
 
 def librarian_dashboard(request):
     books_list = Book.objects.all().order_by('title')
@@ -84,23 +85,26 @@ def select_document_category(request):
         'academic_levels': academic_levels
     })
 
-def add_document(request):
+@login_required
+def add_document(request, document_type, academic_level):
     if request.method == 'POST':
         form = DocumentForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            document = form.save(commit=False)
+            document.document_type = document_type
+            document.academic_level = academic_level
+            document.save()
             messages.success(request, 'Document ajouté avec succès !')
             return redirect('books:librarian_dashboard')
         else:
-            document_type = request.POST.get('document_type')
-            academic_level = request.POST.get('academic_level')
-            return render(request, 'books/add_document.html', {
-                'form': form,
-                'document_type': document_type,
-                'document_type_label': dict(Document.DOCUMENT_TYPES).get(document_type),
-                'academic_level': academic_level
-            })
-    return redirect('books:select_document_category')
+            messages.error(request, 'Veuillez corriger les erreurs ci-dessous.')
+    else:
+        form = DocumentForm()
+    return render(request, 'books/add_document.html', {
+        'form': form,
+        'document_type': document_type,
+        'academic_level': academic_level,
+    })
 
 def add_book(request):
     if request.method == 'POST':

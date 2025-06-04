@@ -62,7 +62,7 @@ class BookForm(forms.ModelForm):
 class DocumentForm(forms.ModelForm):
     class Meta:
         model = Document
-        fields = ['title', 'author', 'document_type', 'academic_level', 'file', 'is_available']
+        fields = ['title', 'author', 'document_type', 'academic_level','cover_image', 'file', 'is_available']
         labels = {
             'title': 'Titre',
             'author': 'Auteur',

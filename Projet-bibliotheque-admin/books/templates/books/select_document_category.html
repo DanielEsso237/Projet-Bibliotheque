@@ -1,49 +1,96 @@
 {% extends 'books/base.html' %}
 {% load static %}
-{% block title %}Sélectionner la catégorie{% endblock %}
+
+{% block title %}Sélectionner la catégorie du document{% endblock %}
+
 {% block content %}
-    <div class="container my-4">
-        <h2 class="text-center mb-4">Sélectionner la catégorie du document</h2>
-        <form method="post" action="{% url 'books:add_document' %}">
-            {% csrf_token %}
-            <div class="row justify-content-center">
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label for="document_type" class="form-label">Type de document</label>
-                        <select name="document_type" id="document_type" class="form-select" required>
-                            <option value="">Choisir...</option>
-                            {% for value, label in document_types %}
-                                <option value="{{ value }}">{{ label }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="mb-3" id="academic_level_field" style="display: none;">
-                        <label for="academic_level" class="form-label">Niveau académique</label>
-                        <select name="academic_level" id="academic_level" class="form-select">
-                            <option value="">Choisir...</option>
-                            {% for value, label in academic_levels %}
-                                <option value="{{ value }}">{{ label }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <button type="submit" class="btn btn-primary w-100">Continuer</button>
+<div class="container my-4">
+    <div class="card shadow-lg border-0">
+        <div class="card-header bg-primary text-white text-center">
+            <h3 class="mb-0"><i class="fas fa-folder-open me-2"></i>Choisir une catégorie</h3>
+        </div>
+        <div class="card-body">
+            <form method="post" id="categoryForm">
+                {% csrf_token %}
+                <!-- Sélection du type -->
+                <h5 class="mb-3 text-primary"><i class="fas fa-tags me-2"></i>Type de document</h5>
+                <div class="row g-2 mb-4">
+                    {% for value, label in document_types %}
+                        <div class="col-6 col-md-4">
+                            <div class="card h-100 border-0 shadow-sm type-card" data-value="{{ value }}">
+                                <div class="card-body text-center p-3">
+                                    <i class="fas {% if value == 'ebook' %}fa-book-open{% elif value == 'exam' %}fa-file-alt{% elif value == 'course' %}fa-chalkboard-teacher{% elif value == 'td' %}fa-clipboard-list{% else %}fa-newspaper{% endif %} fa-2x mb-2 text-primary"></i>
+                                    <h6 class="card-title">{{ label }}</h6>
+                                    <input type="radio" name="document_type" value="{{ value }}" class="d-none" required>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
                 </div>
-            </div>
-        </form>
+
+                <!-- Sélection du niveau -->
+                <h5 class="mb-3 text-primary"><i class="fas fa-graduation-cap me-2"></i>Niveau académique</h5>
+                <div class="row g-2">
+                    {% for value, label in academic_levels %}
+                        <div class="col-6 col-md-3">
+                            <div class="card h-100 border-0 shadow-sm level-card" data-value="{{ value }}">
+                                <div class="card-body text-center p-3">
+                                    <i class="fas fa-user-graduate fa-2x mb-2 text-primary"></i>
+                                    <h6 class="card-title">{{ label }}</h6>
+                                    <input type="radio" name="academic_level" value="{{ value }}" class="d-none" required>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg" id="submitBtn" disabled>
+                        <i class="fas fa-arrow-right me-2"></i>Continuer
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
-    <script>
-        document.getElementById('document_type').addEventListener('change', function() {
-            const academicLevelField = document.getElementById('academic_level_field');
-            const academicLevelSelect = document.getElementById('academic_level');
-            if (this.value === 'ebook') {
-                academicLevelField.style.display = 'none';
-                academicLevelSelect.removeAttribute('required');
-                academicLevelSelect.value = 'N/A';
-            } else {
-                academicLevelField.style.display = 'block';
-                academicLevelSelect.setAttribute('required', 'required');
-                academicLevelSelect.value = '';
-            }
+</div>
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const typeCards = document.querySelectorAll('.type-card');
+        const levelCards = document.querySelectorAll('.level-card');
+        const submitBtn = document.getElementById('submitBtn');
+
+        function checkSelection() {
+            const typeSelected = document.querySelector('input[name="document_type"]:checked');
+            const levelSelected = document.querySelector('input[name="academic_level"]:checked');
+            submitBtn.disabled = !(typeSelected && levelSelected);
+        }
+
+        typeCards.forEach(card => {
+            card.addEventListener('click', function () {
+                typeCards.forEach(c => {
+                    c.classList.remove('border-primary', 'bg-primary-subtle');
+                    c.querySelector('input').checked = false;
+                });
+                this.classList.add('border-primary', 'bg-primary-subtle');
+                this.querySelector('input').checked = true;
+                checkSelection();
+            });
         });
-    </script>
+
+        levelCards.forEach(card => {
+            card.addEventListener('click', function () {
+                levelCards.forEach(c => {
+                    c.classList.remove('border-primary', 'bg-primary-subtle');
+                    c.querySelector('input').checked = false;
+                });
+                this.classList.add('border-primary', 'bg-primary-subtle');
+                this.querySelector('input').checked = true;
+                checkSelection();
+            });
+        });
+    });
+</script>
+{% endblock %}
 {% endblock %}

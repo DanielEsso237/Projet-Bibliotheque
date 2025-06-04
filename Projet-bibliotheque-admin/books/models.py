@@ -14,6 +14,7 @@ class Book(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_borrowed = models.BooleanField(default=False)
+    is_ebook = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.title} by {self.author}"
@@ -46,6 +47,7 @@ class Document(models.Model):
     document_type = models.CharField(max_length=20, choices=DOCUMENT_TYPES)
     academic_level = models.CharField(max_length=10, choices=ACADEMIC_LEVELS, default='N/A')
     file = models.FileField(upload_to='documents/', blank=True, null=True)
+    cover_image = models.ImageField(upload_to='covers/', blank=True, null=True)  # Nouveau champ
     is_available = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
