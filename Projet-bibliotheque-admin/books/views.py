@@ -6,6 +6,9 @@ from django.http import JsonResponse
 from .models import Book, Document
 from .forms import BookForm, DocumentForm
 from django.contrib.auth.decorators import login_required
+import logging
+
+logger = logging.getLogger(__name__)
 
 def librarian_dashboard(request):
     books_list = Book.objects.all().order_by('title')
@@ -58,28 +61,41 @@ def choose_document_type(request):
 
 @login_required
 def select_document_category(request):
+    document_types = [dt for dt in Document.DOCUMENT_TYPES if dt[0] != 'ebook']
+    academic_levels = [al for al in Document.ACADEMIC_LEVELS if al[0] != 'N/A']
+
     if request.method == 'POST':
         document_type = request.POST.get('document_type')
         academic_level = request.POST.get('academic_level')
-        if document_type:
-            if document_type == 'ebook':
-                academic_level = 'N/A'  # Ignorer le niveau pour e-book
-            elif not academic_level:
-                messages.error(request, 'Veuillez sélectionner un niveau académique.')
-                return render(request, 'books/select_document_category.html', {
-                    'document_types': Document.DOCUMENT_TYPES,
-                    'academic_levels': Document.ACADEMIC_LEVELS,
-                })
+        logger.debug(f"POST data: document_type={document_type}, academic_level={academic_level}")
+        if not document_type:
+            logger.error("No document_type selected")
+            messages.error(request, 'Veuillez sélectionner un type de document.')
+        elif not academic_level:
+            logger.error("No academic_level selected")
+            messages.error(request, 'Veuillez sélectionner un niveau académique.')
+        elif document_type == 'ebook':
+            logger.error("E-book selection not allowed")
+            messages.error(request, 'Les e-books ne peuvent pas être ajoutés ici.')
+        elif academic_level == 'N/A':
+            logger.error("N/A level not allowed")
+            messages.error(request, 'Veuillez sélectionner un niveau académique valide.')
+        else:
             return redirect('books:add_document', document_type=document_type, academic_level=academic_level)
+        return render(request, 'books/select_document_category.html', {
+            'document_types': document_types,
+            'academic_levels': academic_levels,
+        })
     return render(request, 'books/select_document_category.html', {
-        'document_types': Document.DOCUMENT_TYPES,
-        'academic_levels': Document.ACADEMIC_LEVELS,
+        'document_types': document_types,
+        'academic_levels': academic_levels,
     })
 
 @login_required
 def add_document(request, document_type, academic_level):
     if request.method == 'POST':
         form = DocumentForm(request.POST, request.FILES)
+        logger.debug(f"POST data: {request.POST}, FILES: {request.FILES}")
         if form.is_valid():
             document = form.save(commit=False)
             document.document_type = document_type
@@ -88,6 +104,7 @@ def add_document(request, document_type, academic_level):
             messages.success(request, 'Document ajouté avec succès !')
             return redirect('books:librarian_dashboard')
         else:
+            logger.error(f"Form errors: {form.errors.as_json()}")
             messages.error(request, 'Veuillez corriger les erreurs ci-dessous.')
     else:
         form = DocumentForm()

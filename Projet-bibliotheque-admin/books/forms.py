@@ -62,40 +62,31 @@ class BookForm(forms.ModelForm):
 class DocumentForm(forms.ModelForm):
     class Meta:
         model = Document
-        fields = ['title', 'author', 'document_type', 'academic_level','cover_image', 'file', 'is_available']
+        fields = ['title', 'author', 'file', 'cover_image', 'is_available']
         labels = {
             'title': 'Titre',
             'author': 'Auteur',
-            'document_type': 'Type de document',
-            'academic_level': 'Niveau académique',
             'file': 'Fichier PDF',
+            'cover_image': 'Image de couverture',
             'is_available': 'Disponible ?',
         }
         help_texts = {
-            'file': 'Uniquement fichiers PDF',
+            'file': 'Uniquement fichiers PDF (facultatif)',
             'author': 'Facultatif pour les documents académiques',
         }
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'author': forms.TextInput(attrs={'class': 'form-control'}),
-            'document_type': forms.Select(attrs={'class': 'form-select'}),
-            'academic_level': forms.Select(attrs={'class': 'form-select'}),
             'file': forms.FileInput(attrs={'class': 'form-control', 'accept': 'application/pdf'}),
+            'cover_image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
             'is_available': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
 
     def clean(self):
         cleaned_data = super().clean()
-        document_type = cleaned_data.get('document_type')
-        academic_level = cleaned_data.get('academic_level')
         file = cleaned_data.get('file')
 
-        if not file:
-            self.add_error('file', "Un fichier PDF est requis.")
-        elif not file.name.endswith('.pdf'):
+        if file and not file.name.endswith('.pdf'):
             self.add_error('file', "Seuls les fichiers PDF sont acceptés.")
-
-        if document_type != 'ebook' and academic_level == 'N/A':
-            self.add_error('academic_level', "Un niveau académique est requis pour ce type de document.")
 
         return cleaned_data

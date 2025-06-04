@@ -7,111 +7,79 @@
 <div class="container my-4">
     <div class="card shadow-lg border-0">
         <div class="card-header bg-primary text-white text-center">
-            <h3 class="mb-0"><i class="fas fa-file-upload me-2"></i>Ajouter un document</h3>
-            <p class="mb-0 text-light">Type: {{ document_type|title }} | Niveau: {{ academic_level }}</p>
+            <h3 class="mb-0"><i class="fas fa-file-upload me-2"></i>Ajouter un {{ document_type|capfirst }} ({{ academic_level }})</h3>
         </div>
         <div class="card-body">
             {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                {% endfor %}
-            {% endif %}
-            <form method="post" enctype="multipart/form-data" id="documentForm">
-                {% csrf_token %}
-                <div class="row g-3">
-                    <div class="col-12">
-                        <div class="mb-3">
-                            <label for="{{ form.title.id_for_label }}" class="form-label fw-bold">
-                                <i class="fas fa-heading me-2"></i>Titre
-                            </label>
-                            {{ form.title }}
-                            {% if form.title.errors %}
-                                <div class="text-danger">{{ form.title.errors }}</div>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="mb-3">
-                            <label for="{{ form.author.id_for_label }}" class="form-label fw-bold">
-                                <i class="fas fa-user me-2"></i>Auteur
-                            </label>
-                            {{ form.author }}
-                            {% if form.author.errors %}
-                                <div class="text-danger">{{ form.author.errors }}</div>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="mb-3">
-                            <label for="{{ form.file.id_for_label }}" class="form-label fw-bold">
-                                <i class="fas fa-file-pdf me-2"></i>Fichier (PDF)
-                            </label>
-                            {{ form.file }}
-                            {% if form.file.errors %}
-                                <div class="text-danger">{{ form.file.errors }}</div>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="mb-3">
-                            <label for="{{ form.cover_image.id_for_label }}" class="form-label fw-bold">
-                                <i class="fas fa-image me-2"></i>Couverture (facultatif)
-                            </label>
-                            {{ form.cover_image }}
-                            <div id="imagePreview" class="mt-2">
-                                <img id="previewImg" src="" alt="Prévisualisation" class="img-fluid d-none">
-                            </div>
-                            {% if form.cover_image.errors %}
-                                <div class="text-danger">{{ form.cover_image.errors }}</div>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="form-check mb-3">
-                            {{ form.is_available }}
-                            <label class="form-check-label" for="{{ form.is_available.id_for_label }}">
-                                <i class="fas fa-check-circle me-2"></i>Document disponible
-                            </label>
-                        </div>
-                    </div>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {% for message in messages %}
+                        <p class="mb-0">{{ message }}</p>
+                    {% endfor %}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
-                <div class="text-center mt-4">
+            {% endif %}
+            {% if form.errors %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <ul>
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <li>{{ field.label }} : {{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                        {% for error in form.non_field_errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endif %}
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="{{ form.title.id_for_label }}" class="form-label">Titre</label>
+                    {{ form.title }}
+                    {% if form.title.errors %}
+                        <div class="text-danger">{{ form.title.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="mb-3">
+                    <label for="{{ form.author.id_for_label }}" class="form-label">Auteur</label>
+                    {{ form.author }}
+                    {% if form.author.errors %}
+                        <div class="text-danger">{{ form.author.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="mb-3">
+                    <label for="{{ form.file.id_for_label }}" class="form-label">Fichier PDF</label>
+                    {{ form.file }}
+                    {% if form.file.errors %}
+                        <div class="text-danger">{{ form.file.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="mb-3">
+                    <label for="{{ form.cover_image.id_for_label }}" class="form-label">Image de couverture</label>
+                    {{ form.cover_image }}
+                    {% if form.cover_image.errors %}
+                        <div class="text-danger">{{ form.cover_image.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="mb-3 form-check">
+                    <label for="{{ form.is_available.id_for_label }}" class="form-check-label">Disponible</label>
+                    {{ form.is_available }}
+                    {% if form.is_available.errors %}
+                        <div class="text-danger">{{ form.is_available.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="text-center">
                     <button type="submit" class="btn btn-primary btn-lg">
                         <i class="fas fa-save me-2"></i>Ajouter
                     </button>
                     <a href="{% url 'books:librarian_dashboard' %}" class="btn btn-secondary btn-lg">
-                        <i class="fas fa-arrow-left me-2"></i>Annuler
+                        <i class="fas fa-times me-2"></i>Annuler
                     </a>
                 </div>
             </form>
         </div>
     </div>
 </div>
-
-{% block extra_js %}
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const coverInput = document.getElementById('{{ form.cover_image.id_for_label }}');
-        const previewImg = document.getElementById('previewImg');
-
-        coverInput.addEventListener('change', function (e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    previewImg.src = e.target.result;
-                    previewImg.classList.remove('d-none');
-                };
-                reader.readAsDataURL(file);
-            } else {
-                previewImg.src = '';
-                previewImg.classList.add('d-none');
-            }
-        });
-    });
-</script>
-{% endblock %}
 {% endblock %}
