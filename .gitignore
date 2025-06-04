@@ -1,6 +1,4 @@
 __pycache__/
 *.pyc
-venv_admin/
-venv_user/
 *.sqlite3
 media/
