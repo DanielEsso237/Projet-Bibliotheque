@@ -41,7 +41,7 @@
                                         <span class="badge bg-danger">{{ item.days_late }} jour{{ item.days_late|pluralize:"s" }}</span>
                                     </td>
                                     <td>
-                                        <a href="{% url 'return_book' item.loan.id %}" class="btn btn-sm btn-success me-2">
+                                        <a href="{% url 'loans:return_book' item.loan.id %}" class="btn btn-sm btn-success me-2">
                                             <i class="fas fa-undo"></i> Marquer comme rendu
                                         </a>
                                         <button class="btn btn-sm btn-warning" onclick="alert('Fonctionnalité de rappel à venir !')">

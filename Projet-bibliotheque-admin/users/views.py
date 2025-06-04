@@ -8,7 +8,6 @@ from django.db.models import Q
 from .models import CustomUser
 from django.http import JsonResponse
 
-
 def register_view(request):
     if request.method == 'POST':
         form = LibrarianRegistrationForm(request.POST)
@@ -29,7 +28,7 @@ def login_view(request):
             user = form.get_user()
             if user.is_librarian:
                 login(request, user)
-                return redirect('librarian_dashboard')
+                return redirect('books:librarian_dashboard')  # Ajout de l'espace de noms
             else:
                 messages.error(request, 'Seuls les bibliothécaires peuvent se connecter ici.')
         else:
@@ -42,10 +41,6 @@ def logout_view(request):
     logout(request)
     messages.success(request, 'Déconnexion réussie.')
     return redirect('login')
-
-
-# Vues existantes (comme login, register, etc.) devraient déjà être ici
-# Si ce n'est pas le cas, assure-toi que ce fichier existe avec les imports nécessaires
 
 @login_required
 def manage_users(request):

@@ -1,0 +1,26 @@
+{% extends 'books/base.html' %}
+{% load static %}
+{% block title %}Choisir le type de document{% endblock %}
+{% block content %}
+    <div class="container my-4">
+        <h2 class="text-center mb-4">Ajouter un document</h2>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card mb-3">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Livre physique</h5>
+                        <p class="card-text">Ajouter un livre physique à la bibliothèque.</p>
+                        <a href="{% url 'books:add_book' %}" class="btn btn-primary">Ajouter</a>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Document numérique</h5>
+                        <p class="card-text">Ajouter un e-book, épreuve, support de cours, fiche de TD ou article.</p>
+                        <a href="{% url 'books:select_document_category' %}" class="btn btn-primary">Ajouter</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

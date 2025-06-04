@@ -1,0 +1,46 @@
+{% extends 'books/base.html' %}
+{% load static %}
+{% block title %}Ajouter un document{% endblock %}
+{% block content %}
+    <div class="container my-4">
+        <h2 class="text-center mb-4">Ajouter un {{ document_type_label|lower }}</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="document_type" value="{{ document_type }}">
+            <input type="hidden" name="academic_level" value="{{ academic_level }}">
+            <fieldset class="border p-3 mb-3">
+                <legend class="float-none w-auto px-2">Informations générales</legend>
+                {% for field in form %}
+                    {% if field.name not in 'document_type academic_level file is_available' %}
+                        <div class="mb-3">
+                            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.help_text %}
+                                <small class="form-text text-muted">{{ field.help_text }}</small>
+                            {% endif %}
+                            {% if field.errors %}
+                                <div class="text-danger">{{ field.errors }}</div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                <div class="mb-3">
+                    <label for="{{ form.file.id_for_label }}" class="form-label">{{ form.file.label }}</label>
+                    {{ form.file }}
+                    {% if form.file.help_text %}
+                        <small class="form-text text-muted">{{ form.file.help_text }}</small>
+                    {% endif %}
+                    {% if form.file.errors %}
+                        <div class="text-danger">{{ form.file.errors }}</div>
+                    {% endif %}
+                </div>
+            </fieldset>
+            <div class="form-check mb-3">
+                {{ form.is_available }}
+                <label class="form-check-label" for="{{ form.is_available.id_for_label }}">{{ form.is_available.label }}</label>
+            </div>
+            <button type="submit" class="btn btn-success">Ajouter</button>
+            <a href="{% url 'books:librarian_dashboard' %}" class="btn btn-secondary">Retour</a>
+        </form>
+    </div>
+{% endblock %}

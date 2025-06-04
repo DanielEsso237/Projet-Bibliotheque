@@ -1,0 +1,49 @@
+{% extends 'books/base.html' %}
+{% load static %}
+{% block title %}Sélectionner la catégorie{% endblock %}
+{% block content %}
+    <div class="container my-4">
+        <h2 class="text-center mb-4">Sélectionner la catégorie du document</h2>
+        <form method="post" action="{% url 'books:add_document' %}">
+            {% csrf_token %}
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="document_type" class="form-label">Type de document</label>
+                        <select name="document_type" id="document_type" class="form-select" required>
+                            <option value="">Choisir...</option>
+                            {% for value, label in document_types %}
+                                <option value="{{ value }}">{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3" id="academic_level_field" style="display: none;">
+                        <label for="academic_level" class="form-label">Niveau académique</label>
+                        <select name="academic_level" id="academic_level" class="form-select">
+                            <option value="">Choisir...</option>
+                            {% for value, label in academic_levels %}
+                                <option value="{{ value }}">{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Continuer</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <script>
+        document.getElementById('document_type').addEventListener('change', function() {
+            const academicLevelField = document.getElementById('academic_level_field');
+            const academicLevelSelect = document.getElementById('academic_level');
+            if (this.value === 'ebook') {
+                academicLevelField.style.display = 'none';
+                academicLevelSelect.removeAttribute('required');
+                academicLevelSelect.value = 'N/A';
+            } else {
+                academicLevelField.style.display = 'block';
+                academicLevelSelect.setAttribute('required', 'required');
+                academicLevelSelect.value = '';
+            }
+        });
+    </script>
+{% endblock %}

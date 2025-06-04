@@ -99,8 +99,6 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
     BASE_DIR / 'books/static',
-    BASE_DIR / 'users/static',
-    BASE_DIR / 'admin_librairy_project/static',
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
