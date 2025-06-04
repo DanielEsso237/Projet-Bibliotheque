@@ -23,14 +23,40 @@ def librarian_dashboard(request):
     books = paginator.get_page(page_number)
     return render(request, 'books/librarian_dashboard.html', {'books': books})
 
+def stats_api(request):
+    total_books = Book.objects.count()
+    available_books = Book.objects.filter(is_available=True).count()
+    ebooks = Book.objects.filter(is_physical=False).count()
+    physical_books = Book.objects.filter(is_physical=True).count()
+    return JsonResponse({
+        'total_books': total_books,
+        'available_books': available_books,
+        'ebooks': ebooks,
+        'physical_books': physical_books
+    })
+
 def search_books_api(request):
-    books_list = Book.objects.all().order_by('title')
+    books_list = Book.objects.all()
     search_query = request.GET.get('search', '')
     if search_query:
         books_list = books_list.filter(title__icontains=search_query)
     availability = request.GET.get('availability', '')
     if availability:
         books_list = books_list.filter(is_available=(availability.lower() == 'true'))
+    type_filter = request.GET.get('type', '')
+    if type_filter == 'physical':
+        books_list = books_list.filter(is_physical=True)
+    elif type_filter == 'ebook':
+        books_list = books_list.filter(is_physical=False)
+    
+    # Tri
+    sort_field = request.GET.get('sort', 'title')
+    sort_order = request.GET.get('order', 'asc')
+    if sort_field in ['title', 'author']:
+        if sort_order == 'desc':
+            sort_field = f'-{sort_field}'
+        books_list = books_list.order_by(sort_field)
+
     paginator = Paginator(books_list, 9)
     page_number = request.GET.get('page', 1)
     page_obj = paginator.get_page(page_number)
@@ -63,7 +89,6 @@ def choose_document_type(request):
 def select_document_category(request):
     document_types = [dt for dt in Document.DOCUMENT_TYPES if dt[0] != 'ebook']
     academic_levels = [al for al in Document.ACADEMIC_LEVELS if al[0] != 'N/A']
-
     if request.method == 'POST':
         document_type = request.POST.get('document_type')
         academic_level = request.POST.get('academic_level')
@@ -146,7 +171,7 @@ def edit_book(request, book_id):
             return redirect('books:librarian_dashboard')
     else:
         form = BookForm(instance=book)
-    return render(request, 'books/librarian_dashboard.html', {'form': form})
+    return render(request, 'books/edit_book.html', {'form': form, 'book': book})
 
 def book_api(request, book_id):
     book = get_object_or_404(Book, id=book_id)

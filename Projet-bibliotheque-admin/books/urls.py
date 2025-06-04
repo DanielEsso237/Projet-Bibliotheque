@@ -13,5 +13,5 @@ urlpatterns = [
     path('edit/<int:book_id>/', views.edit_book, name='edit_book'),
     path('api/book/<int:book_id>/', views.book_api, name='book_api'),
     path('api/search/', views.search_books_api, name='search_books_api'),
+    path('api/stats/', views.stats_api, name='stats_api'),
 ]
-
