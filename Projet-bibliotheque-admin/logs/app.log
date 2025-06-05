@@ -2885,3 +2885,362 @@ Notification count: total=0
 Notification count: total=0
 Notification count: total=0
 Notification count: total=0
+Watching for file changes with StatReloader
+Not Found: /favicon.ico
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Total des notifications affichées: 0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Total des notifications affichées: 0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+Not Found: /favicon.ico
+Notification count: total=0
+Notification count: total=0
+Not Found: /favicon.ico
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Internal Server Error: /books/
+Traceback (most recent call last):
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\projet-bibliotheque-admin\books\views.py", line 26, in librarian_dashboard
+    return render(request, 'books/librarian_dashboard.html', {
+        'books': books,
+        'document_types': document_types,
+        'academic_levels': academic_levels
+    })
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\defaulttags.py", line 327, in render
+    return nodelist.render(context)
+           ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\urls\base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\urls\resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'add_document' with no arguments not found. 1 pattern(s) tried: ['books/add\\-document/(?P<document_type>[^/]+)/(?P<academic_level>[^/]+)/\\Z']
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+Notification count: total=0
+Watching for file changes with StatReloader
+Not Found: /favicon.ico
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Watching for file changes with StatReloader
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+Not Found: /favicon.ico
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Internal Server Error: /books/
+Traceback (most recent call last):
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\books\views.py", line 26, in librarian_dashboard
+    return render(request, 'books/librarian_dashboard.html', {
+        'books': books,
+        'document_types': document_types,
+        'academic_levels': academic_levels
+    })
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\urls\base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\urls\resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'select_document_type' not found. 'select_document_type' is not a valid view function or pattern name.
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
