@@ -21,7 +21,7 @@ class Book(models.Model):
         return f"{self.title} by {self.author}"
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'books_book'
         
         
@@ -31,7 +31,7 @@ class UserFavorite(models.Model):
     added_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        managed = False
+        managed = True
         unique_together = ('user', 'book')  # Un utilisateur ne peut ajouter un livre en favori qu'une fois
         db_table = 'books_user_favorite'
 
