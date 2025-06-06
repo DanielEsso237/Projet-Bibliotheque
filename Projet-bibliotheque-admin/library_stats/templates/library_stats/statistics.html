@@ -158,13 +158,30 @@
             <div class="card mb-4">
                 <div class="card-body">
                     <h5 class="card-title">Top 5 des emprunteurs</h5>
-                    <ul class="list-group">
-                        {% for user in top_borrowers %}
-                            <li class="list-group-item">{{ user.username }} ({{ user.borrow_count }} emprunts)</li>
-                        {% empty %}
-                            <li class="list-group-item">Aucun emprunteur encore.</li>
-                        {% endfor %}
-                    </ul>
+                    <div id="topBorrowersTable">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Utilisateur</th>
+                                        <th>Nombre d'emprunts</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for user in top_borrowers %}
+                                        <tr>
+                                            <td>{{ user.username }}</td>
+                                            <td>{{ user.borrow_count }}</td>
+                                        </tr>
+                                    {% empty %}
+                                        <tr>
+                                            <td colspan="2">Aucun emprunteur encore.</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         {% endif %}
@@ -179,6 +196,25 @@
             max-width: 600px; /* Limite la largeur maximale */
             height: 300px; /* Hauteur fixe pour les graphiques */
             margin: 0 auto; /* Centre le graphique */
+        }
+        /* Styles pour le tableau des top 5 emprunteurs en mode sombre */
+        body.dark-mode #topBorrowersTable .table {
+            color: var(--text-color);
+            background-color: #2c3034;
+        }
+        body.dark-mode #topBorrowersTable .table th,
+        body.dark-mode #topBorrowersTable .table td {
+            background-color: #2c3034;
+            color: var(--text-color);
+            border-color: #495057;
+        }
+        body.dark-mode #topBorrowersTable .table thead th {
+            background-color: #343a40;
+            color: var(--text-color);
+            border-color: #495057;
+        }
+        body.dark-mode #topBorrowersTable .table-hover tbody tr:hover {
+            background-color: #3b4146;
         }
     </style>
 {% endblock %}
