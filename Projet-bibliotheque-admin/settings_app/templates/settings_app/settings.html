@@ -46,32 +46,130 @@
             margin-right: 10px;
             color: #007bff;
         }
-        body.dark-mode .settings-card {
-            background-color: #000000;
-            color: #f8f9fa;
-            border-color: #495057;
-        }
         body.dark-mode .form-label {
             color: #f8f9fa;
         }
         body.dark-mode .form-control,
         body.dark-mode .form-select {
-            background-color: #2c3034;
-            color: #f8f9fa;
-            border-color: #495057;
+            background-color: #2c3034 !important;
+            color: #f8f9fa !important;
+            border-color: #495057 !important;
         }
         body.dark-mode .form-control:focus,
         body.dark-mode .form-select:focus {
-            background-color: #343a40;
-            color: #f8f9fa;
-            border-color: #6c757d;
-            box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.25);
+            background-color: #343a40 !important;
+            color: #f8f9fa !important;
+            border-color: #6c757d !important;
+            box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.25) !important;
         }
         body.dark-mode ::placeholder {
             color: #adb5bd;
         }
         body.dark-mode .icon-section {
             color: #66b0ff;
+        }
+        /* Styles spécifiques pour chaque section en mode sombre */
+        body.dark-mode #notificationSettings {
+            background-color: #2c3034 !important;
+            color: #f8f9fa !important;
+            border-color: #495057 !important;
+        }
+        body.dark-mode #notificationSettings h5 {
+            color: #f8f9fa !important;
+        }
+        body.dark-mode #stockSettings {
+            background-color: #2c3034 !important;
+            color: #f8f9fa !important;
+            border-color: #495057 !important;
+        }
+        body.dark-mode #stockSettings h5 {
+            color: #f8f9fa !important;
+        }
+        body.dark-mode #loanSettings {
+            background-color: #2c3034 !important;
+            color: #f8f9fa !important;
+            border-color: #495057 !important;
+        }
+        body.dark-mode #loanSettings h5 {
+            color: #f8f9fa !important;
+        }
+        /* Styles spécifiques pour chaque select en mode sombre */
+        body.dark-mode #id_notification_cleanup_days {
+            background-color: #2c3034 !important;
+            color: #f8f9fa !important;
+            border-color: #495057 !important;
+        }
+        body.dark-mode #id_notification_cleanup_days:focus {
+            background-color: #343a40 !important;
+            color: #f8f9fa !important;
+            border-color: #6c757d !important;
+            box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.25) !important;
+        }
+        body.dark-mode #id_low_stock_threshold {
+            background-color: #2c3034 !important;
+            color: #f8f9fa !important;
+            border-color: #495057 !important;
+        }
+        body.dark-mode #id_low_stock_threshold:focus {
+            background-color: #343a40 !important;
+            color: #f8f9fa !important;
+            border-color: #6c757d !important;
+            box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.25) !important;
+        }
+        body.dark-mode #id_critical_stock_threshold {
+            background-color: #2c3034 !important;
+            color: #f8f9fa !important;
+            border-color: #495057 !important;
+        }
+        body.dark-mode #id_critical_stock_threshold:focus {
+            background-color: #343a40 !important;
+            color: #f8f9fa !important;
+            border-color: #6c757d !important;
+            box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.25) !important;
+        }
+        body.dark-mode #id_loan_warning_days {
+            background-color: #2c3034 !important;
+            color: #f8f9fa !important;
+            border-color: #495057 !important;
+        }
+        body.dark-mode #id_loan_warning_days:focus {
+            background-color: #343a40 !important;
+            color: #f8f9fa !important;
+            border-color: #6c757d !important;
+            box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.25) !important;
+        }
+        body.dark-mode #id_loan_overdue_days {
+            background-color: #2c3034 !important;
+            color: #f8f9fa !important;
+            border-color: #495057 !important;
+        }
+        body.dark-mode #id_loan_overdue_days:focus {
+            background-color: #343a40 !important;
+            color: #f8f9fa !important;
+            border-color: #6c757d !important;
+            box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.25) !important;
+        }
+        body.dark-mode #id_max_loans_per_user {
+            background-color: #2c3034 !important;
+            color: #f8f9fa !important;
+            border-color: #495057 !important;
+        }
+        body.dark-mode #id_max_loans_per_user:focus {
+            background-color: #343a40 !important;
+            color: #f8f9fa !important;
+            border-color: #6c757d !important;
+            box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.25) !important;
+        }
+        body.dark-mode #id_loan_duration {
+            background-color: #2c3034 !important;
+            color: #f8f9fa !important;
+            border-color: #495057 !important;
+        }
+        body.dark-mode #id_loan_duration:focus {
+            background-color: #343a40 !important;
+            color: #f8f9fa !important;
+            border-color: #6c757d !important;
+            box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.25) !important;
         }
     </style>
 {% endblock %}
@@ -84,11 +182,11 @@
         {% csrf_token %}
         
         <!-- Section Notifications -->
-        <div class="settings-card mb-4 p-4 bg-white border">
+        <div class="settings-card mb-4 p-4 bg-white border" id="notificationSettings">
             <h5 class="mb-3">
                 <i class="fas fa-bell icon-section"></i> Notifications
             </h5>
-            <div class="mb-3">
+            <div class="mb-3" id="notificationCleanupSelect">
                 <label for="notification_cleanup_days" class="form-label">
                     Seuil de nettoyage
                     <i class="fas fa-info-circle text-muted" data-bs-toggle="tooltip" title="Délai avant suppression définitive des notifications supprimées"></i>
@@ -98,7 +196,7 @@
         </div>
 
         <!-- Section Stocks -->
-        <div class="settings-card mb-4 p-4 bg-white border">
+        <div class="settings-card mb-4 p-4 bg-white border" id="stockSettings">
             <h5 class="mb-3">
                 <i class="fas fa-box-open icon-section"></i> Gestion des stocks
             </h5>
@@ -119,7 +217,7 @@
         </div>
 
         <!-- Section Prêts -->
-        <div class="settings-card mb-4 p-4 bg-white border">
+        <div class="settings-card mb-4 p-4 bg-white border" id="loanSettings">
             <h5 class="mb-3">
                 <i class="fas fa-book icon-section"></i> Gestion des prêts
             </h5>
