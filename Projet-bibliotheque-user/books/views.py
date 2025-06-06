@@ -88,3 +88,25 @@ def toggle_favorite(request):
         favorite.delete()
         return JsonResponse({'added': False})
     return JsonResponse({'added': True})
+
+@login_required
+def epreuves_view(request):
+    # Supposons un modèle Proof existant ou une table books_proof
+    # Remplacez par la logique réelle si un modèle est défini
+    epreuves = []  # À remplacer par Proof.objects.all() si le modèle existe
+    context = {
+        'epreuves': epreuves,
+        'message': 'Aucune épreuve disponible pour le moment.' if not epreuves else ''
+    }
+    return render(request, 'books/epreuves.html', context)
+
+@login_required
+def documents_view(request):
+    # Supposons un modèle Document existant ou une table books_document
+    # Remplacez par la logique réelle si un modèle est défini
+    documents = []  # À remplacer par Document.objects.all() si le modèle existe
+    context = {
+        'documents': documents,
+        'message': 'Aucun document disponible pour le moment.' if not documents else ''
+    }
+    return render(request, 'books/documents.html', context)
