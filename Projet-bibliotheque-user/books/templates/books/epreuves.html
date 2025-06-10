@@ -1,0 +1,54 @@
+{% extends "readers/base.html" %}
+{% load static %}
+{% block title %}Épreuves{% endblock %}
+{% block content %}
+    <div class="container my-4">
+        <h2 class="text-center mb-4">Épreuves</h2>
+
+        <!-- Formulaire pour sélectionner le niveau académique -->
+        <form method="get" class="mb-4">
+            <div class="input-group">
+                <select name="level" class="form-select" onchange="this.form.submit()">
+                    <option value="">Sélectionner un niveau</option>
+                    {% for level in levels %}
+                        <option value="{{ level }}" {% if request.GET.level == level %}selected{% endif %}>
+                            {{ level }}
+                        </option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="btn btn-primary">Filtrer</button>
+            </div>
+        </form>
+
+        {% if epreuves %}
+            <div class="row g-4">
+                {% for epreuve in epreuves %}
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="card h-100">
+                            {% if epreuve.cover_image %}
+                                <img src="{{ epreuve.cover_image.url }}" class="card-img-top" alt="{{ epreuve.title }}" style="height: 200px; object-fit: cover;">
+                            {% else %}
+                                <img src="{% static 'images/default_cover.jpg' %}" class="card-img-top" alt="Pas de couverture" style="height: 200px; object-fit: cover;">
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">{{ epreuve.title }}</h5>
+                                <p class="card-text">Auteur : {{ epreuve.author|default:"Inconnu" }}</p>
+                                <p class="card-text">Niveau : {{ epreuve.academic_level }}</p>
+                                <p class="card-text">
+                                    {% if epreuve.is_available %}
+                                        <span class="badge bg-success">Disponible</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Non disponible</span>
+                                    {% endif %}
+                                </p>
+                                <a href="{% url 'books:document_detail' epreuve.pk %}" class="btn btn-primary"><i class="fas fa-info-circle me-1"></i> Détails</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-center">Aucune épreuve disponible pour le niveau sélectionné.</p>
+        {% endif %}
+    </div>
+{% endblock %}

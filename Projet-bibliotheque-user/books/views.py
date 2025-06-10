@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.db.models import Q, Count
-from .models import Book, UserFavorite
+from .models import Book, UserFavorite, Document
 from loans.models import Loan, History
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
@@ -57,7 +57,7 @@ def recommendations_view(request):
                     .values('genre')
                     .annotate(genre_count=Count('genre'))
                     .order_by('-genre_count'))
-    top_genres = [item['genre'] for item in genre_counts[:3]]
+    top_genres = [item['genre'] for item in genre_counts[:3] if item['genre']]
     recommended_books = []
     if top_genres:
         recommended_books = (Book.objects
@@ -65,7 +65,7 @@ def recommendations_view(request):
                             .order_by('-created_at')[:10])
     context = {
         'recommended_books': recommended_books,
-        'message': 'Aucun livre recommandé pour le moment.' if not recommended_books else ''
+        'message': 'Aucun livre recommandé pour le moment. Essayez d\'emprunter quelques livres pour des suggestions personnalisées.' if not recommended_books else ''
     }
     return render(request, 'books/recommendations.html', context)
 
@@ -91,22 +91,30 @@ def toggle_favorite(request):
 
 @login_required
 def epreuves_view(request):
-    # Supposons un modèle Proof existant ou une table books_proof
-    # Remplacez par la logique réelle si un modèle est défini
-    epreuves = []  # À remplacer par Proof.objects.all() si le modèle existe
+    levels = [level[0] for level in Document.ACADEMIC_LEVELS]
+    selected_level = request.GET.get('level', '')
+    epreuves = Document.objects.filter(document_type='exam')
+    if selected_level:
+        epreuves = epreuves.filter(academic_level=selected_level)
     context = {
         'epreuves': epreuves,
-        'message': 'Aucune épreuve disponible pour le moment.' if not epreuves else ''
+        'levels': levels,
     }
     return render(request, 'books/epreuves.html', context)
 
 @login_required
 def documents_view(request):
-    # Supposons un modèle Document existant ou une table books_document
-    # Remplacez par la logique réelle si un modèle est défini
-    documents = []  # À remplacer par Document.objects.all() si le modèle existe
+    documents = []  # À remplacer par la logique réelle
     context = {
         'documents': documents,
         'message': 'Aucun document disponible pour le moment.' if not documents else ''
     }
     return render(request, 'books/documents.html', context)
+
+
+@login_required
+def document_detail_view(request, pk):
+    from .models import Document
+    document = get_object_or_404(Document, pk=pk)
+    context = {'document': document}
+    return render(request, 'books/document_detail.html', context)

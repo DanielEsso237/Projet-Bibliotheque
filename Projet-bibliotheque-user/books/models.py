@@ -1,6 +1,7 @@
 from django.db import models
 from users.models import CustomUser
 from django.utils import timezone
+from django.core.validators import FileExtensionValidator
 
 class Book(models.Model):
     title = models.CharField(max_length=200)
@@ -23,8 +24,7 @@ class Book(models.Model):
     class Meta:
         managed = True
         db_table = 'books_book'
-        
-        
+
 class UserFavorite(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='favorites')
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='favorited_by')
@@ -32,8 +32,49 @@ class UserFavorite(models.Model):
 
     class Meta:
         managed = True
-        unique_together = ('user', 'book')  # Un utilisateur ne peut ajouter un livre en favori qu'une fois
+        unique_together = ('user', 'book')
         db_table = 'books_user_favorite'
 
     def __str__(self):
         return f"{self.user.username} - {self.book.title}"
+
+class Document(models.Model):
+    DOCUMENT_TYPES = [
+        ('exam', 'Épreuve'),
+        ('course', 'Support de cours'),
+        ('td', 'Fiche de TD'),
+        ('article', 'Article'),
+    ]
+    ACADEMIC_LEVELS = [
+        ('L1', 'Licence 1'),
+        ('L2', 'Licence 2'),
+        ('L3', 'Licence 3'),
+        ('M1', 'Master 1'),
+        ('M2', 'Master 2'),
+        ('D', 'Doctorat'),
+    ]
+
+    title = models.CharField(max_length=200)
+    author = models.CharField(max_length=100, blank=True)
+    document_type = models.CharField(max_length=20, choices=DOCUMENT_TYPES)
+    academic_level = models.CharField(max_length=10, choices=ACADEMIC_LEVELS)
+    file = models.FileField(
+        upload_to='documents/',
+        blank=True,
+        null=True,
+        validators=[FileExtensionValidator(allowed_extensions=['pdf'])]
+    )
+    cover_image = models.ImageField(upload_to='covers/', blank=True, null=True)
+    is_available = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.title} ({self.get_document_type_display()})"
+
+    class Meta:
+        managed = False  # Table existante créée par admin
+        db_table = 'books_document'  # Aligne avec la table réelle
+        ordering = ['title']
+        verbose_name = "Document"
+        verbose_name_plural = "Documents"

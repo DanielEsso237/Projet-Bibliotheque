@@ -12,4 +12,5 @@ urlpatterns = [
     path('toggle-favorite/', views.toggle_favorite, name='toggle_favorite'),
     path('epreuves/', views.epreuves_view, name='epreuves'),
     path('documents/', views.documents_view, name='documents'),
+    path('document-details/<int:pk>/', views.document_detail_view, name='document_detail'),  # Assure-toi que cette vue existe
 ]

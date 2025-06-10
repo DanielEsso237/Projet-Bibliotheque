@@ -32,6 +32,21 @@ class History(models.Model):
         return f"{self.user.username} - {self.book.title} ({self.genre})"
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'loans_history'
         ordering = ['-loan_date']
+        
+
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+@receiver(post_save, sender=Loan)
+def update_history(sender, instance, **kwargs):
+    if instance.is_returned and not History.objects.filter(user=instance.user, book=instance.book).exists():
+        History.objects.create(
+            user=instance.user,
+            book=instance.book,
+            genre=instance.book.category or '',
+            loan_date=instance.loan_date,
+            is_physical=instance.is_physical
+        )
