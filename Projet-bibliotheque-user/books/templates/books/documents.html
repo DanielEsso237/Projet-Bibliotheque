@@ -35,13 +35,6 @@
                                 <p class="card-text">Auteur : {{ document.author|default:"Inconnu" }}</p>
                                 <p class="card-text">Type : {{ document.get_document_type_display }}</p>
                                 <p class="card-text">Niveau : {{ document.academic_level }}</p>
-                                <p class="card-text">
-                                    {% if document.is_available %}
-                                        <span class="badge bg-success">Disponible</span>
-                                    {% else %}
-                                        <span class="badge bg-danger">Non disponible</span>
-                                    {% endif %}
-                                </p>
                                 <a href="{% url 'books:document_detail' document.pk %}" class="btn btn-primary"><i class="fas fa-info-circle me-1"></i> Détails</a>
                             </div>
                         </div>

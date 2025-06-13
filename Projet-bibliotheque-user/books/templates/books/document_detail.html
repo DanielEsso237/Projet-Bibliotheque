@@ -3,29 +3,39 @@
 {% block title %}{{ document.title }}{% endblock %}
 {% block content %}
     <div class="container my-4">
-        <h2 class="text-center mb-4">{{ document.title }}</h2>
-        <div class="card">
-            {% if document.cover_image %}
-                <img src="{{ document.cover_image.url }}" class="card-img-top" alt="{{ document.title }}" style="height: 300px; object-fit: cover;">
-            {% else %}
-                <img src="{% static 'images/default_cover.jpg' %}" class="card-img-top" alt="Pas de couverture" style="height: 300px; object-fit: cover;">
-            {% endif %}
-            <div class="card-body">
-                <p class="card-text"><strong>Auteur :</strong> {{ document.author|default:"Inconnu" }}</p>
-                <p class="card-text"><strong>Type :</strong> {{ document.get_document_type_display }}</p>
-                <p class="card-text"><strong>Niveau :</strong> {{ document.academic_level }}</p>
-                <p class="card-text"><strong>Disponibilité :</strong>
-                    {% if document.is_available %}
-                        <span class="badge bg-success">Disponible</span>
-                    {% else %}
-                        <span class="badge bg-danger">Non disponible</span>
-                    {% endif %}
-                </p>
-                {% if document.file and document.is_available %}
-                    <a href="{{ document.file.url }}" class="btn btn-primary" download><i class="fas fa-download me-1"></i>Télécharger</a>
-                {% endif %}
-                <a href="{% url 'books:documents' %}" class="btn btn-secondary mt-2"><i class="fas fa-arrow-left me-1"></i>Retour</a>
+        <div class="row">
+            <div class="col-md-8">
+                <h2 class="mb-4">{{ document.title }}</h2>
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Détails du document</h5>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><strong>Auteur :</strong> {{ document.author|default:"Inconnu" }}</li>
+                            <li class="list-group-item"><strong>Type :</strong> {{ document.get_document_type_display }}</li>
+                            <li class="list-group-item"><strong>Niveau :</strong> {{ document.academic_level }}</li>
+                            <li class="list-group-item"><strong>Date de création :</strong> {{ document.created_at|date:"d/m/Y" }}</li>
+                            <li class="list-group-item"><strong>Dernière mise à jour :</strong> {{ document.updated_at|date:"d/m/Y" }}</li>
+                        </ul>
+                        {% if document.file %}
+                            <a href="{{ document.file.url }}" class="btn btn-primary mt-3" download><i class="fas fa-download me-1"></i>Télécharger le PDF</a>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body text-center">
+                        {% if document.cover_image %}
+                            <img src="{{ document.cover_image.url }}" class="img-fluid" alt="{{ document.title }}" style="max-height: 300px; object-fit: cover;">
+                        {% else %}
+                            <img src="{% static 'images/default_cover.jpg' %}" class="img-fluid" alt="Pas de couverture" style="max-height: 300px; object-fit: cover;">
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <a href="{% if document.document_type == 'exam' %}{% url 'books:epreuves' %}{% else %}{% url 'books:documents' %}{% endif %}" class="btn btn-secondary"><i class="fas fa-arrow-left me-1"></i>Retour</a>
         </div>
     </div>
 {% endblock %}

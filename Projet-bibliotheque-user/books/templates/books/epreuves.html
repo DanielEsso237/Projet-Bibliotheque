@@ -34,13 +34,6 @@
                                 <h5 class="card-title">{{ epreuve.title }}</h5>
                                 <p class="card-text">Auteur : {{ epreuve.author|default:"Inconnu" }}</p>
                                 <p class="card-text">Niveau : {{ epreuve.academic_level }}</p>
-                                <p class="card-text">
-                                    {% if epreuve.is_available %}
-                                        <span class="badge bg-success">Disponible</span>
-                                    {% else %}
-                                        <span class="badge bg-danger">Non disponible</span>
-                                    {% endif %}
-                                </p>
                                 <a href="{% url 'books:document_detail' epreuve.pk %}" class="btn btn-primary"><i class="fas fa-info-circle me-1"></i> Détails</a>
                             </div>
                         </div>
