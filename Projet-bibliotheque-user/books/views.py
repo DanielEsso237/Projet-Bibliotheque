@@ -104,17 +104,19 @@ def epreuves_view(request):
 
 @login_required
 def documents_view(request):
-    documents = []  # À remplacer par la logique réelle
+    document_types = Document.DOCUMENT_TYPES
+    selected_type = request.GET.get('type', '')
+    documents = Document.objects.all()
+    if selected_type:
+        documents = documents.filter(document_type=selected_type)
     context = {
         'documents': documents,
-        'message': 'Aucun document disponible pour le moment.' if not documents else ''
+        'document_types': document_types,
     }
     return render(request, 'books/documents.html', context)
 
-
 @login_required
 def document_detail_view(request, pk):
-    from .models import Document
     document = get_object_or_404(Document, pk=pk)
     context = {'document': document}
     return render(request, 'books/document_detail.html', context)
