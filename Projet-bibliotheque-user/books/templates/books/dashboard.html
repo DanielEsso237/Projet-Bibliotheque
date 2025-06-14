@@ -8,7 +8,7 @@
         <!-- Résumé rapide -->
         <div class="row mb-4">
             <div class="col-12 col-md-4 mb-3">
-                <div class="card text-center bg-light">
+                <div class="card text-center">
                     <div class="card-body">
                         <h5><i class="fas fa-book me-2"></i>Emprunts en cours</h5>
                         <p class="display-6">{{ loans_count|default:0 }}</p>
@@ -16,7 +16,7 @@
                 </div>
             </div>
             <div class="col-12 col-md-4 mb-3">
-                <div class="card text-center bg-light">
+                <div class="card text-center">
                     <div class="card-body">
                         <h5><i class="fas fa-bell me-2"></i>Notifications</h5>
                         <p class="display-6">{{ notifications_count|default:0 }}</p>
@@ -24,7 +24,7 @@
                 </div>
             </div>
             <div class="col-12 col-md-4 mb-3">
-                <div class="card text-center bg-light">
+                <div class="card text-center">
                     <div class="card-body">
                         <h5><i class="fas fa-star me-2"></i>Favoris</h5>
                         <p class="display-6">{{ favorites_count|default:0 }}</p>
@@ -36,8 +36,8 @@
         <!-- Options principales -->
         <div class="row g-4">
             <!-- Rechercher un livre -->
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="card h-100">
+            <div class="col-12 col-md-6 col-lg-4 dark-section">
+                <div class="card option-card h-100">
                     <div class="card-body text-center">
                         <h5 class="card-title">Rechercher un livre</h5>
                         <p class="card-text">Trouvez des livres par titre, auteur ou catégorie.</p>
@@ -47,7 +47,7 @@
             </div>
             <!-- Mes emprunts -->
             <div class="col-12 col-md-6 col-lg-4">
-                <div class="card h-100">
+                <div class="card option-card h-100">
                     <div class="card-body text-center">
                         <h5 class="card-title">Mes emprunts</h5>
                         <p class="card-text">Consultez vos emprunts en cours et votre historique.</p>
@@ -57,7 +57,7 @@
             </div>
             <!-- Nouveautés -->
             <div class="col-12 col-md-6 col-lg-4">
-                <div class="card h-100">
+                <div class="card option-card h-100">
                     <div class="card-body text-center">
                         <h5 class="card-title">Nouveautés</h5>
                         <p class="card-text">Découvrez les derniers livres ajoutés à la bibliothèque.</p>
@@ -67,7 +67,7 @@
             </div>
             <!-- Recommandations -->
             <div class="col-12 col-md-6 col-lg-4">
-                <div class="card h-100">
+                <div class="card option-card h-100">
                     <div class="card-body text-center">
                         <h5 class="card-title">Recommandations</h5>
                         <p class="card-text">Livres suggérés selon vos goûts et emprunts.</p>
@@ -77,7 +77,7 @@
             </div>
             <!-- Mes favoris -->
             <div class="col-12 col-md-6 col-lg-4">
-                <div class="card h-100">
+                <div class="card option-card h-100">
                     <div class="card-body text-center">
                         <h5 class="card-title">Mes favoris</h5>
                         <p class="card-text">Gérez votre liste de livres préférés.</p>
@@ -87,7 +87,7 @@
             </div>
             <!-- Épreuves -->
             <div class="col-12 col-md-6 col-lg-4">
-                <div class="card h-100">
+                <div class="card option-card h-100">
                     <div class="card-body text-center">
                         <h5 class="card-title">Épreuves</h5>
                         <p class="card-text">Consultez les épreuves disponibles pour vos études.</p>
@@ -97,7 +97,7 @@
             </div>
             <!-- Documents -->
             <div class="col-12 col-md-6 col-lg-4">
-                <div class="card h-100">
+                <div class="card option-card h-100">
                     <div class="card-body text-center">
                         <h5 class="card-title">Documents</h5>
                         <p class="card-text">Accédez à divers documents utiles de la bibliothèque.</p>
@@ -107,7 +107,7 @@
             </div>
             <!-- Mon profil -->
             <div class="col-12 col-md-6 col-lg-4">
-                <div class="card h-100">
+                <div class="card option-card h-100">
                     <div class="card-body text-center">
                         <h5 class="card-title">Mon profil</h5>
                         <p class="card-text">Mettez à jour vos informations personnelles.</p>
