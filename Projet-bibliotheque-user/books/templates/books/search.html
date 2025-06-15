@@ -28,7 +28,7 @@
         </form>
         <div class="row">
             {% for book in books %}
-                <div class="col-md-4 mb-4">
+                <div class="col-md-4 mb-4 dark-section">
                     <div class="card h-100">
                         {% if book.cover_image %}
                             <img src="{{ book.cover_image.url }}" class="card-img-top" alt="{{ book.title }}">

@@ -23,7 +23,7 @@
         {% if epreuves %}
             <div class="row g-4">
                 {% for epreuve in epreuves %}
-                    <div class="col-12 col-md-6 col-lg-4">
+                    <div class="col-12 col-md-6 col-lg-4 dark-section">
                         <div class="card h-100">
                             {% if epreuve.cover_image %}
                                 <img src="{{ epreuve.cover_image.url }}" class="card-img-top" alt="{{ epreuve.title }}" style="height: 200px; object-fit: cover;">
