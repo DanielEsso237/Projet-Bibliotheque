@@ -2,6 +2,67 @@
 {% load static %}
 {% block title %}Tableau de bord{% endblock %}
 {% block content %}
+{% block extra_css %}
+<style>
+    /* Couleurs en dark mode */
+    body.dark-mode {
+        background-color: #121212;
+        color: #f1f1f1;
+    }
+
+    body.dark-mode h2,
+    body.dark-mode .card-title,
+    body.dark-mode .card-text {
+        color: #f8f9fa;
+    }
+
+    body.dark-mode .card {
+        background-color: #1e1e1e;
+        border: 1px solid #2a2a2a;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    body.dark-mode .btn-primary {
+        background-color: #fff707;
+        color: #212529;
+        border: none;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    body.dark-mode .btn-primary:hover {
+        background-color: #ffe600;
+        transform: scale(1.05);
+    }
+
+    /* Hover & animation pour les cartes */
+    .option-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        cursor: pointer;
+    }
+
+    .option-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    body.dark-mode .option-card:hover {
+        box-shadow: 0 8px 20px rgba(255, 255, 255, 0.1);
+    }
+
+    /* Animation de fade-in */
+    .fade-in {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+
+    .fade-in.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+</style>
+{% endblock %}
+
     <div class="container my-4">
         <h2 class="text-center mb-4">Bienvenue, {{ request.user.username }} !</h2>
 
@@ -117,4 +178,29 @@
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const cards = document.querySelectorAll(".option-card");
+
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add("visible");
+                    }, index * 150); // Décalage entre chaque carte
+                }
+            });
+        }, {
+            threshold: 0.2
+        });
+
+        cards.forEach(card => {
+            card.classList.add("fade-in");
+            observer.observe(card);
+        });
+    });
+</script>
 {% endblock %}
