@@ -5,67 +5,262 @@
 
 {% block extra_css %}
 <style>
+    /* Styles pour les cartes de livres */
     .book-card {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 16px;
+        box-shadow: 0 8px 32px var(--shadow-color);
+        overflow: hidden;
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s, border-color 0.4s;
         height: 100%;
-        margin-bottom: 1rem; /* Ajoutez cette ligne */
+        position: relative;
     }
 
-    /* Supprimez ou modifiez cette partie */
-    /*
     .book-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    }
-    */
-
-    /* Ajoutez ce nouveau style pour l'effet hover */
-    .book-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-        z-index: 10;
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 20px 40px var(--shadow-color);
+        border-color: var(--glow-color);
     }
 
-    /* Assurez-vous que les cartes ont une largeur égale */
+    .book-cover-container {
+        position: relative;
+        overflow: hidden;
+        height: 200px;
+    }
+
+    .book-cover-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .book-card:hover .book-cover-container img {
+        transform: scale(1.05);
+    }
+
+    .default-cover {
+        background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-yellow) 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 200px;
+        color: var(--primary-white);
+        font-size: 14px;
+        font-weight: bold;
+        text-align: center;
+        padding: 20px;
+        box-sizing: border-box;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .default-cover::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        transform: rotate(45deg);
+        animation: defaultCoverShine 3s infinite;
+    }
+
+    @keyframes defaultCoverShine {
+        0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+        100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+    }
+
+    .default-cover i {
+        font-size: 48px;
+        margin-bottom: 15px;
+        display: block;
+        filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+    }
+
+    .card-body {
+        padding: 1.5rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    .card-title {
+        color: var(--card-text);
+        font-weight: 700;
+        font-size: 1.1rem;
+        margin-bottom: 0.75rem;
+        line-height: 1.3;
+    }
+
+    .card-text {
+        color: var(--card-text);
+        opacity: 0.85;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        font-size: 0.9rem;
+    }
+
+    .card-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 1rem;
+        gap: 0.5rem;
+    }
+
+    /* Boutons d'action */
+    .btn-sm {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+        border-radius: 8px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .btn-primary {
+        background: var(--btn-primary-bg);
+        border: 1px solid var(--primary-blue);
+    }
+
+    .btn-primary:hover {
+        background: var(--primary-blue);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px var(--glow-color);
+    }
+
+    .btn-danger {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+        border: 1px solid #ef4444;
+    }
+
+    .btn-danger:hover {
+        background: #dc2626;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+    }
+
+    .btn-info {
+        background: linear-gradient(135deg, #0ea5e9, #0284c7);
+        border: 1px solid #0ea5e9;
+    }
+
+    .btn-info:hover {
+        background: #0284c7;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(14, 165, 233, 0.4);
+    }
+
+    /* Grille responsive */
     .books-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
         gap: 1.5rem;
     }
 
-    /* Pour les petits écrans */
-    @media (max-width: 767.98px) {
+    @media (max-width: 768px) {
         .books-grid {
             grid-template-columns: 1fr;
         }
     }
 
-    /* Style pour l'image de couverture */
-    .card-img-top {
-        height: 200px;
-        object-fit: cover;
-        width: 100%;
+    /* Animation d'apparition */
+    .book-card {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
     }
 
-    .card-img-placeholder {
-        height: 200px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background-color: #f8f9fa;
-        color: #6c757d;
+    .book-card.visible {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     /* DARK MODE */
     body.dark-mode .book-card {
-        background-color: #2c3034;
-        color: var(--text-color);
+        background: var(--card-bg);
     }
 
-    body.dark-mode .card-img-placeholder {
-        background-color: #495057;
-        color: #f8f9fa;
+    body.dark-mode .default-cover {
+        background: linear-gradient(135deg, var(--dark-blue) 0%, var(--dark-yellow) 100%);
+
     }
+
+        .card-actions {
+        display: flex;
+        flex-direction: column; /* Empile les boutons verticalement */
+        gap: 0.5rem; /* Espace entre les boutons */
+        margin-top: 1rem;
+    }
+
+    .card-actions .btn {
+        width: 100%; /* Prend toute la largeur disponible */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.5rem;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .card-actions .btn i {
+        margin-right: 0.5rem;
+    }
+
+    /* Style spécifique pour chaque bouton */
+    .btn-view {
+        background: var(--btn-primary-bg);
+        border: 1px solid var(--primary-blue);
+        color: white;
+    }
+
+    .btn-view:hover {
+        background: var(--primary-blue);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px var(--glow-color);
+    }
+
+    .btn-edit {
+        background: linear-gradient(135deg, #0ea5e9, #0284c7);
+        border: 1px solid #0ea5e9;
+        color: white;
+    }
+
+    .btn-edit:hover {
+        background: #0284c7;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(14, 165, 233, 0.4);
+    }
+
+    .btn-delete {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+        border: 1px solid #ef4444;
+        color: white;
+    }
+
+    .btn-delete:hover {
+        background: #dc2626;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+    }
+
+    /* Ajustement de la hauteur de la carte pour les boutons empilés */
+    .book-card {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .card-body {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .card-text {
+        flex-grow: 1;
+    }
+
 </style>
 {% endblock %}
 
@@ -500,41 +695,44 @@
                         } else {
                             booksTable.style.display = 'none';
                             booksCards.style.display = 'grid';
-                            // Dans la fonction fetchBooks(), modifiez la partie qui crée les cartes :
-data.books.forEach(book => {
+                            data.books.forEach((book, index) => {
     const card = document.createElement('div');
-    card.className = 'card book-card h-100';
+    card.className = 'book-card';
     card.innerHTML = `
-        <div class="card-img-wrapper">
+        <div class="book-cover-container">
             ${book.cover_image ? 
                 `<img src="${book.cover_image}" class="card-img-top" alt="${book.title}">` : 
-                `<div class="card-img-placeholder">
-                    <i class="fas fa-book fa-3x"></i>
+                `<div class="default-cover">
+                    <i class="fas fa-book"></i>
+                    <div>${book.title}</div>
                 </div>`
             }
         </div>
-        <div class="card-body d-flex flex-column">
+        <div class="card-body">
             <h5 class="card-title">${book.title}</h5>
-            <p class="card-text text-muted">${book.author}</p>
-            <div class="mt-auto">
-                <a href="${book.ebook_file}" target="_blank" class="btn btn-sm btn-outline-primary mb-2">
-                    <i class="fas fa-eye me-1"></i> Voir
+            <p class="card-text">${book.author}</p>
+            <div class="card-actions">
+                <a href="${book.ebook_file}" target="_blank" class="btn btn-view">
+                    <i class="fas fa-eye"></i> Voir PDF
                 </a>
-                <div class="d-flex gap-2">
-                    <button class="btn btn-sm btn-outline-secondary edit-book-btn flex-grow-1" 
-                            data-bs-toggle="modal" data-bs-target="#editBookModal" 
-                            data-book-id="${book.id}">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="btn btn-sm btn-outline-danger delete-book-btn flex-grow-1" 
-                            data-bs-toggle="modal" data-bs-target="#deleteBookModal" 
-                            data-book-id="${book.id}" data-book-title="${book.title}">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
+                <button class="btn btn-edit edit-book-btn" 
+                        data-bs-toggle="modal" data-bs-target="#editBookModal" 
+                        data-book-id="${book.id}">
+                    <i class="fas fa-edit"></i> Modifier
+                </button>
+                <button class="btn btn-delete delete-book-btn" 
+                        data-bs-toggle="modal" data-bs-target="#deleteBookModal" 
+                        data-book-id="${book.id}" data-book-title="${book.title}">
+                    <i class="fas fa-trash"></i> Supprimer
+                </button>
             </div>
         </div>`;
     booksCards.appendChild(card);
+    
+    // Animation d'apparition
+    setTimeout(() => {
+        card.classList.add('visible');
+    }, index * 100);
 });
                         }
                     }
