@@ -15,9 +15,6 @@ def librarian_dashboard(request):
     search_query = request.GET.get('search', '')
     if search_query:
         books_list = books_list.filter(title__icontains=search_query)
-    availability = request.GET.get('availability', '')
-    if availability:
-        books_list = books_list.filter(is_available=(availability.lower() == 'true'))
     paginator = Paginator(books_list, 9)
     page_number = request.GET.get('book_page')
     books = paginator.get_page(page_number)
@@ -31,14 +28,9 @@ def librarian_dashboard(request):
 
 def stats_api(request):
     total_books = Book.objects.count()
-    available_books = Book.objects.filter(is_available=True).count()
-    ebooks = Book.objects.filter(is_physical=False).count()
-    physical_books = Book.objects.filter(is_physical=True).count()
     return JsonResponse({
         'total_books': total_books,
-        'available_books': available_books,
-        'ebooks': ebooks,
-        'physical_books': physical_books
+        'ebooks': total_books  # Tous les livres sont des e-books
     })
 
 def doc_stats_api(request):
@@ -56,14 +48,6 @@ def search_books_api(request):
     search_query = request.GET.get('search', '')
     if search_query:
         books_list = books_list.filter(title__icontains=search_query)
-    availability = request.GET.get('availability', '')
-    if availability:
-        books_list = books_list.filter(is_available=(availability.lower() == 'true'))
-    type_filter = request.GET.get('type', '')
-    if type_filter == 'physical':
-        books_list = books_list.filter(is_physical=True)
-    elif type_filter == 'ebook':
-        books_list = books_list.filter(is_physical=False)
     
     sort_field = request.GET.get('sort', 'title')
     sort_order = request.GET.get('order', 'asc')
@@ -80,10 +64,8 @@ def search_books_api(request):
             'id': book.id,
             'title': book.title,
             'author': book.author,
-            'is_physical': book.is_physical,
-            'quantity': book.quantity if book.is_physical else None,
-            'is_available': book.is_available,
             'cover_image': book.cover_image.url if book.cover_image else None,
+            'ebook_file': book.ebook_file.url if book.ebook_file else None,
         } for book in page_obj
     ]
     return JsonResponse({
@@ -237,7 +219,7 @@ def add_book(request):
         form = BookForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Livre ajouté avec succès !')
+            messages.success(request, 'E-book ajouté avec succès !')
             return redirect('books:librarian_dashboard')
     else:
         form = BookForm()
@@ -250,7 +232,7 @@ def delete_book(request, book_id):
     book = get_object_or_404(Book, id=book_id)
     if request.method == 'POST':
         book.delete()
-        messages.success(request, 'Livre supprimé avec succès !')
+        messages.success(request, 'E-book supprimé avec succès !')
         return redirect('books:librarian_dashboard')
     return redirect('books:librarian_dashboard')
 
@@ -260,8 +242,10 @@ def edit_book(request, book_id):
         form = BookForm(request.POST, request.FILES, instance=book)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Livre modifié avec succès !')
+            messages.success(request, 'E-book modifié avec succès !')
             return redirect('books:librarian_dashboard')
+        else:
+            messages.error(request, 'Veuillez corriger les erreurs ci-dessous.')
     else:
         form = BookForm(instance=book)
     return render(request, 'books/edit_book.html', {'form': form, 'book': book})
@@ -271,10 +255,7 @@ def book_api(request, book_id):
     data = {
         'title': book.title,
         'author': book.author,
-        'is_physical': book.is_physical,
-        'quantity': book.quantity if book.is_physical else None,
-        'is_available': book.is_available,
         'cover_image': book.cover_image.url if book.cover_image else None,
-        'ebook_file': book.ebook_file.url if book.ebook_file and not book.is_physical else None
+        'ebook_file': book.ebook_file.url if book.ebook_file else None
     }
     return JsonResponse(data)

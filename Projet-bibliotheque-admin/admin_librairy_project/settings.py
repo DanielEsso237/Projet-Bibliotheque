@@ -23,7 +23,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'books.apps.BooksConfig',
     'users.apps.UsersConfig',
-    'loans.apps.LoansConfig',
     'notifications.apps.NotificationsConfig',
     'library_stats.apps.LibraryStatsConfig',
     'channels',
@@ -68,7 +67,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'librairy_db',
         'USER': 'root',
-        'PASSWORD': '',
+        'PASSWORD': 'admin123',
         'HOST': 'localhost',
         'PORT': '3306',
     }

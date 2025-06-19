@@ -7,9 +7,13 @@ class Notification(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='notifications')
     message = models.TextField()
     type = models.CharField(max_length=20, choices=[
-        ('warning', 'Warning'),
-        ('danger', 'Danger'),
-        ('info', 'Info')
+        ('info-new', 'Nouveau document'),
+        ('info-update', 'Document modifié'),
+        ('warning-delete', 'Document supprimé'),
+        ('info-user', 'Nouvel utilisateur'),
+        ('warning-access', 'Demande d’accès'),
+        ('info-system', 'Système'),
+        ('danger-file', 'Problème de fichier'),
     ])
     is_read = models.BooleanField(default=False)
     unique_identifier = models.CharField(max_length=64, default='', editable=False)

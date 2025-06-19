@@ -9,7 +9,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('books/', include('books.urls')),
     path('users/', include('users.urls')),
-    path('loans/', include('loans.urls')),
     path('notifications/', include('notifications.urls')),  # Ajout ici
     path('', RedirectView.as_view(url='/users/login/', permanent=False), name='index'),
     path('statistics/', include('library_stats.urls')),

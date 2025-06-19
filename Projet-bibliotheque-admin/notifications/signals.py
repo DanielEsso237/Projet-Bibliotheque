@@ -1,23 +1,107 @@
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
-from loans.models import Loan
+from books.models import Book, Document
+from users.models import CustomUser
 from notifications.models import Notification, DeletedNotification
-from django.db.models import Q
-import logging
+import hashlib
 
-logger = logging.getLogger(__name__)
+@receiver(post_save, sender=Book)
+def notify_book_added_or_updated(sender, instance, created, **kwargs):
+    librarians = CustomUser.objects.filter(is_librarian=True)
+    message = f"Un nouvel e-book '{instance.title}' a été ajouté." if created else f"L’e-book '{instance.title}' a été modifié."
+    type_notification = 'info-new' if created else 'info-update'
+    
+    for librarian in librarians:
+        unique_identifier = hashlib.sha256(message.encode('utf-8')).hexdigest()
+        if not (Notification.objects.filter(user=librarian, unique_identifier=unique_identifier, type=type_notification).exists() or
+                DeletedNotification.objects.filter(user=librarian, unique_identifier=unique_identifier, type=type_notification).exists()):
+            Notification.objects.create(
+                user=librarian,
+                message=message,
+                type=type_notification,
+                unique_identifier=unique_identifier
+            )
 
-@receiver(post_save, sender=Loan)
-def update_loan_notifications(sender, instance, created, **kwargs):
-    if instance.is_returned:
-        try:
-            deleted = Notification.objects.filter(
-                Q(user=instance.user) &
-                Q(type__in=['warning', 'danger']) &
-                Q(message__contains=instance.book.title) &
-                Q(message__contains=instance.user.username)
-            ).delete()
-            if deleted[0] > 0:
-                logger.info(f"Supprimé {deleted[0]} notifications pour prêt retourné: livre {instance.book.title}, utilisateur {instance.user.username}")
-        except Exception as e:
-            logger.error(f"Erreur lors de la suppression des notifications pour le prêt ID {instance.id}: {str(e)}")
+@receiver(post_delete, sender=Book)
+def notify_book_deleted(sender, instance, **kwargs):
+    librarians = CustomUser.objects.filter(is_librarian=True)
+    message = f"L’e-book '{instance.title}' a été supprimé."
+    type_notification = 'warning-delete'
+    
+    for librarian in librarians:
+        unique_identifier = hashlib.sha256(message.encode('utf-8')).hexdigest()
+        if not (Notification.objects.filter(user=librarian, unique_identifier=unique_identifier, type=type_notification).exists() or
+                DeletedNotification.objects.filter(user=librarian, unique_identifier=unique_identifier, type=type_notification).exists()):
+            Notification.objects.create(
+                user=librarian,
+                message=message,
+                type=type_notification,
+                unique_identifier=unique_identifier
+            )
+
+@receiver(post_save, sender=Document)
+def notify_document_added_or_updated(sender, instance, created, **kwargs):
+    librarians = CustomUser.objects.filter(is_librarian=True)
+    message = f"Un nouveau document '{instance.title}' ({instance.get_document_type_display()}) a été ajouté." if created else f"Le document '{instance.title}' ({instance.get_document_type_display()}) a été modifié."
+    type_notification = 'info-new' if created else 'info-update'
+    
+    for librarian in librarians:
+        unique_identifier = hashlib.sha256(message.encode('utf-8')).hexdigest()
+        if not (Notification.objects.filter(user=librarian, unique_identifier=unique_identifier, type=type_notification).exists() or
+                DeletedNotification.objects.filter(user=librarian, unique_identifier=unique_identifier, type=type_notification).exists()):
+            Notification.objects.create(
+                user=librarian,
+                message=message,
+                type=type_notification,
+                unique_identifier=unique_identifier
+            )
+
+    # Notifier les utilisateurs correspondant au niveau académique
+    if created:
+        users = CustomUser.objects.filter(academic_level=instance.academic_level)
+        message_user = f"Un nouveau document '{instance.title}' ({instance.get_document_type_display()}) est disponible pour {instance.get_academic_level_display()}."
+        for user in users:
+            unique_identifier = hashlib.sha256(message_user.encode('utf-8')).hexdigest()
+            if not (Notification.objects.filter(user=user, unique_identifier=unique_identifier, type='info-new').exists() or
+                    DeletedNotification.objects.filter(user=user, unique_identifier=unique_identifier, type='info-new').exists()):
+                Notification.objects.create(
+                    user=user,
+                    message=message_user,
+                    type='info-new',
+                    unique_identifier=unique_identifier
+                )
+
+@receiver(post_delete, sender=Document)
+def notify_document_deleted(sender, instance, **kwargs):
+    librarians = CustomUser.objects.filter(is_librarian=True)
+    message = f"Le document '{instance.title}' ({instance.get_document_type_display()}) a été supprimé."
+    type_notification = 'warning-delete'
+    
+    for librarian in librarians:
+        unique_identifier = hashlib.sha256(message.encode('utf-8')).hexdigest()
+        if not (Notification.objects.filter(user=librarian, unique_identifier=unique_identifier, type=type_notification).exists() or
+                DeletedNotification.objects.filter(user=librarian, unique_identifier=unique_identifier, type=type_notification).exists()):
+            Notification.objects.create(
+                user=librarian,
+                message=message,
+                type=type_notification,
+                unique_identifier=unique_identifier
+            )
+
+@receiver(post_save, sender=CustomUser)
+def notify_user_added(sender, instance, created, **kwargs):
+    if created and not instance.is_librarian:
+        librarians = CustomUser.objects.filter(is_librarian=True)
+        message = f"Un nouvel utilisateur '{instance.username}' s’est inscrit."
+        type_notification = 'info-user'
+        
+        for librarian in librarians:
+            unique_identifier = hashlib.sha256(message.encode('utf-8')).hexdigest()
+            if not (Notification.objects.filter(user=librarian, unique_identifier=unique_identifier, type=type_notification).exists() or
+                    DeletedNotification.objects.filter(user=librarian, unique_identifier=unique_identifier, type=type_notification).exists()):
+                Notification.objects.create(
+                    user=librarian,
+                    message=message,
+                    type=type_notification,
+                    unique_identifier=unique_identifier
+                )
