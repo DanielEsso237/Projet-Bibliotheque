@@ -49,7 +49,7 @@ def clean_deleted_notifications():
         restocked_books = Book.objects.filter(is_physical=True, is_available=True, quantity__gt=stock_threshold)
         for book in restocked_books:
             deleted = DeletedNotification.objects.filter(
-                user__is_librarian=True,
+                user__user_type='LIBRARIAN',  
                 type__in=['warning', 'danger'],
                 unique_identifier__in=[
                     hashlib.sha256(

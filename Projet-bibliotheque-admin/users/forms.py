@@ -17,7 +17,7 @@ class LibrarianRegistrationForm(UserCreationForm):
 
     def save(self, commit=True):
         user = super().save(commit=False)
-        user.is_librarian = True  # Force le rôle à bibliothécaire
+        user.user_type = 'LIBRARIAN'  
         if commit:
             user.save()
         return user
@@ -29,7 +29,103 @@ class LibrarianRegistrationForm(UserCreationForm):
         if password1 and password2 and password1 != password2:
             raise forms.ValidationError("Les mots de passe ne correspondent pas.")
         return cleaned_data
+    
 class LibrarianLoginForm(AuthenticationForm):
     class Meta:
         model = CustomUser
         fields = ['username', 'password']
+
+class UserCreationForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = ['first_name', 'last_name', 'email', 'user_type', 'phone_number', 'student_id', 'department']
+        widgets = {
+            'first_name': forms.TextInput(attrs={
+                'class': 'form-control form-control-modern',
+                'placeholder': 'Prénom',
+                'autocomplete': 'given-name'
+            }),
+            'last_name': forms.TextInput(attrs={
+                'class': 'form-control form-control-modern',
+                'placeholder': 'Nom de famille',
+                'autocomplete': 'family-name'
+            }),
+            'email': forms.EmailInput(attrs={
+                'class': 'form-control form-control-modern',
+                'placeholder': 'adresse@email.com',
+                'autocomplete': 'email'
+            }),
+            'user_type': forms.Select(attrs={
+                'class': 'form-select form-select-modern',
+            }),
+            'phone_number': forms.TextInput(attrs={
+                'class': 'form-control form-control-modern',
+                'placeholder': '+237 6XX XXX XXX',
+                'autocomplete': 'tel'
+            }),
+            'student_id': forms.TextInput(attrs={
+                'class': 'form-control form-control-modern',
+                'placeholder': 'Matricule étudiant',
+            }),
+            'department': forms.TextInput(attrs={
+                'class': 'form-control form-control-modern',
+                'placeholder': 'Département/Filière',
+            }),
+        }
+        labels = {
+            'first_name': 'Prénom',
+            'last_name': 'Nom',
+            'email': 'Adresse email',
+            'user_type': 'Type d\'utilisateur',
+            'phone_number': 'Numéro de téléphone',
+            'student_id': 'Matricule étudiant',
+            'department': 'Département',
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        # Limiter les choix pour les utilisateurs standards
+        self.fields['user_type'].choices = [
+            ('', 'Sélectionnez un type'),
+            ('STUDENT', 'Étudiant'),
+            ('PROFESSOR', 'Professeur'),
+        ]
+        
+        # Rendre certains champs obligatoires
+        self.fields['first_name'].required = True
+        self.fields['last_name'].required = True
+        self.fields['email'].required = True
+        
+        # Ajouter des classes d'erreur pour la validation côté client
+        for field_name, field in self.fields.items():
+            if field.required:
+                if 'class' in field.widget.attrs:
+                    field.widget.attrs['class'] += ' required-field'
+                else:
+                    field.widget.attrs['class'] = 'required-field'
+        
+        # Gérer le champ matricule selon le type d'utilisateur
+        if 'user_type' in self.data:
+            if self.data['user_type'] != 'STUDENT':
+                self.fields['student_id'].required = False
+                self.fields['student_id'].widget = forms.HiddenInput()
+        elif self.instance.pk and self.instance.user_type != 'STUDENT':
+            self.fields['student_id'].required = False
+            self.fields['student_id'].widget = forms.HiddenInput()
+        else:
+            self.fields['student_id'].required = True
+
+    def clean_student_id(self):
+        user_type = self.cleaned_data.get('user_type')
+        student_id = self.cleaned_data.get('student_id')
+        
+        if user_type == 'STUDENT' and not student_id:
+            raise forms.ValidationError("Un matricule est requis pour les étudiants")
+        return student_id
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if CustomUser.objects.filter(email=email).exists():
+            raise forms.ValidationError("Cette adresse email est déjà utilisée")
+        return email

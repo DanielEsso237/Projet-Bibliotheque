@@ -1,13 +1,13 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from django.db.models import Count,Q
+from django.db.models import Count, Q
 from books.models import Book, Document
 from users.models import CustomUser
 import json
 
 @login_required
 def statistics(request):
-    if not request.user.is_librarian:
+    if not request.user.user_type == 'LIBRARIAN':
         return render(request, 'library_stats/permission_denied.html', {'message': "Seuls les bibliothécaires peuvent accéder à cette page."})
 
     # Statistiques sur les e-books
@@ -33,7 +33,7 @@ def statistics(request):
     # Statistiques sur les utilisateurs
     user_stats = CustomUser.objects.aggregate(
         total=Count('id'),
-        librarians=Count('id', filter=Q(is_librarian=True))
+        librarians=Count('id', filter=Q(user_type='LIBRARIAN'))  
     )
     total_users = user_stats['total']
     librarians = user_stats['librarians']

@@ -7,7 +7,7 @@ import hashlib
 
 @receiver(post_save, sender=Book)
 def notify_book_added_or_updated(sender, instance, created, **kwargs):
-    librarians = CustomUser.objects.filter(is_librarian=True)
+    librarians = CustomUser.objects.filter(user_type='LIBRARIAN')
     message = f"Un nouvel e-book '{instance.title}' a été ajouté." if created else f"L’e-book '{instance.title}' a été modifié."
     type_notification = 'info-new' if created else 'info-update'
     
@@ -24,7 +24,7 @@ def notify_book_added_or_updated(sender, instance, created, **kwargs):
 
 @receiver(post_delete, sender=Book)
 def notify_book_deleted(sender, instance, **kwargs):
-    librarians = CustomUser.objects.filter(is_librarian=True)
+    librarians = CustomUser.objects.filter(user_type='LIBRARIAN')
     message = f"L’e-book '{instance.title}' a été supprimé."
     type_notification = 'warning-delete'
     
@@ -41,7 +41,7 @@ def notify_book_deleted(sender, instance, **kwargs):
 
 @receiver(post_save, sender=Document)
 def notify_document_added_or_updated(sender, instance, created, **kwargs):
-    librarians = CustomUser.objects.filter(is_librarian=True)
+    librarians = CustomUser.objects.filter(user_type='LIBRARIAN')
     message = f"Un nouveau document '{instance.title}' ({instance.get_document_type_display()}) a été ajouté." if created else f"Le document '{instance.title}' ({instance.get_document_type_display()}) a été modifié."
     type_notification = 'info-new' if created else 'info-update'
     
@@ -73,7 +73,7 @@ def notify_document_added_or_updated(sender, instance, created, **kwargs):
 
 @receiver(post_delete, sender=Document)
 def notify_document_deleted(sender, instance, **kwargs):
-    librarians = CustomUser.objects.filter(is_librarian=True)
+    librarians = CustomUser.objects.filter(user_type='LIBRARIAN')
     message = f"Le document '{instance.title}' ({instance.get_document_type_display()}) a été supprimé."
     type_notification = 'warning-delete'
     
@@ -90,8 +90,8 @@ def notify_document_deleted(sender, instance, **kwargs):
 
 @receiver(post_save, sender=CustomUser)
 def notify_user_added(sender, instance, created, **kwargs):
-    if created and not instance.is_librarian:
-        librarians = CustomUser.objects.filter(is_librarian=True)
+    if created and instance.user_type != 'LIBRARIAN':
+        librarians = CustomUser.objects.filter(user_type='LIBRARIAN')
         message = f"Un nouvel utilisateur '{instance.username}' s’est inscrit."
         type_notification = 'info-user'
         

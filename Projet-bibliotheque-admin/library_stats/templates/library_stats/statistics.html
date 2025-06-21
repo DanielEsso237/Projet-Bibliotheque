@@ -15,7 +15,7 @@
             {% endfor %}
         {% endif %}
 
-        {% if not user.is_librarian %}
+        {% if not user.user_type == 'LIBRARIAN' %}
             <div class="alert alert-warning text-center">
                 {{ message }}
             </div>

@@ -99,10 +99,15 @@
             {% endfor %}
         {% endif %}
 
-        <!-- Barre de recherche -->
+        <!-- Barre de recherche et bouton Ajouter -->
         <div class="row mb-4">
             <div class="col-md-6">
                 <input type="text" id="searchInput" class="form-control" placeholder="Rechercher par nom ou email..." value="{{ request.GET.search|default:'' }}">
+            </div>
+            <div class="col-md-6 text-end">
+                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addUserModal" onclick="window.location.href='{% url 'users:create_user' %}'">
+                    <i class="fas fa-plus-circle me-1"></i> Créer un utilisateur standard
+                </button>
             </div>
         </div>
 
@@ -125,17 +130,17 @@
                                     <td>{{ user.username }}</td>
                                     <td>{{ user.email }}</td>
                                     <td>
-                                        {% if user.is_librarian %}
+                                        {% if user.user_type == 'LIBRARIAN' %}
                                             <span class="badge bg-primary">Bibliothécaire</span>
                                         {% else %}
                                             <span class="badge bg-secondary">Utilisateur standard</span>
                                         {% endif %}
                                     </td>
                                     <td>
-                                        <a href="#" class="btn btn-sm btn-warning me-2" data-bs-toggle="modal" data-bs-target="#editUserModal" data-user-id="{{ user.id }}" data-username="{{ user.username }}" data-email="{{ user.email }}" data-is-librarian="{{ user.is_librarian|yesno:'yes,no' }}">
+                                        <a href="{% url 'users:update_user' user.id %}" class="btn btn-sm btn-warning me-2" data-bs-toggle="modal" data-bs-target="#editUserModal" data-user-id="{{ user.id }}" data-username="{{ user.username }}" data-email="{{ user.email }}" data-user-type="{{ user.user_type }}">
                                             <i class="fas fa-edit"></i> Modifier
                                         </a>
-                                        <a href="#" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteUserModal" data-user-id="{{ user.id }}" data-username="{{ user.username }}">
+                                        <a href="{% url 'users:delete_user' user.id %}" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteUserModal" data-user-id="{{ user.id }}" data-username="{{ user.username }}">
                                             <i class="fas fa-trash"></i> Supprimer
                                         </a>
                                     </td>
@@ -151,23 +156,23 @@
                         <ul class="pagination justify-content-center">
                             {% if users.has_previous %}
                                 <li class="page-item">
-                                    <a class="page-link" href="?page=1&search={{ request.GET.search|default:'' }}">« Première</a>
+                                    <a class="page-link" href="{% url 'users:manage_users' %}?page=1&search={{ request.GET.search|default:'' }}">« Première</a>
                                 </li>
                                 <li class="page-item">
-                                    <a class="page-link" href="?page={{ users.previous_page_number }}&search={{ request.GET.search|default:'' }}">Précédent</a>
+                                    <a class="page-link" href="{% url 'users:manage_users' %}?page={{ users.previous_page_number }}&search={{ request.GET.search|default:'' }}">Précédent</a>
                                 </li>
                             {% endif %}
                             {% for num in users.paginator.page_range %}
                                 <li class="page-item {% if users.number == num %}active{% endif %}">
-                                    <a class="page-link" href="?page={{ num }}&search={{ request.GET.search|default:'' }}">{{ num }}</a>
+                                    <a class="page-link" href="{% url 'users:manage_users' %}?page={{ num }}&search={{ request.GET.search|default:'' }}">{{ num }}</a>
                                 </li>
                             {% endfor %}
                             {% if users.has_next %}
                                 <li class="page-item">
-                                    <a class="page-link" href="?page={{ users.next_page_number }}&search={{ request.GET.search|default:'' }}">Suivant</a>
+                                    <a class="page-link" href="{% url 'users:manage_users' %}?page={{ users.next_page_number }}&search={{ request.GET.search|default:'' }}">Suivant</a>
                                 </li>
                                 <li class="page-item">
-                                    <a class="page-link" href="?page={{ users.paginator.num_pages }}&search={{ request.GET.search|default:'' }}">Dernière »</a>
+                                    <a class="page-link" href="{% url 'users:manage_users' %}?page={{ users.paginator.num_pages }}&search={{ request.GET.search|default:'' }}">Dernière »</a>
                                 </li>
                             {% endif %}
                         </ul>
@@ -188,7 +193,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="editUserForm" method="post" action="{% url 'update_user' 0 %}">
+                    <form id="editUserForm" method="post" action="{% url 'users:update_user' 0 %}">
                         {% csrf_token %}
                         <input type="hidden" id="editUserId" name="user_id">
                         <div class="mb-3">
@@ -201,9 +206,10 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Type de compte</label>
-                            <select class="form-select" id="editIsLibrarian" name="is_librarian" required>
-                                <option value="no">Utilisateur standard</option>
-                                <option value="yes">Bibliothécaire</option>
+                            <select class="form-select" id="editUserType" name="user_type" required>
+                                <option value="STUDENT">Étudiant</option>
+                                <option value="PROFESSOR">Professeur</option>
+                                <option value="LIBRARIAN">Bibliothécaire</option>
                             </select>
                         </div>
                         <button type="submit" class="btn btn-primary">Enregistrer</button>
@@ -223,7 +229,7 @@
                 </div>
                 <div class="modal-body">
                     <p>Êtes-vous sûr de vouloir supprimer l'utilisateur <strong id="deleteUsername"></strong> ? Cette action est irréversible.</p>
-                    <form id="deleteUserForm" method="post" action="{% url 'delete_user' 0 %}">
+                    <form id="deleteUserForm" method="post" action="{% url 'users:delete_user' 0 %}">
                         {% csrf_token %}
                         <input type="hidden" id="deleteUserId" name="user_id">
                         <button type="submit" class="btn btn-danger">Confirmer la suppression</button>
@@ -244,13 +250,13 @@
             // Gestion de la recherche
             searchInput.addEventListener('input', debounce(function () {
                 const query = searchInput.value.trim();
-                window.history.pushState({}, '', `?search=${encodeURIComponent(query)}`);
+                window.history.pushState({}, '', `{% url 'users:manage_users' %}?search=${encodeURIComponent(query)}`);
                 fetchUsers();
             }, 300));
 
             function fetchUsers() {
                 const query = searchInput.value.trim();
-                window.location.href = `?search=${encodeURIComponent(query)}`;  // Redirection simple pour l'instant
+                window.location.href = `{% url 'users:manage_users' %}?search=${encodeURIComponent(query)}`;
             }
 
             // Gestion des modals
@@ -262,13 +268,13 @@
                 const userId = button.getAttribute('data-user-id');
                 const username = button.getAttribute('data-username');
                 const email = button.getAttribute('data-email');
-                const isLibrarian = button.getAttribute('data-is-librarian') === 'yes';
+                const userType = button.getAttribute('data-user-type');
 
                 const modal = this;
                 modal.querySelector('#editUserId').value = userId;
                 modal.querySelector('#editUsername').value = username;
                 modal.querySelector('#editEmail').value = email;
-                modal.querySelector('#editIsLibrarian').value = isLibrarian ? 'yes' : 'no';
+                modal.querySelector('#editUserType').value = userType;
 
                 // Mettre à jour l'action du formulaire dynamiquement
                 const form = modal.querySelector('#editUserForm');

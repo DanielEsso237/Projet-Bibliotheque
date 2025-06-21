@@ -1,11 +1,38 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.utils.text import slugify
+import random
 
 class CustomUser(AbstractUser):
-    is_librarian = models.BooleanField(default=False)
-    is_standard_user = models.BooleanField(default=False)
+    USER_TYPE_CHOICES = (
+        ('LIBRARIAN', 'Bibliothécaire'),
+        ('STUDENT', 'Étudiant'),
+        ('PROFESSOR', 'Professeur'),
+    )
+    
+    user_type = models.CharField(max_length=15, choices=USER_TYPE_CHOICES, default='STUDENT')
     phone_number = models.CharField(max_length=15, blank=True, null=True)
-    student_id = models.CharField(max_length=20, blank=True, null=True)
+    student_id = models.CharField(max_length=20, blank=True, null=True, unique=True)
+    department = models.CharField(max_length=100, blank=True, null=True)
+    first_login = models.BooleanField(default=True)  # Pour forcer le changement de mot de passe
+
+    def save(self, *args, **kwargs):
+        # Génération automatique du username si c'est un nouvel utilisateur
+        if not self.pk and not self.username:
+            base_username = f"{slugify(self.last_name)}.{slugify(self.first_name)}"
+            self.username = base_username
+            
+            # Vérifier l'unicité et ajouter un suffixe numérique si nécessaire
+            suffix = 1
+            while CustomUser.objects.filter(username=self.username).exists():
+                self.username = f"{base_username}{suffix:03d}"
+                suffix += 1
+        
+        # Si c'est un étudiant, vérifier qu'un matricule est fourni
+        if self.user_type == 'STUDENT' and not self.student_id:
+            raise ValueError("Un matricule est requis pour les étudiants")
+        
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.username

@@ -10,7 +10,12 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+@login_required
 def librarian_dashboard(request):
+    if not request.user.user_type == 'LIBRARIAN':
+        messages.error(request, "Seuls les bibliothécaires peuvent accéder à cette page.")
+        return redirect('books:standard_user_dashboard')
+
     books_list = Book.objects.all().order_by('title')
     search_query = request.GET.get('search', '')
     if search_query:
@@ -24,6 +29,20 @@ def librarian_dashboard(request):
         'books': books,
         'document_types': document_types,
         'academic_levels': academic_levels
+    })
+
+@login_required
+def standard_user_dashboard(request):
+    # Vérifier si l'utilisateur est un bibliothécaire (redirection si c'est le cas)
+    if request.user.user_type == 'LIBRARIAN':
+        messages.error(request, "Les bibliothécaires doivent utiliser leur tableau de bord dédié.")
+        return redirect('books:librarian_dashboard')
+
+    # Logique pour les utilisateurs standards
+    return render(request, 'books/standard_user_dashboard.html', {
+        'loans_count': 0,  # À remplacer par une logique réelle si disponible
+        'notifications_count': 0,
+        'favorites_count': 0
     })
 
 def stats_api(request):

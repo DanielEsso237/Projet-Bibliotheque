@@ -5,6 +5,7 @@ app_name = 'books'
 
 urlpatterns = [
     path('', views.librarian_dashboard, name='librarian_dashboard'),
+    path('student-dashboard/', views.standard_user_dashboard, name='standard_user_dashboard'),
     path('choose-type/', views.choose_document_type, name='choose_document_type'),
     path('select-category/', views.select_document_category, name='select_document_category'),
     path('add-document/<str:document_type>/<str:academic_level>/', views.add_document, name='add_document'),
@@ -19,4 +20,6 @@ urlpatterns = [
     path('api/doc/<int:doc_id>/', views.doc_api, name='doc_api'),
     path('api/doc_search/', views.search_docs_api, name='doc_search_api'),
     path('api/doc_stats/', views.doc_stats_api, name='doc_stats_api'),
+    path('librarian-dashboard/', views.librarian_dashboard, name='librarian_dashboard'),
+    path('standard-user-dashboard/', views.standard_user_dashboard, name='standard_user_dashboard'),
 ]

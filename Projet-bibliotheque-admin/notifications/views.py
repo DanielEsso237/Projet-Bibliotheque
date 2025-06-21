@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 @login_required
 def notifications(request):
-    if not request.user.is_librarian:
+    if not request.user.user_type == 'LIBRARIAN':
         messages.error(request, "Seuls les bibliothécaires peuvent accéder à cette page.")
         return redirect('login')
     
@@ -19,7 +19,7 @@ def notifications(request):
 
 @login_required
 def user_notifications(request):
-    if request.user.is_librarian:
+    if request.user.user_type == 'LIBRARIAN':
         messages.error(request, "Cette page est réservée aux utilisateurs non-bibliothécaires.")
         return redirect('notifications')
     
