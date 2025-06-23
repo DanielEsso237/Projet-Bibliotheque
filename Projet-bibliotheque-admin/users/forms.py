@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.forms import UserCreationForm
 from .models import CustomUser
 
 class LibrarianRegistrationForm(UserCreationForm):
@@ -17,7 +17,7 @@ class LibrarianRegistrationForm(UserCreationForm):
 
     def save(self, commit=True):
         user = super().save(commit=False)
-        user.user_type = 'LIBRARIAN'  
+        user.user_type = 'LIBRARIAN'  # Remplacé is_librarian par user_type
         if commit:
             user.save()
         return user
@@ -30,11 +30,6 @@ class LibrarianRegistrationForm(UserCreationForm):
             raise forms.ValidationError("Les mots de passe ne correspondent pas.")
         return cleaned_data
     
-class LibrarianLoginForm(AuthenticationForm):
-    class Meta:
-        model = CustomUser
-        fields = ['username', 'password']
-
 class UserCreationForm(forms.ModelForm):
     class Meta:
         model = CustomUser

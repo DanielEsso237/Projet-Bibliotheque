@@ -1,5 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
-from .forms import LibrarianRegistrationForm, LibrarianLoginForm, UserCreationForm
+from .forms import LibrarianRegistrationForm, UserCreationForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -7,10 +7,18 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from .models import CustomUser
 from django.http import JsonResponse
-from django.contrib.auth.hashers import make_password
-from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.hashers import make_password, check_password
+from django.contrib.auth.forms import PasswordChangeForm, AuthenticationForm
 from django.contrib.auth.views import update_session_auth_hash
 from django.utils.text import slugify
+import logging
+from django.db.models import Q, Count
+
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+
+logger = logging.getLogger(__name__)
 
 def register_view(request):
     if request.method == 'POST':
@@ -27,10 +35,11 @@ def register_view(request):
 
 def login_view(request):
     if request.method == 'POST':
-        form = LibrarianLoginForm(request, data=request.POST)
+        form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
             user = form.get_user()
             login(request, user)
+            logger.info(f"User logged in: {user.username}, first_login={user.first_login}")
             
             # Redirection en fonction du type d'utilisateur
             if user.user_type == 'LIBRARIAN':
@@ -44,9 +53,10 @@ def login_view(request):
                     })
                 return redirect('books:standard_user_dashboard')
         else:
+            logger.error(f"Login failed for username={request.POST.get('username')}, errors={form.errors}, data={request.POST}")
             messages.error(request, 'Identifiants invalides.')
     else:
-        form = LibrarianLoginForm()
+        form = AuthenticationForm()
     return render(request, 'users/login.html', {'form': form})
 
 def logout_view(request):
@@ -102,10 +112,15 @@ def create_user(request):
             # Définir un mot de passe par défaut
             default_password = "bibliotheque2025"
             user.password = make_password(default_password)
-            user.first_login = True
+            user.first_login = True  # Assurer que first_login est explicitement défini
             
             try:
                 user.save()
+                # Vérifier le hash après sauvegarde
+                saved_user = CustomUser.objects.get(username=username)
+                if not check_password(default_password, saved_user.password):
+                    logger.error(f"Password hash mismatch for user {username}")
+                logger.info(f"User created: {username}, password hash: {saved_user.password}, first_login={saved_user.first_login}")
                 messages.success(request, f"Le compte {user.username} a été créé avec succès. Mot de passe par défaut: {default_password}")
                 return redirect('users:manage_users')
             except Exception as e:

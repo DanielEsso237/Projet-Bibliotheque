@@ -74,4 +74,4 @@ class DocumentForm(forms.ModelForm):
         if file and not file.name.endswith('.pdf'):
             self.add_error('file', "Seuls les fichiers PDF sont acceptés.")
 
-        return cleaned_data
+        return cleaned_data  

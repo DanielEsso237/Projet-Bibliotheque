@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.db.models import Q
 from django.core.paginator import Paginator
 from django.contrib import messages
 from django.urls import reverse
@@ -6,6 +7,7 @@ from django.http import JsonResponse
 from .models import Book, Document
 from .forms import BookForm, DocumentForm
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 import logging
 
 logger = logging.getLogger(__name__)
@@ -278,3 +280,83 @@ def book_api(request, book_id):
         'ebook_file': book.ebook_file.url if book.ebook_file else None
     }
     return JsonResponse(data)
+
+def search_view(request):
+    query = request.GET.get('q', '')
+    category = request.GET.get('category', '')
+    available = request.GET.get('available', False)
+    books = Book.objects.all()
+    if query:
+        books = books.filter(Q(title__icontains=query) | Q(author__icontains=query))
+    if category:
+        books = books.filter(category=category)
+    if available:
+        books = books.filter(is_available=True)
+    categories = Book.objects.values_list('category', flat=True).distinct()
+    context = {
+        'books': books,
+        'categories': categories,
+        'query': query,
+    }
+    return render(request, 'books/search_books_for_standard_users.html', context)
+
+def book_detail_view(request, pk):
+    book = get_object_or_404(Book, pk=pk)
+    context = {'book': book}
+    return render(request, 'books/book_detail.html', context)
+
+@login_required
+def new_arrivals_view(request):
+    recent_books = Book.objects.order_by('-created_at')[:10]
+    context = {
+        'recent_books': recent_books,
+    }
+    return render(request, 'books/new_arrivals.html', context)
+
+@login_required
+def epreuves_view(request):
+    levels = [level[0] for level in Document.ACADEMIC_LEVELS]
+    selected_level = request.GET.get('level', '')
+    epreuves = Document.objects.filter(document_type='exam')
+    if selected_level:
+        epreuves = epreuves.filter(academic_level=selected_level)
+    context = {
+        'epreuves': epreuves,
+        'levels': levels,
+    }
+    return render(request, 'books/epreuves.html', context)
+
+@login_required
+def documents_view(request):
+    document_types = Document.DOCUMENT_TYPES
+    selected_type = request.GET.get('type', '')
+    documents = Document.objects.all()
+    if selected_type:
+        documents = documents.filter(document_type=selected_type)
+    context = {
+        'documents': documents,
+        'document_types': document_types,
+    }
+    return render(request, 'books/documents.html', context)
+
+@login_required
+def document_detail_view(request, pk):
+    document = get_object_or_404(Document, pk=pk)
+    context = {'document': document}
+    return render(request, 'books/document_detail.html', context)
+
+@login_required
+def favorites_view(request):
+    favorite_books = Book.objects.filter(favorited_by__user=request.user)
+    context = {
+        'favorite_books': favorite_books,
+        'message': 'Aucun livre en favoris.' if not favorite_books else ''
+    }
+    return render(request, 'books/favorites.html', context)
+
+@login_required
+def home(request):
+    if not request.user.is_authenticated or not request.user.is_standard_user:
+        messages.error(request, "Accès réservé aux utilisateurs standard.")
+        return redirect('users:login')  # Correction ici
+    return redirect('books:standard_user_dashboard')

@@ -1,0 +1,201 @@
+{% extends 'books/base_user.html' %}
+{% load static %}
+{% block title %}{{ book.title }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/search.css' %}">
+<style>
+
+/* Style pour le bouton favoris */
+    .favorite-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: linear-gradient(135deg, #f59e0b, #f97316);
+        border: none;
+        border-radius: 10px;
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        text-decoration: none;
+        font-size: 0.875rem;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+    }
+
+    .favorite-btn:hover {
+        background: linear-gradient(135deg, #f59e0b, #ea580c);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+    }
+
+    .favorite-btn svg {
+        width: 20px;
+        height: 20px;
+        transition: all 0.3s;
+    }
+
+    .favorite-btn .empty {
+        fill: currentColor;
+    }
+
+    .favorite-btn .filled {
+        fill: #ffca28;
+    }
+
+    .favorite-text {
+        font-size: 0.875rem;
+        font-weight: 600;
+    }
+
+</style>
+{% endblock %}
+
+{% block content %}
+    <div class="container my-4">
+        <div class="row">
+            <div class="col-md-4">
+                {% if book.cover_image %}
+                    <img src="{{ book.cover_image.url }}" class="img-fluid" alt="{{ book.title }}">
+                {% else %}
+                    <img src="{% static 'images/default_book.jpg' %}" class="img-fluid" alt="Default cover">
+                {% endif %}
+            </div>
+            <div class="col-md-8">
+                <h2>{{ book.title }}</h2>
+                <p><strong>Auteur:</strong> {{ book.author }}</p>
+                <p><strong>Catégorie:</strong> {{ book.category }}</p>
+
+                <p>
+                    <i class="fas fa-tablet-alt me-2"></i>
+                    <strong>Type:</strong>{% if book.is_physical %} Livre physique {% else %} E-book  {% endif %}
+                </p>
+                <p><strong>ISBN:</strong> {{ book.isbn }}</p>
+                <p><strong>Date de publication:</strong> {{ book.publication_date }}</p>
+                <p><strong>Disponible:</strong> {% if book.is_available %}Oui{% else %}Non{% endif %}</p>
+                <p><strong>Résumé:</strong> {{ book.summary|default:"Aucun résumé disponible." }}</p>
+
+                {% if user.is_authenticated %}
+                    
+                        <button class="favorite-btn" data-book-id="{{ book.id }}" 
+                                title="Ajouter aux favoris" aria-label="Ajouter aux favoris">
+                            <svg class="empty" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" 
+                                 {% if book in user.favorites.all %}style="opacity: 0;"{% else %}style="opacity: 1;"{% endif %}>
+                                <path fill="none" d="M0 0h24v24H0z"/>
+                                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                            </svg>
+                            <svg class="filled" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" 
+                                 {% if book in user.favorites.all %}style="opacity: 1;"{% else %}style="opacity: 0;"{% endif %}>
+                                <path fill="none" d="M0 0h24v24H0z"/>
+                                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" fill="#ffca28"/>
+                            </svg>
+                            <span class="favorite-text">
+                                {% if book in user.favorites.all %}Retirer des favoris{% else %}Ajouter aux favoris{% endif %}
+                            </span>
+                        </button>
+
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% if user.is_authenticated %}
+        <script src="{% static 'js/jquery.min.js' %}"></script>
+        <script>
+            $(document).ready(function() {
+                $('.favorite-btn').click(function() {
+                    const bookId = $(this).data('book-id');
+                    const icon = $(this).find('i');
+                    $.ajax({
+                        url: '{% url 'books:toggle_favorite' %}',
+                        method: 'POST',
+                        data: {
+                            book_id: bookId,
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                        },
+                        success: function(response) {
+                            if (response.added) {
+                                icon.removeClass('text-muted').addClass('text-warning');
+                            } else {
+                                icon.removeClass('text-warning').addClass('text-muted');
+                            }
+                        },
+                        error: function() {
+                            alert('Erreur lors de la mise à jour des favoris.');
+                        }
+                    });
+                });
+            });
+        </script>
+    {% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Animation d'apparition des cartes
+        const cards = document.querySelectorAll(".book-card");
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add("visible");
+                    }, index * 150); // décalage entre chaque carte
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+
+        cards.forEach(card => observer.observe(card));
+
+        // Gestion des favoris avec jQuery
+        {% if user.is_authenticated %}
+            $(document).ready(function() {
+                $('.favorite-btn').click(function() {
+                    const bookId = $(this).data('book-id');
+                    const button = $(this);
+                    
+                    $.ajax({
+                        url: '{% url 'books:toggle_favorite' %}',
+                        method: 'POST',
+                        data: {
+                            book_id: bookId,
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                        },
+                        success: function(response) {
+                            if (response.added) {
+                                button.find('.empty').css('opacity', '0');
+                                button.find('.filled').css('opacity', '1');
+                                button.find('.favorite-text').text('Retirer des favoris');
+                                button.attr('title', 'Retirer des favoris');
+                                button.attr('aria-label', 'Retirer des favoris');
+                            } else {
+                                button.find('.empty').css('opacity', '1');
+                                button.find('.filled').css('opacity', '0');
+                                button.find('.favorite-text').text('Ajouter aux favoris');
+                                button.attr('title', 'Ajouter aux favoris');
+                                button.attr('aria-label', 'Ajouter aux favoris');
+                            }
+                        },
+                        error: function() {
+                            alert('Erreur lors de la mise à jour des favoris.');
+                        }
+                    });
+                });
+            });
+        {% endif %}
+
+        // Amélioration de l'accessibilité
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && e.target.classList.contains('favorite-btn')) {
+                e.target.click();
+            }
+        });
+    });
+</script>
+{% endblock %}

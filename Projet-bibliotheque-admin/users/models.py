@@ -36,3 +36,17 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.username
+    
+    
+class UserFavorite(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='favorites')
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='favorited_by')
+    added_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        managed = True
+        unique_together = ('user', 'book')
+        db_table = 'books_user_favorite'
+
+    def __str__(self):
+        return f"{self.user.username} - {self.book.title}"
