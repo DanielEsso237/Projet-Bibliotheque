@@ -440,10 +440,7 @@
                     <i class="fas fa-tablet-alt me-2"></i>
                     <strong>Type:</strong>{% if book.is_physical %} Livre physique {% else %} E-book  {% endif %}
                 </p>
-                <div class="availability-badge {% if book.is_available %}available{% else %}unavailable{% endif %}">
-                    <i class="fas fa-{% if book.is_available %}check-circle{% else %}times-circle{% endif %}"></i>
-                    {% if book.is_available %}Disponible{% else %}Non disponible{% endif %}
-                </div>
+
                 
                 <div class="card-actions">
                     <a href="{% url 'books:book_detail' book.pk %}" class="btn btn-primary">
