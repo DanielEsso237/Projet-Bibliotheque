@@ -9,6 +9,7 @@ from .forms import BookForm, DocumentForm
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 import logging
+from users.models import UserFavorite
 
 logger = logging.getLogger(__name__)
 
@@ -35,14 +36,14 @@ def librarian_dashboard(request):
 
 @login_required
 def standard_user_dashboard(request):
-    # Vérifier si l'utilisateur est un bibliothécaire (redirection si c'est le cas)
+    
     if request.user.user_type == 'LIBRARIAN':
         messages.error(request, "Les bibliothécaires doivent utiliser leur tableau de bord dédié.")
         return redirect('books:librarian_dashboard')
 
-    # Logique pour les utilisateurs standards
+   
     return render(request, 'books/standard_user_dashboard.html', {
-        'loans_count': 0,  # À remplacer par une logique réelle si disponible
+        'loans_count': 0,  
         'notifications_count': 0,
         'favorites_count': 0
     })
@@ -352,11 +353,23 @@ def favorites_view(request):
         'favorite_books': favorite_books,
         'message': 'Aucun livre en favoris.' if not favorite_books else ''
     }
-    return render(request, 'books/favorites.html', context)
+    return render(request, 'books/favorites_books_for_users.html', context)
+
+
+@require_POST
+@login_required
+def toggle_favorite(request):
+    book_id = request.POST.get('book_id')
+    book = get_object_or_404(Book, id=book_id)
+    favorite, created = UserFavorite.objects.get_or_create(user=request.user, book=book)
+    if not created:
+        favorite.delete()
+        return JsonResponse({'added': False})
+    return JsonResponse({'added': True})
 
 @login_required
 def home(request):
-    if not request.user.is_authenticated or not request.user.is_standard_user:
+    if not request.user.is_authenticated or request.user.user_type not in ["STUDENT", "PROFESSOR"]:
         messages.error(request, "Accès réservé aux utilisateurs standard.")
         return redirect('users:login')  # Correction ici
     return redirect('books:standard_user_dashboard')

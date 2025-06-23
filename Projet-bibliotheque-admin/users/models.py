@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.text import slugify
 import random
+from books.models import Book
 
 class CustomUser(AbstractUser):
     USER_TYPE_CHOICES = (

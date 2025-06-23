@@ -22,7 +22,7 @@ urlpatterns = [
     path('api/doc_stats/', views.doc_stats_api, name='doc_stats_api'),
     path('librarian-dashboard/', views.librarian_dashboard, name='librarian_dashboard'),
     path('standard-user-dashboard/', views.standard_user_dashboard, name='standard_user_dashboard'),
-    
+    path('toggle-favorite/', views.toggle_favorite, name='toggle_favorite'),
     path('search/', views.search_view, name='search'),
     path('details/<int:pk>/', views.book_detail_view, name='book_detail'),
     path('new-arrivals/', views.new_arrivals_view, name='new_arrivals'),

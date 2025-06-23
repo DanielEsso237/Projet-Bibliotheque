@@ -513,7 +513,7 @@
                     const button = $(this);
                     
                     $.ajax({
-                        url: '#',
+                        url: '{% url 'books:toggle_favorite' %}',
                         method: 'POST',
                         data: {
                             book_id: bookId,
