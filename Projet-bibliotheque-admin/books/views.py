@@ -36,14 +36,11 @@ def librarian_dashboard(request):
 
 @login_required
 def standard_user_dashboard(request):
-    
     if request.user.user_type == 'LIBRARIAN':
         messages.error(request, "Les bibliothécaires doivent utiliser leur tableau de bord dédié.")
         return redirect('books:librarian_dashboard')
-
-   
     return render(request, 'books/standard_user_dashboard.html', {
-        'loans_count': 0,  
+        'loans_count': 0,
         'notifications_count': 0,
         'favorites_count': 0
     })
@@ -52,7 +49,7 @@ def stats_api(request):
     total_books = Book.objects.count()
     return JsonResponse({
         'total_books': total_books,
-        'ebooks': total_books  # Tous les livres sont des e-books
+        'ebooks': total_books
     })
 
 def doc_stats_api(request):
@@ -70,14 +67,12 @@ def search_books_api(request):
     search_query = request.GET.get('search', '')
     if search_query:
         books_list = books_list.filter(title__icontains=search_query)
-    
     sort_field = request.GET.get('sort', 'title')
     sort_order = request.GET.get('order', 'asc')
     if sort_field in ['title', 'author']:
         if sort_order == 'desc':
             sort_field = f'-{sort_field}'
         books_list = books_list.order_by(sort_field)
-
     paginator = Paginator(books_list, 9)
     page_number = request.GET.get('page', 1)
     page_obj = paginator.get_page(page_number)
@@ -112,14 +107,12 @@ def search_docs_api(request):
     level_filter = request.GET.get('level', '')
     if level_filter:
         docs_list = docs_list.filter(academic_level=level_filter)
-    
     sort_field = request.GET.get('sort', 'title')
     sort_order = request.GET.get('order', 'asc')
     if sort_field in ['title']:
         if sort_order == 'desc':
             sort_field = f'-{sort_field}'
         docs_list = docs_list.order_by(sort_field)
-
     paginator = Paginator(docs_list, 9)
     page_number = request.GET.get('page', 1)
     page_obj = paginator.get_page(page_number)
@@ -186,10 +179,12 @@ def choose_document_type(request):
 def select_document_category(request):
     document_types = [dt for dt in Document.DOCUMENT_TYPES if dt[0] != 'ebook']
     academic_levels = [al for al in Document.ACADEMIC_LEVELS if al[0] != 'N/A']
+    departments = [dp for dp in Document.DEPARTMENTS]
     if request.method == 'POST':
         document_type = request.POST.get('document_type')
         academic_level = request.POST.get('academic_level')
-        logger.debug(f"POST data: document_type={document_type}, academic_level={academic_level}")
+        department = request.POST.get('department')
+        logger.debug(f"POST data: document_type={document_type}, academic_level={academic_level}, department={department}")
         if not document_type:
             logger.error("No document_type selected")
             messages.error(request, 'Veuillez sélectionner un type de document.')
@@ -207,22 +202,26 @@ def select_document_category(request):
         return render(request, 'books/select_document_category.html', {
             'document_types': document_types,
             'academic_levels': academic_levels,
+            'departments': departments,
         })
     return render(request, 'books/select_document_category.html', {
         'document_types': document_types,
         'academic_levels': academic_levels,
+        'departments': departments,
     })
 
 @login_required
 def add_document(request, document_type, academic_level):
     if request.method == 'POST':
         form = DocumentForm(request.POST, request.FILES)
-        logger.debug(f"POST data: {request.POST}, FILES: {request.FILES}")
+        logger.debug(f"POST data: {request.POST}, FILES: {request.FILES}, Document type: {document_type}, Academic level: {academic_level}")
         if form.is_valid():
             document = form.save(commit=False)
             document.document_type = document_type
             document.academic_level = academic_level
+            document.department = request.POST.get('department', '')  # Récupéré du POST, vide par défaut si absent
             document.save()
+            logger.debug(f"Document saved: {document}")
             messages.success(request, 'Document ajouté avec succès !')
             return redirect('books:librarian_dashboard')
         else:
@@ -355,7 +354,6 @@ def favorites_view(request):
     }
     return render(request, 'books/favorites_books_for_users.html', context)
 
-
 @require_POST
 @login_required
 def toggle_favorite(request):
@@ -371,5 +369,5 @@ def toggle_favorite(request):
 def home(request):
     if not request.user.is_authenticated or request.user.user_type not in ["STUDENT", "PROFESSOR"]:
         messages.error(request, "Accès réservé aux utilisateurs standard.")
-        return redirect('users:login')  # Correction ici
+        return redirect('users:login')
     return redirect('books:standard_user_dashboard')

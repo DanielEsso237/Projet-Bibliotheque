@@ -39,7 +39,7 @@
 
                 <!-- Sélection du niveau -->
                 <h5 class="mb-3 text-primary text-center fw-bold"><i class="fas fa-graduation-cap me-2"></i>Niveau académique</h5>
-                <div class="row g-2">
+                <div class="row g-2 mb-4">
                     {% for value, label in academic_levels %}
                         <div class="col-6 col-md-3">
                             <div class="card h-100 border-0 shadow-sm level-card" data-value="{{ value }}">
@@ -47,6 +47,22 @@
                                     <i class="fas fa-user-graduate fa-2x mb-2 text-primary"></i>
                                     <h6 class="card-title">{{ label }}</h6>
                                     <input type="radio" name="academic_level" value="{{ value }}" class="d-none" required>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Sélection de la filière -->
+                <h5 class="mb-3 text-primary text-center fw-bold"><i class="fas fa-university me-2"></i>Filière</h5>
+                <div class="row g-2">
+                    {% for value, label in departments %}
+                        <div class="col-6 col-md-3">
+                            <div class="card h-100 border-0 shadow-sm department-card" data-value="{{ value }}">
+                                <div class="card-body text-center p-3">
+                                    <i class="fas fa-building fa-2x mb-2 text-primary"></i>
+                                    <h6 class="card-title">{{ label }}</h6>
+                                    <input type="radio" name="department" value="{{ value }}" class="d-none">
                                 </div>
                             </div>
                         </div>
@@ -68,6 +84,7 @@
     document.addEventListener('DOMContentLoaded', () => {
         const typeCards = document.querySelectorAll('.type-card');
         const levelCards = document.querySelectorAll('.level-card');
+        const departmentCards = document.querySelectorAll('.department-card');
         const submitBtn = document.getElementById('submitBtn');
         const form = document.getElementById('categoryForm');
         const alertContainer = document.createElement('div');
@@ -112,6 +129,17 @@
             });
         });
 
+        departmentCards.forEach(card => {
+            card.addEventListener('click', () => {
+                departmentCards.forEach(c => {
+                    c.classList.remove('border-primary', 'bg-primary-subtle');
+                    c.querySelector('input').checked = false;
+                });
+                card.classList.add('border-primary', 'bg-primary-subtle');
+                card.querySelector('input').checked = true;
+            });
+        });
+
         submitBtn.addEventListener('click', (e) => {
             if (submitBtn.disabled) {
                 e.preventDefault();
@@ -124,5 +152,3 @@
 </script>
 {% endblock %}
 {% endblock %}
-
-

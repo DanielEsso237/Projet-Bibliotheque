@@ -38,11 +38,22 @@ class Document(models.Model):
         ('M2', 'Master 2'),
         ('D', 'Doctorat'),
     ]
+    DEPARTMENTS = [
+        ('Chimie appliquée', 'Chimie appliquée'),
+        ('Géosciences', 'Géosciences'),
+        ('Physique appliquée', 'Physique appliquée'),
+        ('ROSE', 'ROSE'),
+        ('SBAA', 'SBAA'),
+        ('SBM', 'SBM'),
+        ('TBM', 'TBM'),
+        ('TIC', 'TIC'),
+    ]
 
     title = models.CharField(max_length=200)
     author = models.CharField(max_length=100, blank=True)
     document_type = models.CharField(max_length=20, choices=DOCUMENT_TYPES)
     academic_level = models.CharField(max_length=10, choices=ACADEMIC_LEVELS)
+    department = models.CharField(max_length=50, choices=DEPARTMENTS, blank=True, null=True)  # Nouveau champ
     file = models.FileField(
         upload_to='documents/',
         blank=True,

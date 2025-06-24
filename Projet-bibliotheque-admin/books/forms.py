@@ -38,10 +38,8 @@ class BookForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         ebook_file = cleaned_data.get('ebook_file')
-
         if ebook_file and not ebook_file.name.endswith('.pdf'):
             self.add_error('ebook_file', "Seuls les fichiers PDF sont acceptés.")
-
         return cleaned_data
 
 class DocumentForm(forms.ModelForm):
@@ -70,8 +68,6 @@ class DocumentForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         file = cleaned_data.get('file')
-
         if file and not file.name.endswith('.pdf'):
             self.add_error('file', "Seuls les fichiers PDF sont acceptés.")
-
-        return cleaned_data  
+        return cleaned_data
