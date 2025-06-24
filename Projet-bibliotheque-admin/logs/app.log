@@ -10307,3 +10307,11 @@ Traceback (most recent call last):
     raise TemplateSyntaxError("Invalid filter: '%s'" % filter_name)
 django.template.exceptions.TemplateSyntaxError: Invalid filter: 'add_class'
 Notification count: total=1
+Watching for file changes with StatReloader
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Not Found: /favicon.ico
