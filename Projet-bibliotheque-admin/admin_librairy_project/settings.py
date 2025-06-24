@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'notifications.apps.NotificationsConfig',
     'library_stats.apps.LibraryStatsConfig',
+    'widget_tweaks',
     'channels',
     'settings_app',
 ]
