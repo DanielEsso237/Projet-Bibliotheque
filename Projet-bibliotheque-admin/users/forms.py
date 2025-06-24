@@ -33,7 +33,7 @@ class LibrarianRegistrationForm(UserCreationForm):
 class UserCreationForm(forms.ModelForm):
     class Meta:
         model = CustomUser
-        fields = ['first_name', 'last_name', 'email', 'user_type', 'phone_number', 'student_id', 'department']
+        fields = ['first_name', 'last_name', 'email', 'user_type', 'phone_number', 'student_id', 'department', 'academic_level']
         widgets = {
             'first_name': forms.TextInput(attrs={
                 'class': 'form-control form-control-modern',
@@ -66,6 +66,9 @@ class UserCreationForm(forms.ModelForm):
                 'class': 'form-control form-control-modern',
                 'placeholder': 'Département/Filière',
             }),
+            'academic_level': forms.Select(attrs={
+                'class': 'form-select form-select-modern',
+            }),
         }
         labels = {
             'first_name': 'Prénom',
@@ -75,6 +78,7 @@ class UserCreationForm(forms.ModelForm):
             'phone_number': 'Numéro de téléphone',
             'student_id': 'Matricule étudiant',
             'department': 'Département',
+            'academic_level': 'Niveau académique',
         }
 
     def __init__(self, *args, **kwargs):
@@ -105,11 +109,28 @@ class UserCreationForm(forms.ModelForm):
             if self.data['user_type'] != 'STUDENT':
                 self.fields['student_id'].required = False
                 self.fields['student_id'].widget = forms.HiddenInput()
+            else:
+                self.fields['student_id'].required = True
         elif self.instance.pk and self.instance.user_type != 'STUDENT':
             self.fields['student_id'].required = False
             self.fields['student_id'].widget = forms.HiddenInput()
         else:
             self.fields['student_id'].required = True
+
+        # Gérer le champ niveau académique selon le type d'utilisateur
+        if 'user_type' in self.data:
+            if self.data['user_type'] != 'STUDENT':
+                self.fields['academic_level'].required = False
+                self.fields['academic_level'].widget = forms.HiddenInput()
+            else:
+                self.fields['academic_level'].required = True
+                self.fields['academic_level'].choices = CustomUser.ACADEMIC_LEVELS
+        elif self.instance.pk and self.instance.user_type != 'STUDENT':
+            self.fields['academic_level'].required = False
+            self.fields['academic_level'].widget = forms.HiddenInput()
+        else:
+            self.fields['academic_level'].required = True
+            self.fields['academic_level'].choices = CustomUser.ACADEMIC_LEVELS
 
     def clean_student_id(self):
         user_type = self.cleaned_data.get('user_type')
@@ -119,13 +140,19 @@ class UserCreationForm(forms.ModelForm):
             raise forms.ValidationError("Un matricule est requis pour les étudiants")
         return student_id
 
+    def clean_academic_level(self):
+        user_type = self.cleaned_data.get('user_type')
+        academic_level = self.cleaned_data.get('academic_level')
+        
+        if user_type == 'STUDENT' and not academic_level:
+            raise forms.ValidationError("Un niveau académique est requis pour les étudiants")
+        return academic_level
+
     def clean_email(self):
         email = self.cleaned_data.get('email')
         if CustomUser.objects.filter(email=email).exists():
             raise forms.ValidationError("Cette adresse email est déjà utilisée")
         return email
-    
-    
     
 # users/forms.py
 from django import forms

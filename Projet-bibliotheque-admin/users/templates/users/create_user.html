@@ -402,6 +402,24 @@ label {
                 {% endif %}
             </div>
 
+            <div class="form-group conditional-field" id="academicLevelGroup">
+                <label for="{{ form.academic_level.id_for_label }}">
+                    {{ form.academic_level.label }}
+                </label>
+                <select name="academic_level" id="{{ form.academic_level.id_for_label }}" class="form-select form-select-modern">
+                    <option value="">Sélectionnez un niveau académique</option>
+                    <option value="L1">Licence 1</option>
+                    <option value="L2">Licence 2</option>
+                    <option value="L3">Licence 3</option>
+                    <option value="M1">Master 1</option>
+                    <option value="M2">Master 2</option>
+                    <option value="N/A">Non applicable</option>
+                </select>
+                {% if form.academic_level.errors %}
+                    <div class="error-message">{{ form.academic_level.errors.0 }}</div>
+                {% endif %}
+            </div>
+
             <div class="form-row">
                 <div class="form-group">
                     <label for="{{ form.phone_number.id_for_label }}">
@@ -417,7 +435,14 @@ label {
                     <label for="{{ form.department.id_for_label }}">
                         {{ form.department.label }}
                     </label>
-                    {{ form.department }}
+                    <select name="department" id="{{ form.department.id_for_label }}" class="form-select form-select-modern">
+                        <option value="">Sélectionnez une filière</option>
+                        <option value="informatique">Informatique</option>
+                        <option value="mathematiques">Mathématiques</option>
+                        <option value="physique">Physique</option>
+                        <option value="chimie">Chimie</option>
+                        <option value="biologie">Biologie</option>
+                    </select>
                     {% if form.department.errors %}
                         <div class="error-message">{{ form.department.errors.0 }}</div>
                     {% endif %}
@@ -442,25 +467,41 @@ document.addEventListener('DOMContentLoaded', function () {
     const userType = document.querySelector('#id_user_type');
     const studentIdGroup = document.getElementById('studentIdGroup');
     const studentIdField = document.querySelector('#id_student_id');
+    const academicLevelGroup = document.getElementById('academicLevelGroup');
+    const academicLevelField = document.querySelector('#id_academic_level');
     const progressBar = document.getElementById('progressBar');
     const submitBtn = document.getElementById('submitBtn');
 
-    // Gestion du champ conditionnel matricule
-    function toggleStudentId() {
-        const label = studentIdGroup.querySelector('label');
+    // Gestion des champs conditionnels (matricule et niveau académique)
+    function toggleConditionalFields() {
+        const labelStudent = studentIdGroup.querySelector('label');
+        const labelAcademic = academicLevelGroup.querySelector('label');
         
         if (userType.value === 'STUDENT') {
             studentIdGroup.classList.remove('hidden');
             studentIdField.setAttribute('required', 'required');
-            if (label && !label.classList.contains('required-label')) {
-                label.classList.add('required-label');
+            if (labelStudent && !labelStudent.classList.contains('required-label')) {
+                labelStudent.classList.add('required-label');
+            }
+
+            academicLevelGroup.classList.remove('hidden');
+            academicLevelField.setAttribute('required', 'required');
+            if (labelAcademic && !labelAcademic.classList.contains('required-label')) {
+                labelAcademic.classList.add('required-label');
             }
         } else {
             studentIdGroup.classList.add('hidden');
             studentIdField.removeAttribute('required');
             studentIdField.classList.remove('is-invalid');
-            if (label) {
-                label.classList.remove('required-label');
+            if (labelStudent) {
+                labelStudent.classList.remove('required-label');
+            }
+
+            academicLevelGroup.classList.add('hidden');
+            academicLevelField.removeAttribute('required');
+            academicLevelField.classList.remove('is-invalid');
+            if (labelAcademic) {
+                labelAcademic.classList.remove('required-label');
             }
         }
         updateProgress();
@@ -516,7 +557,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Event listeners
-    userType.addEventListener('change', toggleStudentId);
+    userType.addEventListener('change', toggleConditionalFields);
     
     // Validation et progression en temps réel
     form.querySelectorAll('input, select').forEach(field => {
@@ -537,7 +578,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Initialisation
-    toggleStudentId();
+    toggleConditionalFields();
     updateProgress();
     
     // Validation initiale des champs pré-remplis
