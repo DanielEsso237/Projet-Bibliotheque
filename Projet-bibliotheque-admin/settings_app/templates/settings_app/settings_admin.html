@@ -1,0 +1,566 @@
+{% extends 'books/base_admin.html' %}
+{% load static %}
+
+{% block title %}Paramètres{% endblock %}
+
+{% block extra_css %}
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --card-shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.15);
+            --border-radius: 16px;
+            --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        .container {
+            max-width: 900px;
+        }
+
+        .page-title {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 3rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 3rem;
+            letter-spacing: -0.02em;
+        }
+
+        .settings-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .settings-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .settings-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--card-shadow-hover);
+        }
+
+        .settings-card:hover::before {
+            opacity: 1;
+        }
+
+        .card-header {
+            padding: 2rem 2rem 1rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin: 0;
+        }
+
+        .card-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: var(--primary-gradient);
+            color: white;
+            margin-right: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .card-body {
+            padding: 0 2rem 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+            letter-spacing: 0.01em;
+        }
+
+        .form-control,
+        .form-select,
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="tel"] {
+            border: 2px solid #e2e8f0 !important;
+            border-radius: 12px !important;
+            padding: 0.875rem 1rem !important;
+            font-size: 1rem !important;
+            transition: var(--transition) !important;
+            background: rgba(255, 255, 255, 0.8) !important;
+            backdrop-filter: blur(10px);
+            width: 100% !important;
+            box-sizing: border-box !important;
+        }
+
+        .form-control:focus,
+        .form-select:focus,
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="password"]:focus,
+        input[type="tel"]:focus {
+            border-color: #667eea !important;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1) !important;
+            background: white !important;
+            outline: none !important;
+        }
+
+        .form-check {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 12px;
+            border: 2px solid transparent;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .form-check:hover {
+            background: rgba(102, 126, 234, 0.1);
+            border-color: rgba(102, 126, 234, 0.2);
+        }
+
+        .form-check-input {
+            width: 22px !important;
+            height: 22px !important;
+            margin-right: 0.75rem !important;
+            border: 2px solid #cbd5e0 !important;
+            border-radius: 6px !important;
+            transition: var(--transition) !important;
+            background-color: white !important;
+            position: relative !important;
+            cursor: pointer !important;
+            -webkit-appearance: none !important;
+            appearance: none !important;
+        }
+
+        .form-check-input:checked {
+            background: var(--primary-gradient) !important;
+            border-color: #667eea !important;
+        }
+
+        .form-check-input:checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .form-check-input:focus {
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1) !important;
+            outline: none !important;
+        }
+
+        .form-check-label {
+            font-weight: 500;
+            color: #4a5568;
+            margin: 0;
+        }
+
+        .btn-save {
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: 50px;
+            padding: 1rem 3rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: white;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-save::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-save:hover::before {
+            left: 100%;
+        }
+
+        .btn-save:active {
+            transform: translateY(0);
+        }
+
+        .help-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .help-section .card-title {
+            color: white;
+        }
+
+        .help-section .card-icon {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .help-section a {
+            color: #ffd89b;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .help-section a:hover {
+            color: #fff;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+        }
+
+        .text-danger {
+            color: #e53e3e !important;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            font-weight: 500;
+        }
+
+        /* Animations d'entrée */
+        .settings-card {
+            animation: slideInUp 0.6s ease-out;
+        }
+
+        .settings-card:nth-child(1) { animation-delay: 0.1s; }
+        .settings-card:nth-child(2) { animation-delay: 0.2s; }
+        .settings-card:nth-child(3) { animation-delay: 0.3s; }
+        .settings-card:nth-child(4) { animation-delay: 0.4s; }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Mode sombre amélioré */
+        body.dark-mode {
+            background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+        }
+
+        body.dark-mode .page-title {
+            background: linear-gradient(135deg, #90cdf4 0%, #63b3ed 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        body.dark-mode .settings-card {
+            background: rgba(45, 55, 72, 0.95);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        body.dark-mode .card-title {
+            color: #f7fafc;
+        }
+
+        body.dark-mode .form-label {
+            color: #e2e8f0;
+        }
+
+        body.dark-mode .form-control,
+        body.dark-mode .form-select,
+        body.dark-mode input[type="text"],
+        body.dark-mode input[type="email"],
+        body.dark-mode input[type="password"],
+        body.dark-mode input[type="tel"] {
+            background: rgba(26, 32, 44, 0.8) !important;
+            border-color: #4a5568 !important;
+            color: #f7fafc !important;
+        }
+
+        body.dark-mode .form-control:focus,
+        body.dark-mode .form-select:focus,
+        body.dark-mode input[type="text"]:focus,
+        body.dark-mode input[type="email"]:focus,
+        body.dark-mode input[type="password"]:focus,
+        body.dark-mode input[type="tel"]:focus {
+            background: #2d3748 !important;
+            border-color: #63b3ed !important;
+            box-shadow: 0 0 0 3px rgba(99, 179, 237, 0.1) !important;
+        }
+
+        body.dark-mode .form-control::placeholder,
+        body.dark-mode input[type="text"]::placeholder,
+        body.dark-mode input[type="email"]::placeholder,
+        body.dark-mode input[type="password"]::placeholder,
+        body.dark-mode input[type="tel"]::placeholder {
+            color: #a0aec0 !important;
+        }
+
+        body.dark-mode .form-check {
+            background: rgba(99, 179, 237, 0.1);
+        }
+
+        body.dark-mode .form-check:hover {
+            background: rgba(99, 179, 237, 0.15);
+        }
+
+        body.dark-mode .form-check-input {
+            background-color: #2d3748 !important;
+            border-color: #4a5568 !important;
+        }
+
+        body.dark-mode .form-check-input:checked {
+            background: linear-gradient(135deg, #63b3ed 0%, #4299e1 100%) !important;
+            border-color: #63b3ed !important;
+        }
+
+        body.dark-mode .form-check-label {
+            color: #e2e8f0;
+        }
+
+        body.dark-mode .help-section {
+            background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 2rem;
+                margin-bottom: 2rem;
+            }
+
+            .card-header,
+            .card-body {
+                padding: 1.5rem;
+            }
+
+            .btn-save {
+                padding: 0.875rem 2rem;
+                font-size: 1rem;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="page-title">Paramètres</h1>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <!-- Section Profil Utilisateur -->
+        <div class="settings-card">
+            <div class="card-header">
+                <h5 class="card-title">
+                    <div class="card-icon">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    Profil Utilisateur
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="{{ profile_form.username.id_for_label }}" class="form-label">
+                        {{ profile_form.username.label }}
+                    </label>
+                    {{ profile_form.username }}
+                    {% if profile_form.username.errors %}
+                        <div class="text-danger">{{ profile_form.username.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="{{ profile_form.first_name.id_for_label }}" class="form-label">
+                        {{ profile_form.first_name.label }}
+                    </label>
+                    {{ profile_form.first_name }}
+                    {% if profile_form.first_name.errors %}
+                        <div class="text-danger">{{ profile_form.first_name.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="{{ profile_form.last_name.id_for_label }}" class="form-label">
+                        {{ profile_form.last_name.label }}
+                    </label>
+                    {{ profile_form.last_name }}
+                    {% if profile_form.last_name.errors %}
+                        <div class="text-danger">{{ profile_form.last_name.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="{{ profile_form.email.id_for_label }}" class="form-label">
+                        {{ profile_form.email.label }}
+                    </label>
+                    {{ profile_form.email }}
+                    {% if profile_form.email.errors %}
+                        <div class="text-danger">{{ profile_form.email.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="{{ profile_form.phone_number.id_for_label }}" class="form-label">
+                        {{ profile_form.phone_number.label }}
+                    </label>
+                    {{ profile_form.phone_number }}
+                    {% if profile_form.phone_number.errors %}
+                        <div class="text-danger">{{ profile_form.phone_number.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Préférences de Notification -->
+        <div class="settings-card">
+            <div class="card-header">
+                <h5 class="card-title">
+                    <div class="card-icon">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    Préférences de Notification
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="form-check">
+                    {{ settings_form.notifications_enabled }}
+                    <label for="{{ settings_form.notifications_enabled.id_for_label }}" class="form-check-label">
+                        {{ settings_form.notifications_enabled.label }}
+                    </label>
+                    {% if settings_form.notifications_enabled.errors %}
+                        <div class="text-danger">{{ settings_form.notifications_enabled.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Changement de Mot de Passe -->
+        <div class="settings-card">
+            <div class="card-header">
+                <h5 class="card-title">
+                    <div class="card-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    Changer le Mot de Passe
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="{{ password_form.old_password.id_for_label }}" class="form-label">
+                        {{ password_form.old_password.label }}
+                    </label>
+                    {{ password_form.old_password }}
+                    {% if password_form.old_password.errors %}
+                        <div class="text-danger">{{ password_form.old_password.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="{{ password_form.new_password1.id_for_label }}" class="form-label">
+                        {{ password_form.new_password1.label }}
+                    </label>
+                    {{ password_form.new_password1 }}
+                    {% if password_form.new_password1.errors %}
+                        <div class="text-danger">{{ password_form.new_password1.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="{{ password_form.new_password2.id_for_label }}" class="form-label">
+                        {{ password_form.new_password2.label }}
+                    </label>
+                    {{ password_form.new_password2 }}
+                    {% if password_form.new_password2.errors %}
+                        <div class="text-danger">{{ password_form.new_password2.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Aide -->
+        <div class="settings-card help-section">
+            <div class="card-header">
+                <h5 class="card-title">
+                    <div class="card-icon">
+                        <i class="fas fa-question-circle"></i>
+                    </div>
+                    Aide
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="mb-0">Consultez notre <a href="#" target="_blank">FAQ</a> ou contactez le support à <a href="mailto:support@biblio.com">support@biblio.com</a>.</p>
+            </div>
+        </div>
+
+        <!-- Bouton Enregistrer -->
+        <div class="text-center">
+            <button type="submit" class="btn-save">
+                <i class="fas fa-save me-2"></i> Enregistrer les modifications
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Activer les tooltips Bootstrap
+    document.addEventListener('DOMContentLoaded', function () {
+        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+        const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+        
+        // Animation d'apparition progressive des cartes
+        const cards = document.querySelectorAll('.settings-card');
+        cards.forEach((card, index) => {
+            card.style.animationDelay = `${index * 0.1}s`;
+        });
+    });
+</script>
+{% endblock %}

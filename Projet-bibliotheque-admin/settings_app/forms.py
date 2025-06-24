@@ -1,47 +1,56 @@
 from django import forms
+from django.contrib.auth.forms import UserChangeForm
 from .models import SystemSettings
+from users.models import CustomUser
 
 class SystemSettingsForm(forms.ModelForm):
     class Meta:
         model = SystemSettings
-        fields = [
-            'notification_cleanup_days',
-            'low_stock_threshold',
-            'loan_warning_days',
-            'loan_overdue_days',
-            'max_loans_per_user',
-            'loan_duration',
-            'critical_stock_threshold'
-        ]
+        fields = ['notifications_enabled']
         labels = {
-            'notification_cleanup_days': 'Durée de conservation des notifications supprimées (jours)',
-            'low_stock_threshold': 'Seuil de stock faible',
-            'loan_warning_days': 'Jours pour alerte de retour proche',
-            'loan_overdue_days': 'Délai pour alerte de retard (jours)',
-            'max_loans_per_user': 'Nombre maximum de prêts par utilisateur',
-            'loan_duration': 'Durée standard d’un prêt (jours)',
-            'critical_stock_threshold': 'Seuil de stock critique'
+            'notifications_enabled': 'Activer les notifications',
         }
         widgets = {
-            'notification_cleanup_days': forms.Select(choices=[
-                (15, '15 jours'), (30, '30 jours'), (60, '60 jours')
-            ]),
-            'low_stock_threshold': forms.Select(choices=[
-                (1, '1 unité'), (3, '3 unités'), (5, '5 unités'), (10, '10 unités')
-            ]),
-            'loan_warning_days': forms.Select(choices=[
-                (1, '1 jour'), (2, '2 jours'), (3, '3 jours'), (5, '5 jours')
-            ]),
-            'loan_overdue_days': forms.Select(choices=[
-                (0, 'Immédiat'), (1, '1 jour'), (2, '2 jours')
-            ]),
-            'max_loans_per_user': forms.Select(choices=[
-                (1, '1 prêt'), (3, '3 prêts'), (5, '5 prêts'), (10, '10 prêts')
-            ]),
-            'loan_duration': forms.Select(choices=[
-                (7, '7 jours'), (14, '14 jours'), (21, '21 jours'), (30, '30 jours')
-            ]),
-            'critical_stock_threshold': forms.Select(choices=[
-                (0, '0 unité'), (1, '1 unité'), (2, '2 unités')
-            ]),
+            'notifications_enabled': forms.CheckboxInput(attrs={
+                'class': 'form-check-input',
+            }),
         }
+
+class UserProfileForm(UserChangeForm):
+    class Meta:
+        model = CustomUser
+        fields = ['username', 'first_name', 'last_name', 'email', 'phone_number']
+        labels = {
+            'username': 'Nom d\'utilisateur',
+            'first_name': 'Prénom',
+            'last_name': 'Nom',
+            'email': 'Adresse email',
+            'phone_number': 'Numéro de téléphone',
+        }
+        widgets = {
+            'username': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Nom d\'utilisateur',
+            }),
+            'first_name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Prénom',
+            }),
+            'last_name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Nom',
+            }),
+            'email': forms.EmailInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'adresse@email.com',
+            }),
+            'phone_number': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': '+237 6XX XXX XXX',
+            }),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Rendre certains champs non modifiables si nécessaire (ex. email unique)
+        self.fields['email'].required = True
