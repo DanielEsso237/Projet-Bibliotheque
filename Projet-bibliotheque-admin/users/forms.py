@@ -124,3 +124,53 @@ class UserCreationForm(forms.ModelForm):
         if CustomUser.objects.filter(email=email).exists():
             raise forms.ValidationError("Cette adresse email est déjà utilisée")
         return email
+    
+    
+    
+# users/forms.py
+from django import forms
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
+class CustomPasswordChangeForm(forms.Form):
+    old_password = forms.CharField(
+        label="Ancien mot de passe",
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        required=True
+    )
+    new_password1 = forms.CharField(
+        label="Nouveau mot de passe",
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        required=True
+    )
+    new_password2 = forms.CharField(
+        label="Confirmation",
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        required=True
+    )
+
+    def __init__(self, user, *args, **kwargs):
+        self.user = user
+        super().__init__(*args, **kwargs)
+
+    def clean_old_password(self):
+        old_password = self.cleaned_data.get('old_password')
+        if not self.user.check_password(old_password):
+            raise forms.ValidationError("L'ancien mot de passe est incorrect.")
+        return old_password
+
+    def clean(self):
+        cleaned_data = super().clean()
+        new_password1 = cleaned_data.get('new_password1')
+        new_password2 = cleaned_data.get('new_password2')
+
+        if new_password1 and new_password2 and new_password1 != new_password2:
+            raise forms.ValidationError("Les nouveaux mots de passe ne correspondent pas.")
+        return cleaned_data
+
+    def save(self):
+        self.user.set_password(self.cleaned_data['new_password1'])
+        self.user.first_login = False
+        self.user.save()
+        return self.user

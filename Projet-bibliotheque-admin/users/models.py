@@ -15,21 +15,21 @@ class CustomUser(AbstractUser):
     phone_number = models.CharField(max_length=15, blank=True, null=True)
     student_id = models.CharField(max_length=20, blank=True, null=True, unique=True)
     department = models.CharField(max_length=100, blank=True, null=True)
-    first_login = models.BooleanField(default=True)  # Pour forcer le changement de mot de passe
+    first_login = models.BooleanField(default=True)  
 
     def save(self, *args, **kwargs):
-        # Génération automatique du username si c'est un nouvel utilisateur
+        
         if not self.pk and not self.username:
             base_username = f"{slugify(self.last_name)}.{slugify(self.first_name)}"
             self.username = base_username
             
-            # Vérifier l'unicité et ajouter un suffixe numérique si nécessaire
+           
             suffix = 1
             while CustomUser.objects.filter(username=self.username).exists():
                 self.username = f"{base_username}{suffix:03d}"
                 suffix += 1
         
-        # Si c'est un étudiant, vérifier qu'un matricule est fourni
+        
         if self.user_type == 'STUDENT' and not self.student_id:
             raise ValueError("Un matricule est requis pour les étudiants")
         

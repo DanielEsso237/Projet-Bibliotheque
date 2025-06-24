@@ -338,7 +338,7 @@ def documents_view(request):
         'documents': documents,
         'document_types': document_types,
     }
-    return render(request, 'books/documents.html', context)
+    return render(request, 'books/documents_list.html', context)
 
 @login_required
 def document_detail_view(request, pk):

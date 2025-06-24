@@ -1,22 +1,21 @@
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from .forms import LibrarianRegistrationForm, UserCreationForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from .forms import CustomPasswordChangeForm
 from django.db.models import Q
 from .models import CustomUser
 from django.http import JsonResponse
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.forms import PasswordChangeForm, AuthenticationForm
-from django.contrib.auth.views import update_session_auth_hash
 from django.utils.text import slugify
 import logging
 from django.db.models import Q, Count
 
-from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
-from django.views.decorators.http import require_POST
+logger = logging.getLogger(__name__)
+
 
 logger = logging.getLogger(__name__)
 
@@ -41,12 +40,12 @@ def login_view(request):
             login(request, user)
             logger.info(f"User logged in: {user.username}, first_login={user.first_login}")
             
-            # Redirection en fonction du type d'utilisateur
+            
             if user.user_type == 'LIBRARIAN':
                 return redirect('books:librarian_dashboard')
-            else:  # Étudiant ou Professeur
+            else: 
                 if user.first_login:
-                    return render(request, 'users/login.html', {
+                    return render(request, 'users/change_password.html', {
                         'form': PasswordChangeForm(user),
                         'show_password_modal': True,
                         'user': user
@@ -80,7 +79,7 @@ def manage_users(request):
         )
 
     # Pagination
-    paginator = Paginator(users_list, 10)  # 10 utilisateurs par page
+    paginator = Paginator(users_list, 10)  
     page_number = request.GET.get('page')
     users = paginator.get_page(page_number)
 
@@ -99,7 +98,7 @@ def create_user(request):
         if form.is_valid():
             user = form.save(commit=False)
             
-            # Générer un username unique au format nom.prenomXXX
+            
             base_username = f"{slugify(user.last_name)}.{slugify(user.first_name)}"
             counter = 1
             while True:
@@ -109,14 +108,13 @@ def create_user(request):
                 counter += 1
             user.username = username
             
-            # Définir un mot de passe par défaut
+            
             default_password = "bibliotheque2025"
             user.password = make_password(default_password)
-            user.first_login = True  # Assurer que first_login est explicitement défini
+            user.first_login = True  
             
             try:
                 user.save()
-                # Vérifier le hash après sauvegarde
                 saved_user = CustomUser.objects.get(username=username)
                 if not check_password(default_password, saved_user.password):
                     logger.error(f"Password hash mismatch for user {username}")
@@ -142,56 +140,71 @@ def update_user(request, user_id):
     if request.method == 'POST':
         username = request.POST.get('username')
         email = request.POST.get('email')
-        user_type = request.POST.get('user_type')  
+        user_type = request.POST.get('user_type')
+
+        if not username or not email or not user_type:
+            messages.error(request, "Tous les champs sont obligatoires.")
+            return render(request, 'users/manage_users.html', {'user': user, 'users': CustomUser.objects.all().order_by('username')})
 
         user.username = username
         user.email = email
-        user.user_type = user_type  
+        user.user_type = user_type
         user.save()
         messages.success(request, f"L'utilisateur {username} a été mis à jour.")
         return redirect('users:manage_users')
 
-    return render(request, 'users/manage_users.html', {'user': user})
+    return render(request, 'users/manage_users.html', {'user': user, 'users': CustomUser.objects.all().order_by('username')})
+
 
 @login_required
 def delete_user(request, user_id):
     if not request.user.user_type == 'LIBRARIAN':
         messages.error(request, "Seuls les bibliothécaires peuvent effectuer cette action.")
-        return redirect('users:login')
-
-    user = get_object_or_404(CustomUser, id=user_id)
-    if request.method == 'POST':
-        # Empêcher la suppression si c'est le dernier bibliothécaire
-        if user.user_type == 'LIBRARIAN':
-            librarian_count = CustomUser.objects.filter(user_type='LIBRARIAN').count()
-            if librarian_count <= 1:
-                messages.error(request, "Vous ne pouvez pas supprimer le dernier bibliothécaire.")
-                return redirect('users:manage_users')
-
-        username = user.username
-        user.delete()
-        messages.success(request, f"L'utilisateur {username} a été supprimé.")
         return redirect('users:manage_users')
 
-    return render(request, 'users/manage_users.html', {'user': user})
+    user = get_object_or_404(CustomUser, id=user_id)
+
+    if request.method == 'POST':
+        try:
+            
+            if user.user_type == 'LIBRARIAN':
+                librarian_count = CustomUser.objects.filter(user_type='LIBRARIAN').exclude(id=user_id).count()
+                if librarian_count == 0:
+                    messages.error(request, "Vous ne pouvez pas supprimer le dernier bibliothécaire.")
+                    return redirect('users:manage_users')
+
+            
+            username = user.username
+            user.delete()
+            messages.success(request, f"L'utilisateur {username} a été supprimé avec succès.")
+            return redirect('users:manage_users')
+        except Exception as e:
+            logger.error(f"Erreur lors de la suppression de l'utilisateur {user_id}: {str(e)}")
+            messages.error(request, f"Une erreur est survenue lors de la suppression : {str(e)}")
+            return redirect('users:manage_users')
+
+    
+    return render(request, 'users/manage_users.html', {
+        'user_to_delete': user,
+        'users': CustomUser.objects.all().order_by('username')  
+    })
+
+
 
 @login_required
 def change_password(request):
     if request.method == 'POST':
-        form = PasswordChangeForm(request.user, request.POST)
+        form = CustomPasswordChangeForm(request.user, request.POST)
         if form.is_valid():
             user = form.save()
-            update_session_auth_hash(request, user)
-            user.first_login = False
-            user.save()
-            messages.success(request, 'Votre mot de passe a été changé avec succès!')
-            if request.user.user_type == 'LIBRARIAN':
-                return redirect('books:librarian_dashboard')
-            else:
-                return redirect('books:standard_user_dashboard')
+            update_session_auth_hash(request, user)  
+            messages.success(request, 'Votre mot de passe a été changé avec succès! Veuillez vous reconnecter avec votre nouveau mot de passe.')
+            logout(request)  
+            return redirect('users:login')
         else:
+            logger.error(f"Form errors: {form.errors}")
             messages.error(request, 'Veuillez corriger les erreurs ci-dessous.')
     else:
-        form = PasswordChangeForm(request.user)
+        form = CustomPasswordChangeForm(request.user)
     
     return render(request, 'users/change_password.html', {'form': form})

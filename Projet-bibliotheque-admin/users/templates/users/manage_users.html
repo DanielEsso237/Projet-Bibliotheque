@@ -1,4 +1,4 @@
-{% extends 'books/base.html' %}
+{% extends 'books/base_admin.html' %}
 {% load static %}
 
 {% block title %}Gérer les utilisateurs{% endblock %}
@@ -137,12 +137,12 @@
                                         {% endif %}
                                     </td>
                                     <td>
-                                        <a href="{% url 'users:update_user' user.id %}" class="btn btn-sm btn-warning me-2" data-bs-toggle="modal" data-bs-target="#editUserModal" data-user-id="{{ user.id }}" data-username="{{ user.username }}" data-email="{{ user.email }}" data-user-type="{{ user.user_type }}">
+                                        <button class="btn btn-sm btn-warning me-2" data-bs-toggle="modal" data-bs-target="#editUserModal" data-user-id="{{ user.id }}" data-username="{{ user.username }}" data-email="{{ user.email }}" data-user-type="{{ user.user_type }}">
                                             <i class="fas fa-edit"></i> Modifier
-                                        </a>
-                                        <a href="{% url 'users:delete_user' user.id %}" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteUserModal" data-user-id="{{ user.id }}" data-username="{{ user.username }}">
+                                        </button>
+                                        <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteUserModal" data-user-id="{{ user.id }}" data-username="{{ user.username }}">
                                             <i class="fas fa-trash"></i> Supprimer
-                                        </a>
+                                        </button>
                                     </td>
                                 </tr>
                             {% endfor %}
@@ -193,7 +193,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="editUserForm" method="post" action="{% url 'users:update_user' 0 %}">
+                    <form id="editUserForm" method="post" action="">
                         {% csrf_token %}
                         <input type="hidden" id="editUserId" name="user_id">
                         <div class="mb-3">
@@ -213,6 +213,7 @@
                             </select>
                         </div>
                         <button type="submit" class="btn btn-primary">Enregistrer</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
                     </form>
                 </div>
             </div>
@@ -224,15 +225,15 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="deleteUserModalLabel">Supprimer l'utilisateur</h5>
+                    <h5 class="modal-title" id="deleteUserModalLabel">Confirmer la suppression</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <p>Êtes-vous sûr de vouloir supprimer l'utilisateur <strong id="deleteUsername"></strong> ? Cette action est irréversible.</p>
-                    <form id="deleteUserForm" method="post" action="{% url 'users:delete_user' 0 %}">
+                    <form method="post" action="">
                         {% csrf_token %}
                         <input type="hidden" id="deleteUserId" name="user_id">
-                        <button type="submit" class="btn btn-danger">Confirmer la suppression</button>
+                        <button type="submit" class="btn btn-danger">Oui, supprimer</button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
                     </form>
                 </div>
@@ -270,6 +271,11 @@
                 const email = button.getAttribute('data-email');
                 const userType = button.getAttribute('data-user-type');
 
+                if (!userId || !username || !email || !userType) {
+                    alert("Erreur : Données utilisateur manquantes.");
+                    return;
+                }
+
                 const modal = this;
                 modal.querySelector('#editUserId').value = userId;
                 modal.querySelector('#editUsername').value = username;
@@ -278,7 +284,7 @@
 
                 // Mettre à jour l'action du formulaire dynamiquement
                 const form = modal.querySelector('#editUserForm');
-                form.action = form.action.replace('0', userId);
+                form.action = `{% url 'users:update_user' 0 %}`.replace('0', userId);
             });
 
             deleteUserModal.addEventListener('show.bs.modal', function (event) {
@@ -286,13 +292,18 @@
                 const userId = button.getAttribute('data-user-id');
                 const username = button.getAttribute('data-username');
 
+                if (!userId || !username) {
+                    alert("Erreur : ID ou nom d'utilisateur manquant.");
+                    return;
+                }
+
                 const modal = this;
                 modal.querySelector('#deleteUserId').value = userId;
                 modal.querySelector('#deleteUsername').textContent = username;
 
                 // Mettre à jour l'action du formulaire dynamiquement
-                const form = modal.querySelector('#deleteUserForm');
-                form.action = form.action.replace('0', userId);
+                const form = modal.querySelector('form');
+                form.action = `{% url 'users:delete_user' 0 %}`.replace('0', userId);
             });
 
             // Fonction de debounce pour limiter les requêtes

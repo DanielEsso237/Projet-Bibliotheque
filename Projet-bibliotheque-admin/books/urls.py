@@ -26,12 +26,9 @@ urlpatterns = [
     path('search/', views.search_view, name='search'),
     path('details/<int:pk>/', views.book_detail_view, name='book_detail'),
     path('new-arrivals/', views.new_arrivals_view, name='new_arrivals'),
-    
     path('favorites/', views.favorites_view, name='favorites'),
-    
     path('epreuves/', views.epreuves_view, name='epreuves'),
     path('documents/', views.documents_view, name='documents'),
     path('document-details/<int:pk>/', views.document_detail_view, name='document_detail'),
-    
     path('home/', views.home, name='home'),  
 ]
