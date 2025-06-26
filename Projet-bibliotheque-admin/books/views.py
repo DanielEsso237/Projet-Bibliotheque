@@ -281,3 +281,9 @@ def home(request):
         messages.error(request, "Accès réservé aux utilisateurs standard.")
         return redirect('users:login')
     return redirect('books:standard_user_dashboard')
+
+@login_required
+def recommendations_view(request):
+    recommended_books = Book.objects.order_by('-created_at')[:10]
+    context = {'recommended_books': recommended_books}
+    return render(request, 'books/recommendations_for_users.html', context)

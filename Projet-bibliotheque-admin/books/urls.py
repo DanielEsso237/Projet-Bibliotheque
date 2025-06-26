@@ -32,4 +32,5 @@ urlpatterns = [
     path('document-details/<int:pk>/', views.document_detail_view, name='document_detail'),
     path('download/<int:pk>/', views.download_book, name='download_book'),
     path('home/', views.home, name='home'),
+    path('recommendations/', views.recommendations_view, name='recommendations'),
 ]
