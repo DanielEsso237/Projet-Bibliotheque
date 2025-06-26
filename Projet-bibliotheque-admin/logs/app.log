@@ -10583,3 +10583,57 @@ C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\books
 Watching for file changes with StatReloader
 Watching for file changes with StatReloader
 Not Found: /favicon.ico
+Watching for file changes with StatReloader
+User logged in: admin_biblio, first_login=False
+Notification count: total=4
+Notification count: total=4
+Notification count: total=4
+C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\books\models.py changed, reloading.
+C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\books\models.py changed, reloading.
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\books\forms.py changed, reloading.
+C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\books\forms.py changed, reloading.
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+Notification count: total=4
+Notification count: total=4
+Not Found: /favicon.ico
+Notification count: total=4
+Notification count: total=4
+Notification count: total=4
+C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\books\forms.py changed, reloading.
+C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\books\forms.py changed, reloading.
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+Notification count: total=4
+Notification count: total=4
+Notification count: total=4
+Notification count: total=4
+C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\books\models.py changed, reloading.
+C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\books\models.py changed, reloading.
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+Notification count: total=4
+Internal Server Error: /books/add/
+Traceback (most recent call last):
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\books\views.py", line 163, in add_book
+    form = BookForm(request.POST, request.FILES)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\books\forms.py", line 41, in __init__
+    self.fields['category'].choices = [('', '---------')] + list(self.fields['category'].choices)
+                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'CharField' object has no attribute 'choices'
+C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\books\forms.py changed, reloading.
+C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\books\forms.py changed, reloading.
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+Notification count: total=4
+Notification count: total=5
+Notification count: total=5
+Notification count: total=6

@@ -6,6 +6,7 @@ class Book(models.Model):
     author = models.CharField(max_length=100)
     isbn = models.CharField(max_length=13, unique=True, blank=True, null=True)
     publication_date = models.DateField(blank=True, null=True)
+    # Supprimons choices et utilisons un CharField simple
     category = models.CharField(max_length=50, blank=True)
     ebook_file = models.FileField(upload_to='ebooks/', validators=[FileExtensionValidator(allowed_extensions=['pdf'])])
     cover_image = models.ImageField(upload_to='covers/', blank=True, null=True)

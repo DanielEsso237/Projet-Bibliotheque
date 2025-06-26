@@ -2,6 +2,30 @@ from django import forms
 from .models import Book, Document
 
 class BookForm(forms.ModelForm):
+    # Redéfinir category comme ChoiceField dans le formulaire
+    category = forms.ChoiceField(
+        choices=[
+            ('', '---------'),
+            ('informatique', 'Informatique'),
+            ('physique', 'Physique'),
+            ('chimie', 'Chimie'),
+            ('mathematiques', 'Mathématiques'),
+            ('sciences', 'Sciences'),
+            ('biotechnologie', 'Biotechnologie'),
+            ('agriculture', 'Agriculture'),
+            ('elevage', 'Élevage'),
+            ('technologie', 'Technologie'),
+        ],
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+    custom_category = forms.CharField(
+        max_length=50,
+        required=False,
+        label="Catégorie personnalisée",
+        widget=forms.TextInput(attrs={'class': 'form-control', 'style': 'display: none;'})
+    )
+
     class Meta:
         model = Book
         fields = [
@@ -20,13 +44,13 @@ class BookForm(forms.ModelForm):
         help_texts = {
             'isbn': '13 caractères (facultatif)',
             'ebook_file': 'Uniquement fichiers PDF',
+            'category': 'Choisissez une catégorie ou entrez une nouvelle si nécessaire',
         }
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'author': forms.TextInput(attrs={'class': 'form-control'}),
             'isbn': forms.TextInput(attrs={'class': 'form-control'}),
             'publication_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
-            'category': forms.TextInput(attrs={'class': 'form-control'}),
             'ebook_file': forms.FileInput(attrs={'class': 'form-control', 'accept': 'application/pdf'}),
             'cover_image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
         }
@@ -38,8 +62,22 @@ class BookForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         ebook_file = cleaned_data.get('ebook_file')
+        category = cleaned_data.get('category')
+        custom_category = cleaned_data.get('custom_category')
+
         if ebook_file and not ebook_file.name.endswith('.pdf'):
             self.add_error('ebook_file', "Seuls les fichiers PDF sont acceptés.")
+
+        # Si custom_category est rempli, utiliser cette valeur
+        if custom_category:
+            cleaned_data['category'] = custom_category
+        elif not category and not custom_category:
+            self.add_error('category', "Veuillez entrer une catégorie.")
+
+        # Supprimer custom_category des données nettoyées
+        if 'custom_category' in cleaned_data:
+            del cleaned_data['custom_category']
+
         return cleaned_data
 
 class DocumentForm(forms.ModelForm):
