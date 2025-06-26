@@ -5,7 +5,6 @@
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/search.css' %}">
 <style>
-    
     .search-container {
         background: var(--card-bg);
         border: 1px solid var(--card-border);
@@ -50,7 +49,7 @@
         border: 1px solid var(--card-border);
         border-radius: 16px;
         padding: 2rem;
-        box-shadow: 0 8px 24px var(--shadow-color);;
+        box-shadow: 0 8px 24px var(--shadow-color);
         position: relative;
         overflow: hidden;
     }
@@ -135,7 +134,6 @@
         user-select: none;
     }
 
-    /* Styles pour les cartes de livres */
     .book-card {
         background: var(--card-bg);
         border: 1px solid var(--card-border);
@@ -262,13 +260,11 @@
 
     .card-actions {
         display: flex;
-        justify-content: space-between;
-        align-items: center;
+        flex-direction: column;
+        gap: 0.75rem;
         margin-top: 1.5rem;
-        gap: 1rem;
     }
 
-    /* Bouton "Voir détails" */
     .btn-primary {
         padding: 0.5rem 1rem;
         font-size: 0.95rem;
@@ -276,6 +272,8 @@
         background: var(--btn-primary-bg);
         border: 1px solid var(--primary-blue);
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        width: 100%;
+        text-align: center;
     }
 
     .btn-primary:hover {
@@ -284,10 +282,10 @@
         box-shadow: 0 4px 12px var(--glow-color);
     }
 
-    /* Style pour le bouton favoris */
     .favorite-btn {
         display: flex;
         align-items: center;
+        justify-content: center;
         gap: 0.5rem;
         padding: 0.5rem 1rem;
         background: linear-gradient(135deg, #f59e0b, #f97316);
@@ -300,6 +298,7 @@
         text-decoration: none;
         font-size: 0.875rem;
         box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+        width: 100%;
     }
 
     .favorite-btn:hover {
@@ -327,7 +326,26 @@
         font-weight: 600;
     }
 
-    /* Responsive Design */
+    .btn-download {
+        padding: 0.5rem 1rem;
+        font-size: 0.95rem;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #10b981, #047857);
+        border: 1px solid #047857;
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        width: 100%;
+        text-align: center;
+    }
+
+    .btn-download:hover {
+        background: linear-gradient(135deg, #059669, #034e3d);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+    }
+
     @media (max-width: 768px) {
         .search-title {
             font-size: 2rem;
@@ -343,7 +361,8 @@
         }
         
         .btn-primary,
-        .favorite-btn {
+        .favorite-btn,
+        .btn-download {
             width: 100%;
             justify-content: center;
             padding: 0.75rem;
@@ -351,7 +370,6 @@
         }
     }
 
-    /* Animation pour l'apparition des cartes */
     .books-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -385,15 +403,14 @@
             <div class="col-md-3">
                 <label for="category-select" class="form-label">Catégorie</label>
                 <select name="category" id="category-select" class="form-select">
-                    <option class="search-container" value="">Toutes les catégories</option>
+                    <option value="">Toutes les catégories</option>
                     {% for category in categories %}
-                        <option class="search-container" value="{{ category }}" {% if category == request.GET.category %}selected{% endif %}>
+                        <option value="{{ category }}" {% if category == request.GET.category %}selected{% endif %}>
                             {{ category }}
                         </option>
                     {% endfor %}
                 </select>
             </div>
-            
         </div>
         <div class="row mt-4">
             <div class="col-12">
@@ -434,10 +451,9 @@
                 </p>
                 <p class="card-text">
                     <i class="fas fa-tablet-alt me-2"></i>
-                    <strong>Type:</strong>{% if book.is_physical %} Livre physique {% else %} E-book  {% endif %}
+                    <strong>Type:</strong>{% if book.is_physical %} Livre physique {% else %} E-book {% endif %}
                 </p>
 
-                
                 <div class="card-actions">
                     <a href="{% url 'books:book_detail' book.pk %}" class="btn btn-primary">
                         <i class="fas fa-eye me-2"></i>
@@ -460,6 +476,12 @@
                                 {% if book in user.favorites.all %}Retirer des favoris{% else %}Ajouter aux favoris{% endif %}
                             </span>
                         </button>
+                        {% if book.ebook_file %}
+                            <a href="{% url 'books:download_book' book.pk %}" class="btn-download">
+                                <i class="fas fa-download me-2"></i>
+                                Télécharger
+                            </a>
+                        {% endif %}
                     {% endif %}
                 </div>
             </div>
@@ -480,7 +502,6 @@
 <script src="{% static 'js/jquery.min.js' %}"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // Animation d'apparition des cartes
         const cards = document.querySelectorAll(".book-card");
         
         const observer = new IntersectionObserver((entries) => {
@@ -488,7 +509,7 @@
                 if (entry.isIntersecting) {
                     setTimeout(() => {
                         entry.target.classList.add("visible");
-                    }, index * 150); // décalage entre chaque carte
+                    }, index * 150);
                 }
             });
         }, {
@@ -498,44 +519,40 @@
 
         cards.forEach(card => observer.observe(card));
 
-        // Gestion des favoris avec jQuery
-        {% if user.is_authenticated %}
-            $(document).ready(function() {
-                $('.favorite-btn').click(function() {
-                    const bookId = $(this).data('book-id');
-                    const button = $(this);
-                    
-                    $.ajax({
-                        url: '{% url 'books:toggle_favorite' %}',
-                        method: 'POST',
-                        data: {
-                            book_id: bookId,
-                            csrfmiddlewaretoken: '{{ csrf_token }}'
-                        },
-                        success: function(response) {
-                            if (response.added) {
-                                button.find('.empty').css('opacity', '0');
-                                button.find('.filled').css('opacity', '1');
-                                button.find('.favorite-text').text('Retirer des favoris');
-                                button.attr('title', 'Retirer des favoris');
-                                button.attr('aria-label', 'Retirer des favoris');
-                            } else {
-                                button.find('.empty').css('opacity', '1');
-                                button.find('.filled').css('opacity', '0');
-                                button.find('.favorite-text').text('Ajouter aux favoris');
-                                button.attr('title', 'Ajouter aux favoris');
-                                button.attr('aria-label', 'Ajouter aux favoris');
-                            }
-                        },
-                        error: function() {
-                            alert('Erreur lors de la mise à jour des favoris.');
+        if (user.is_authenticated) {
+            $('.favorite-btn').click(function() {
+                const bookId = $(this).data('book-id');
+                const button = $(this);
+                
+                $.ajax({
+                    url: '{% url 'books:toggle_favorite' %}',
+                    method: 'POST',
+                    data: {
+                        book_id: bookId,
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    success: function(response) {
+                        if (response.added) {
+                            button.find('.empty').css('opacity', '0');
+                            button.find('.filled').css('opacity', '1');
+                            button.find('.favorite-text').text('Retirer des favoris');
+                            button.attr('title', 'Retirer des favoris');
+                            button.attr('aria-label', 'Retirer des favoris');
+                        } else {
+                            button.find('.empty').css('opacity', '1');
+                            button.find('.filled').css('opacity', '0');
+                            button.find('.favorite-text').text('Ajouter aux favoris');
+                            button.attr('title', 'Ajouter aux favoris');
+                            button.attr('aria-label', 'Ajouter aux favoris');
                         }
-                    });
+                    },
+                    error: function() {
+                        alert('Erreur lors de la mise à jour des favoris.');
+                    }
                 });
             });
-        {% endif %}
+        }
 
-        // Amélioration de l'accessibilité
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && e.target.classList.contains('favorite-btn')) {
                 e.target.click();

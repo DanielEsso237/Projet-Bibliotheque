@@ -7,10 +7,7 @@ class Book(models.Model):
     isbn = models.CharField(max_length=13, unique=True, blank=True, null=True)
     publication_date = models.DateField(blank=True, null=True)
     category = models.CharField(max_length=50, blank=True)
-    ebook_file = models.FileField(
-        upload_to='ebooks/',
-        validators=[FileExtensionValidator(allowed_extensions=['pdf'])],
-    )
+    ebook_file = models.FileField(upload_to='ebooks/', validators=[FileExtensionValidator(allowed_extensions=['pdf'])])
     cover_image = models.ImageField(upload_to='covers/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -24,42 +21,16 @@ class Book(models.Model):
         verbose_name_plural = "E-books"
 
 class Document(models.Model):
-    DOCUMENT_TYPES = [
-        ('exam', 'Épreuve'),
-        ('course', 'Support de cours'),
-        ('td', 'Fiche de TD'),
-        ('article', 'Article'),
-    ]
-    ACADEMIC_LEVELS = [
-        ('L1', 'Licence 1'),
-        ('L2', 'Licence 2'),
-        ('L3', 'Licence 3'),
-        ('M1', 'Master 1'),
-        ('M2', 'Master 2'),
-        ('D', 'Doctorat'),
-    ]
-    DEPARTMENTS = [
-        ('Chimie appliquée', 'Chimie appliquée'),
-        ('Géosciences', 'Géosciences'),
-        ('Physique appliquée', 'Physique appliquée'),
-        ('ROSE', 'ROSE'),
-        ('SBAA', 'SBAA'),
-        ('SBM', 'SBM'),
-        ('TBM', 'TBM'),
-        ('TIC', 'TIC'),
-    ]
+    DOCUMENT_TYPES = [('exam', 'Épreuve'), ('course', 'Support de cours'), ('td', 'Fiche de TD'), ('article', 'Article')]
+    ACADEMIC_LEVELS = [('L1', 'Licence 1'), ('L2', 'Licence 2'), ('L3', 'Licence 3'), ('M1', 'Master 1'), ('M2', 'Master 2'), ('D', 'Doctorat')]
+    DEPARTMENTS = [('Chimie appliquée', 'Chimie appliquée'), ('Géosciences', 'Géosciences'), ('Physique appliquée', 'Physique appliquée'), ('ROSE', 'ROSE'), ('SBAA', 'SBAA'), ('SBM', 'SBM'), ('TBM', 'TBM'), ('TIC', 'TIC')]
 
     title = models.CharField(max_length=200)
     author = models.CharField(max_length=100, blank=True)
     document_type = models.CharField(max_length=20, choices=DOCUMENT_TYPES)
     academic_level = models.CharField(max_length=10, choices=ACADEMIC_LEVELS)
-    department = models.CharField(max_length=50, choices=DEPARTMENTS, blank=True, null=True)  # Nouveau champ
-    file = models.FileField(
-        upload_to='documents/',
-        blank=True,
-        null=True,
-        validators=[FileExtensionValidator(allowed_extensions=['pdf'])]
-    )
+    department = models.CharField(max_length=50, choices=DEPARTMENTS, blank=True, null=True)
+    file = models.FileField(upload_to='documents/', blank=True, null=True, validators=[FileExtensionValidator(allowed_extensions=['pdf'])])
     cover_image = models.ImageField(upload_to='covers/', blank=True, null=True)
     is_available = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)

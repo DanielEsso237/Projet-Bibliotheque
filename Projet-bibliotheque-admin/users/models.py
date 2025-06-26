@@ -56,3 +56,16 @@ class UserFavorite(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.book.title}"
+
+class UserDownload(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='downloads')
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='downloaded_by')
+    downloaded_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        managed = True
+        unique_together = ('user', 'book')
+        db_table = 'books_user_download'
+
+    def __str__(self):
+        return f"{self.user.username} - {self.book.title}"

@@ -30,5 +30,6 @@ urlpatterns = [
     path('epreuves/', views.epreuves_view, name='epreuves'),
     path('documents/', views.documents_view, name='documents'),
     path('document-details/<int:pk>/', views.document_detail_view, name='document_detail'),
-    path('home/', views.home, name='home'),  
+    path('download/<int:pk>/', views.download_book, name='download_book'),
+    path('home/', views.home, name='home'),
 ]

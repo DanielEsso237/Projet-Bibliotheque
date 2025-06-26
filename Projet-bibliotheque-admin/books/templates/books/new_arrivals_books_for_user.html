@@ -4,7 +4,6 @@
 
 {% block extra_css %}
 <style>
-    /* Styles pour les cartes de livres */
     .book-card {
         background: var(--card-bg);
         border: 1px solid var(--card-border);
@@ -45,7 +44,6 @@
         transform: scale(1.05);
     }
 
-    /* Style pour le placeholder par défaut */
     .default-cover {
         background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-yellow) 100%);
         display: flex;
@@ -86,7 +84,6 @@
         filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
     }
 
-    /* Badge "Nouveau" pour les nouveautés */
     .new-badge {
         position: absolute;
         top: 15px;
@@ -155,10 +152,9 @@
 
     .card-actions {
         display: flex;
-        justify-content: space-between;
-        align-items: center;
+        flex-direction: column;
+        gap: 0.75rem;
         margin-top: 1.5rem;
-        gap: 1rem;
     }
 
     .btn-primary {
@@ -168,7 +164,6 @@
         background: var(--btn-primary-bg);
         border: 1px solid var(--primary-blue);
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        
     }
 
     .btn-primary:hover {
@@ -177,7 +172,6 @@
         box-shadow: 0 4px 12px var(--glow-color);
     }
 
-    /* Style pour le bouton favoris */
     .favorite-btn {
         display: flex;
         align-items: center;
@@ -192,7 +186,6 @@
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         text-decoration: none;
         font-size: 0.875rem;
-        
         box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
     }
 
@@ -221,7 +214,27 @@
         font-weight: 600;
     }
 
-    /* Grille pour les cartes */
+    .btn-download {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.5rem 1rem;
+        font-size: 0.95rem;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #10b981, #047857);
+        border: 1px solid #047857;
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .btn-download:hover {
+        background: linear-gradient(135deg, #059669, #034e3d);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+    }
+
     .books-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -229,7 +242,6 @@
         margin-top: 2rem;
     }
 
-    /* Message pour aucune nouveauté */
     .no-new-books-message {
         text-align: center;
         padding: 4rem 2rem;
@@ -255,7 +267,6 @@
         margin: 0 auto;
     }
 
-    /* Responsive Design */
     @media (max-width: 768px) {
         .books-grid {
             grid-template-columns: 1fr;
@@ -268,7 +279,8 @@
         }
 
         .btn-primary,
-        .favorite-btn {
+        .favorite-btn,
+        .btn-download {
             width: 100%;
             justify-content: center;
             padding: 0.75rem;
@@ -328,19 +340,6 @@
                           <i class="fas fa-tablet-alt me-2"></i>
                           <strong>Type:</strong>{% if book.is_physical %} Livre physique {% else %} E-book  {% endif %}
                        </p>
-                        
-                        {% if book.is_available %}
-                            <div class="availability-badge available">
-                                <i class="fas fa-check-circle"></i>
-                                <span>Disponible</span>
-                            </div>
-                        {% else %}
-                            <div class="availability-badge unavailable">
-                                <i class="fas fa-times-circle"></i>
-                                <span>Non disponible</span>
-                            </div>
-                        {% endif %}
-                        
                         <div class="card-actions">
                             <a href="{% url 'books:book_detail' book.pk %}" class="btn btn-primary">
                                 <i class="fas fa-eye me-2"></i>
@@ -360,6 +359,12 @@
                                 </svg>
                                 <span class="favorite-text">Ajouter aux favoris</span>
                             </button>
+                            {% if book.ebook_file %}
+                                <a href="{% url 'books:download_book' book.pk %}" class="btn-download">
+                                    <i class="fas fa-download me-2"></i>
+                                    Télécharger
+                                </a>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -379,7 +384,6 @@
 <script src="{% static 'js/jquery.min.js' %}"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // Animation d'apparition des cartes
         const cards = document.querySelectorAll(".book-card");
         
         const observer = new IntersectionObserver((entries) => {
@@ -387,7 +391,7 @@
                 if (entry.isIntersecting) {
                     setTimeout(() => {
                         entry.target.classList.add("visible");
-                    }, index * 150); // décalage entre chaque carte
+                    }, index * 150);
                 }
             });
         }, {
@@ -397,7 +401,6 @@
 
         cards.forEach(card => observer.observe(card));
 
-        // Gestion des favoris avec jQuery
         $(document).ready(function() {
             $('.favorite-btn').click(function() {
                 const bookId = $(this).data('book-id');
@@ -432,7 +435,6 @@
             });
         });
 
-        // Amélioration de l'accessibilité
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && e.target.classList.contains('favorite-btn')) {
                 e.target.click();
