@@ -37,7 +37,8 @@ def standard_user_dashboard(request):
         return redirect('books:librarian_dashboard')
     favorites_count = request.user.favorites.count()
     downloads_count = request.user.downloads.count()
-    return render(request, 'books/standard_user_dashboard.html', {'loans_count': 0, 'notifications_count': 0, 'favorites_count': favorites_count, 'downloads_count': downloads_count})
+    academic_levels = Document.ACADEMIC_LEVELS
+    return render(request, 'books/standard_user_dashboard.html', {'loans_count': 0, 'notifications_count': 0, 'favorites_count': favorites_count, 'downloads_count': downloads_count, 'academic_levels': academic_levels})
 
 def stats_api(request):
     total_books = Book.objects.count()
@@ -210,11 +211,13 @@ def search_view(request):
     page_number = request.GET.get('page')
     books_page = paginator.get_page(page_number)
     favorite_ids = UserFavorite.objects.filter(user=request.user).values_list('book_id', flat=True)
+    academic_levels = Document.ACADEMIC_LEVELS
     context = {
         'books': books_page,
         'query': query,
         'categories': Book.objects.values_list('category', flat=True).distinct(),
-        'favorite_ids': list(favorite_ids)
+        'favorite_ids': list(favorite_ids),
+        'academic_levels': academic_levels
     }
     return render(request, 'books/search_books_for_standard_users.html', context)
 
@@ -222,7 +225,8 @@ def search_view(request):
 def book_detail_view(request, pk):
     book = get_object_or_404(Book, pk=pk)
     favorite_ids = UserFavorite.objects.filter(user=request.user).values_list('book_id', flat=True)
-    context = {'book': book, 'favorite_ids': list(favorite_ids)}
+    academic_levels = Document.ACADEMIC_LEVELS
+    context = {'book': book, 'favorite_ids': list(favorite_ids), 'academic_levels': academic_levels}
     return render(request, 'books/book_detail.html', context)
 
 @login_required
@@ -232,12 +236,13 @@ def new_arrivals_view(request):
     page_number = request.GET.get('page')
     recent_books_page = paginator.get_page(page_number)
     favorite_ids = UserFavorite.objects.filter(user=request.user).values_list('book_id', flat=True)
-    context = {'recent_books': recent_books_page, 'favorite_ids': list(favorite_ids)}
+    academic_levels = Document.ACADEMIC_LEVELS
+    context = {'recent_books': recent_books_page, 'favorite_ids': list(favorite_ids), 'academic_levels': academic_levels}
     return render(request, 'books/new_arrivals_books_for_user.html', context)
 
 @login_required
 def epreuves_view(request):
-    levels = [level[0] for level in Document.ACADEMIC_LEVELS]
+    levels = [level for level in Document.ACADEMIC_LEVELS]
     selected_level = request.GET.get('level', '')
     epreuves = Document.objects.filter(document_type='exam')
     if selected_level:
@@ -245,26 +250,40 @@ def epreuves_view(request):
     paginator = Paginator(epreuves, 9)
     page_number = request.GET.get('page')
     epreuves_page = paginator.get_page(page_number)
-    context = {'epreuves': epreuves_page, 'levels': levels}
+    favorite_ids = UserFavorite.objects.filter(user=request.user).values_list('book_id', flat=True)
+    academic_levels = Document.ACADEMIC_LEVELS
+    context = {'epreuves': epreuves_page, 'levels': levels, 'favorite_ids': list(favorite_ids), 'academic_levels': academic_levels}
     return render(request, 'books/epreuves_liste.html', context)
 
 @login_required
 def documents_view(request):
     document_types = Document.DOCUMENT_TYPES
+    academic_levels = Document.ACADEMIC_LEVELS
     selected_type = request.GET.get('type', '')
+    selected_level = request.GET.get('level', '')
     documents = Document.objects.all()
     if selected_type:
         documents = documents.filter(document_type=selected_type)
+    if selected_level:
+        documents = documents.filter(academic_level=selected_level)
     paginator = Paginator(documents, 9)
     page_number = request.GET.get('page')
     documents_page = paginator.get_page(page_number)
-    context = {'documents': documents_page, 'document_types': document_types}
+    favorite_ids = UserFavorite.objects.filter(user=request.user).values_list('book_id', flat=True)
+    context = {
+        'documents': documents_page,
+        'document_types': document_types,
+        'academic_levels': academic_levels,
+        'favorite_ids': list(favorite_ids)
+    }
     return render(request, 'books/documents_list.html', context)
 
 @login_required
 def document_detail_view(request, pk):
     document = get_object_or_404(Document, pk=pk)
-    context = {'document': document}
+    favorite_ids = UserFavorite.objects.filter(user=request.user).values_list('book_id', flat=True)
+    academic_levels = Document.ACADEMIC_LEVELS
+    context = {'document': document, 'favorite_ids': list(favorite_ids), 'academic_levels': academic_levels}
     return render(request, 'books/document_detail.html', context)
 
 @login_required
@@ -273,7 +292,8 @@ def favorites_view(request):
     paginator = Paginator(favorite_books, 9)
     page_number = request.GET.get('page')
     favorite_books_page = paginator.get_page(page_number)
-    context = {'favorite_books': favorite_books_page, 'message': 'Aucun livre en favoris.' if not favorite_books else ''}
+    academic_levels = Document.ACADEMIC_LEVELS
+    context = {'favorite_books': favorite_books_page, 'message': 'Aucun livre en favoris.' if not favorite_books else '', 'academic_levels': academic_levels}
     return render(request, 'books/favorites_books_for_users.html', context)
 
 @require_POST
@@ -282,7 +302,7 @@ def toggle_favorite(request):
     book_id = request.POST.get('book_id')
     if not book_id:
         return JsonResponse({'error': 'No book_id provided'}, status=400)
-    book = get_object_or_404(Book, id=book_id)
+    book = get_object_or_404(Document, id=book_id)
     favorite, created = UserFavorite.objects.get_or_create(user=request.user, book=book)
     if not created:
         favorite.delete()
@@ -306,11 +326,28 @@ def download_book(request, pk):
         return response
 
 @login_required
+def download_document(request, pk):
+    document = get_object_or_404(Document, pk=pk)
+    if not document.file or not document.file.name.endswith('.pdf'):
+        raise Http404("Ce document n'est pas disponible pour consultation ou téléchargement.")
+    action = request.GET.get('action', 'download')
+    UserDownload.objects.get_or_create(user=request.user, book=document)
+    if action == 'view':
+        response = FileResponse(open(document.file.path, 'rb'), as_attachment=False)
+        response['Content-Type'] = 'application/pdf'
+        response['Content-Disposition'] = 'inline; filename="{}"'.format(document.file.name)
+        return response
+    else:
+        response = FileResponse(open(document.file.path, 'rb'), as_attachment=True, filename=document.file.name)
+        return response
+
+@login_required
 def home(request):
     if not request.user.is_authenticated or request.user.user_type not in ["STUDENT", "PROFESSOR"]:
         messages.error(request, "Accès réservé aux utilisateurs standard.")
         return redirect('users:login')
-    return redirect('books:standard_user_dashboard')
+    academic_levels = Document.ACADEMIC_LEVELS
+    return render(request, 'books/standard_user_dashboard.html', {'academic_levels': academic_levels})
 
 @login_required
 def recommendations_view(request):
@@ -319,7 +356,8 @@ def recommendations_view(request):
     page_number = request.GET.get('page')
     recommended_books_page = paginator.get_page(page_number)
     favorite_ids = UserFavorite.objects.filter(user=request.user).values_list('book_id', flat=True)
-    context = {'recommended_books': recommended_books_page, 'favorite_ids': list(favorite_ids)}
+    academic_levels = Document.ACADEMIC_LEVELS
+    context = {'recommended_books': recommended_books_page, 'favorite_ids': list(favorite_ids), 'academic_levels': academic_levels}
     return render(request, 'books/recommendations_for_users.html', context)
 
 @login_required

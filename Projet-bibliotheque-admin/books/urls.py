@@ -31,6 +31,7 @@ urlpatterns = [
     path('documents/', views.documents_view, name='documents'),
     path('document-details/<int:pk>/', views.document_detail_view, name='document_detail'),
     path('download/<int:pk>/', views.download_book, name='download_book'),
+        path('download-document/<int:pk>/', views.download_document, name='download_document'),
     path('home/', views.home, name='home'),
     path('recommendations/', views.recommendations_view, name='recommendations'),
     path('check-favorite-status/', views.check_favorite_status, name='check_favorite_status'),
