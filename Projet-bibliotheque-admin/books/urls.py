@@ -33,4 +33,5 @@ urlpatterns = [
     path('download/<int:pk>/', views.download_book, name='download_book'),
     path('home/', views.home, name='home'),
     path('recommendations/', views.recommendations_view, name='recommendations'),
+    path('check-favorite-status/', views.check_favorite_status, name='check_favorite_status'),
 ]

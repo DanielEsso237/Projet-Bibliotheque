@@ -20,7 +20,7 @@
             --dark-blue: #1d4ed8;
             --dark-yellow: #f59e0b;
 
-            /* Mode clair - Gradient blanc-bleu */
+            
             --primary-gradient: linear-gradient(135deg, var(--primary-white) 0%, var(--primary-blue) 100%);
             --secondary-gradient: linear-gradient(135deg, var(--primary-white) 0%, var(--light-blue) 100%);
             --bg-color: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
@@ -352,7 +352,7 @@
         <div class="container">
             <a class="navbar-brand" href="{% url 'books:librarian_dashboard' %}">
                 <i class="fas fa-book-open me-2"></i>
-                Bibliothèque Moderne
+                Bibliotech Academique
             </a>
             
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -373,7 +373,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'books:choose_document_type' %}">
+                            <a class="nav-link" href="{% url 'books:select_document_category' %}">
                                 <i class="fas fa-plus-circle me-1"></i> Ajouter Document
                             </a>
                         </li>
@@ -409,7 +409,7 @@
                     <li class="nav-item me-2">
                         <button class="btn theme-toggle" id="themeToggle" title="Basculer le thème">
                             <i class="fas fa-moon me-1"></i>
-                            <span>Sombre</span>
+                            
                         </button>
                     </li>
                     {% if user.is_authenticated %}
@@ -592,7 +592,7 @@
             if (localStorage.getItem('theme') === 'dark') {
                 body.classList.add('dark-mode');
                 icon.classList.replace('fa-moon', 'fa-sun');
-                toggleText.textContent = 'Clair';
+                
             }
 
             toggle.addEventListener('click', () => {
@@ -600,7 +600,7 @@
                 if (body.classList.contains('dark-mode')) {
                     localStorage.setItem('theme', 'dark');
                     icon.classList.replace('fa-moon', 'fa-sun');
-                    toggleText.textContent = 'Clair';
+                    
                 } else {
                     localStorage.setItem('theme', 'light');
                     icon.classList.replace('fa-sun', 'fa-moon');

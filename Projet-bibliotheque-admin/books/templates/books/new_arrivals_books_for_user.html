@@ -401,17 +401,50 @@
 
         cards.forEach(card => observer.observe(card));
 
-        $(document).ready(function() {
+        const isAuthenticated = {{ user.is_authenticated|lower }};
+
+        if (isAuthenticated) {
+            // Requête initiale pour vérifier les favoris
+            $.ajax({
+                url: '{% url "books:check_favorite_status" %}', // Nouvelle vue à créer
+                method: 'GET',
+                data: { book_ids: $('.favorite-btn').map((i, el) => $(el).data('book-id')).get() },
+                success: function(response) {
+                    $('.favorite-btn').each(function() {
+                        const bookId = $(this).data('book-id');
+                        const isFavorite = response.favorites.includes(bookId.toString());
+                        const button = $(this);
+                        if (isFavorite) {
+                            button.find('.empty').css('opacity', '0');
+                            button.find('.filled').css('opacity', '1');
+                            button.find('.favorite-text').text('Retirer des favoris');
+                            button.attr('title', 'Retirer des favoris');
+                            button.attr('aria-label', 'Retirer des favoris');
+                        } else {
+                            button.find('.empty').css('opacity', '1');
+                            button.find('.filled').css('opacity', '0');
+                            button.find('.favorite-text').text('Ajouter aux favoris');
+                            button.attr('title', 'Ajouter aux favoris');
+                            button.attr('aria-label', 'Ajouter aux favoris');
+                        }
+                    });
+                },
+                error: function() {
+                    console.log('Erreur lors de la vérification des favoris.');
+                }
+            });
+
             $('.favorite-btn').click(function() {
                 const bookId = $(this).data('book-id');
                 const button = $(this);
-                
+                const csrfToken = $('input[name=csrfmiddlewaretoken]').val();
+
                 $.ajax({
                     url: '{% url 'books:toggle_favorite' %}',
                     method: 'POST',
                     data: {
                         book_id: bookId,
-                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                        csrfmiddlewaretoken: csrfToken
                     },
                     success: function(response) {
                         if (response.added) {
@@ -433,7 +466,7 @@
                     }
                 });
             });
-        });
+        }
 
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && e.target.classList.contains('favorite-btn')) {

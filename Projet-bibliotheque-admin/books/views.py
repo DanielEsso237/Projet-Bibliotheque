@@ -196,19 +196,25 @@ def book_api(request, book_id):
     data = {'title': book.title, 'author': book.author, 'cover_image': book.cover_image.url if book.cover_image else None, 'ebook_file': book.ebook_file.url if book.ebook_file else None}
     return JsonResponse(data)
 
+@login_required
 def search_view(request):
     query = request.GET.get('q', '')
     category = request.GET.get('category', '')
-    available = request.GET.get('available', False)
     books = Book.objects.all()
+
     if query:
-        books = books.filter(Q(title__icontains=query) | Q(author__icontains=query))
+        books = books.filter(title__icontains=query) | books.filter(author__icontains=query)
     if category:
         books = books.filter(category=category)
-    if available:
-        books = books.filter(is_available=True)
-    categories = Book.objects.values_list('category', flat=True).distinct()
-    context = {'books': books, 'categories': categories, 'query': query}
+
+    
+    favorite_ids = UserFavorite.objects.filter(user=request.user).values_list('book_id', flat=True)
+    context = {
+        'books': books,
+        'query': query,
+        'categories': Book.objects.values_list('category', flat=True).distinct(),
+        'favorite_ids': list(favorite_ids)  # Passer les IDs des favoris
+    }
     return render(request, 'books/search_books_for_standard_users.html', context)
 
 def book_detail_view(request, pk):
@@ -258,6 +264,8 @@ def favorites_view(request):
 @login_required
 def toggle_favorite(request):
     book_id = request.POST.get('book_id')
+    if not book_id:
+        return JsonResponse({'error': 'No book_id provided'}, status=400)
     book = get_object_or_404(Book, id=book_id)
     favorite, created = UserFavorite.objects.get_or_create(user=request.user, book=book)
     if not created:
@@ -287,3 +295,12 @@ def recommendations_view(request):
     recommended_books = Book.objects.order_by('-created_at')[:10]
     context = {'recommended_books': recommended_books}
     return render(request, 'books/recommendations_for_users.html', context)
+
+@login_required
+def check_favorite_status(request):
+    book_ids = request.GET.getlist('book_ids')
+    if not book_ids:
+        return JsonResponse({'favorites': []})
+    
+    user_favorites = UserFavorite.objects.filter(user=request.user, book_id__in=book_ids).values_list('book_id', flat=True)
+    return JsonResponse({'favorites': list(user_favorites)})

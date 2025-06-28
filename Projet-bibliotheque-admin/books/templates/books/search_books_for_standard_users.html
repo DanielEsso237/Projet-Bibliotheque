@@ -386,115 +386,104 @@
 </style>
 {% endblock %}
 
+
 {% block content %}
-<div class="search-container">
-    <h2 class="search-title">
+<div class="container my-4">
+    <h2 class="text-center mb-4">
         <i class="fas fa-search me-3"></i>
-        Recherche de livres
+        Rechercher un e-book
     </h2>
-    
-    <form method="get" class="search-form">
-        <div class="row g-3">
-            <div class="col-md-6">
-                <label for="search-query" class="form-label">Titre ou auteur</label>
-                <input type="text" id="search-query" name="q" class="form-control" 
-                       placeholder="Entrez le titre ou l'auteur..." value="{{ query }}">
-            </div>
-            <div class="col-md-3">
-                <label for="category-select" class="form-label">Catégorie</label>
-                <select name="category" id="category-select" class="form-select">
-                    <option value="">Toutes les catégories</option>
-                    {% for category in categories %}
-                        <option value="{{ category }}" {% if category == request.GET.category %}selected{% endif %}>
-                            {{ category }}
-                        </option>
-                    {% endfor %}
-                </select>
-            </div>
-        </div>
-        <div class="row mt-4">
-            <div class="col-12">
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-search me-2"></i>
-                    Rechercher
-                </button>
-            </div>
+    <form method="get" class="search-form mb-4">
+        <div class="input-group">
+            <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Rechercher par titre ou auteur...">
+            <select name="category" class="form-select">
+                <option value="">Toutes les catégories</option>
+                {% for cat in categories %}
+                    <option value="{{ cat }}" {% if cat == category %}selected{% endif %}>{{ cat }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-search"></i>
+            </button>
         </div>
     </form>
-</div>
 
-<div class="books-grid">
-    {% for book in books %}
-        <div class="book-card">
-            <div class="book-cover-container">
-                {% if book.cover_image %}
-                    <img src="{{ book.cover_image.url }}" alt="{{ book.title }}">
-                {% else %}
-                    <div class="default-cover">
-                        <div>
-                            <i class="fas fa-book"></i>
-                            <div>{{ book.title|truncatechars:50 }}</div>
+    {% if books %}
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {% for book in books %}
+                <div class="book-card">
+                    <div class="book-cover-container">
+                        {% if book.cover_image %}
+                            <img src="{{ book.cover_image.url }}" alt="{{ book.title }}">
+                        {% else %}
+                            <div class="default-cover">
+                                <div>
+                                    <i class="fas fa-book"></i>
+                                    <div>{{ book.title|truncatechars:50 }}</div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="card-body">
+                        <h5 class="card-title">{{ book.title }}</h5>
+                        <p class="card-text">
+                            <i class="fas fa-user me-2"></i>
+                            <strong>Auteur:</strong> {{ book.author }}
+                        </p>
+                        <p class="card-text">
+                            <i class="fas fa-tag me-2"></i>
+                            <strong>Catégorie:</strong> {{ book.category }}
+                        </p>
+                        <p class="card-text">
+                            <i class="fas fa-tablet-alt me-2"></i>
+                            <strong>Type:</strong>{% if book.is_physical %} Livre physique {% else %} E-book {% endif %}
+                        </p>
+
+                        <div class="card-actions">
+                            <a href="{% url 'books:book_detail' book.pk %}" class="btn btn-primary">
+                                <i class="fas fa-eye me-2"></i>
+                                Voir détails
+                            </a>
+                            {% if user.is_authenticated %}
+                                <button class="favorite-btn" data-book-id="{{ book.id }}" 
+                                        title="{% if book.id in favorite_ids %}Retirer des favoris{% else %}Ajouter aux favoris{% endif %}" 
+                                        aria-label="{% if book.id in favorite_ids %}Retirer des favoris{% else %}Ajouter aux favoris{% endif %}">
+                                    <svg class="empty" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" 
+                                         {% if book.id in favorite_ids %}style="opacity: 0;"{% else %}style="opacity: 1;"{% endif %}>
+                                        <path fill="none" d="M0 0h24v24H0z"/>
+                                        <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                                    </svg>
+                                    <svg class="filled" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" 
+                                         {% if book.id in favorite_ids %}style="opacity: 1;"{% else %}style="opacity: 0;"{% endif %}>
+                                        <path fill="none" d="M0 0h24v24H0z"/>
+                                        <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" fill="#ffca28"/>
+                                    </svg>
+                                    <span class="favorite-text">
+                                        {% if book.id in favorite_ids %}Retirer des favoris{% else %}Ajouter aux favoris{% endif %}
+                                    </span>
+                                </button>
+                                {% if book.ebook_file %}
+                                    <a href="{% url 'books:download_book' book.pk %}" class="btn-download">
+                                        <i class="fas fa-download me-2"></i>
+                                        Télécharger
+                                    </a>
+                                {% endif %}
+                            {% endif %}
                         </div>
                     </div>
-                {% endif %}
-            </div>
-            
-            <div class="card-body">
-                <h5 class="card-title">{{ book.title }}</h5>
-                <p class="card-text">
-                    <i class="fas fa-user me-2"></i>
-                    <strong>Auteur:</strong> {{ book.author }}
-                </p>
-                <p class="card-text">
-                    <i class="fas fa-tag me-2"></i>
-                    <strong>Catégorie:</strong> {{ book.category }}
-                </p>
-                <p class="card-text">
-                    <i class="fas fa-tablet-alt me-2"></i>
-                    <strong>Type:</strong>{% if book.is_physical %} Livre physique {% else %} E-book {% endif %}
-                </p>
-
-                <div class="card-actions">
-                    <a href="{% url 'books:book_detail' book.pk %}" class="btn btn-primary">
-                        <i class="fas fa-eye me-2"></i>
-                        Voir détails
-                    </a>
-                    {% if user.is_authenticated %}
-                        <button class="favorite-btn" data-book-id="{{ book.id }}" 
-                                title="Ajouter aux favoris" aria-label="Ajouter aux favoris">
-                            <svg class="empty" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" 
-                                 {% if book in user.favorites.all %}style="opacity: 0;"{% else %}style="opacity: 1;"{% endif %}>
-                                <path fill="none" d="M0 0h24v24H0z"/>
-                                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-                            </svg>
-                            <svg class="filled" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" 
-                                 {% if book in user.favorites.all %}style="opacity: 1;"{% else %}style="opacity: 0;"{% endif %}>
-                                <path fill="none" d="M0 0h24v24H0z"/>
-                                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" fill="#ffca28"/>
-                            </svg>
-                            <span class="favorite-text">
-                                {% if book in user.favorites.all %}Retirer des favoris{% else %}Ajouter aux favoris{% endif %}
-                            </span>
-                        </button>
-                        {% if book.ebook_file %}
-                            <a href="{% url 'books:download_book' book.pk %}" class="btn-download">
-                                <i class="fas fa-download me-2"></i>
-                                Télécharger
-                            </a>
-                        {% endif %}
-                    {% endif %}
                 </div>
-            </div>
+            {% empty %}
+                <div class="col-12">
+                    <div class="no-books-message">
+                        <i class="fas fa-search"></i>
+                        <h3>Aucun livre trouvé</h3>
+                        <p>Essayez de modifier vos critères de recherche ou explorez notre catalogue complet.</p>
+                    </div>
+                </div>
+            {% endfor %}
         </div>
-    {% empty %}
-        <div class="col-12">
-            <div class="no-books-message">
-                <i class="fas fa-search"></i>
-                <h3>Aucun livre trouvé</h3>
-                <p>Essayez de modifier vos critères de recherche ou explorez notre catalogue complet.</p>
-            </div>
-        </div>
-    {% endfor %}
+    {% endif %}
 </div>
 {% endblock %}
 
@@ -519,17 +508,18 @@
 
         cards.forEach(card => observer.observe(card));
 
-        if (user.is_authenticated) {
+        if ({{ user.is_authenticated|lower }}) {
             $('.favorite-btn').click(function() {
                 const bookId = $(this).data('book-id');
                 const button = $(this);
-                
+                const csrfToken = $('input[name=csrfmiddlewaretoken]').val();
+
                 $.ajax({
                     url: '{% url 'books:toggle_favorite' %}',
                     method: 'POST',
                     data: {
                         book_id: bookId,
-                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                        csrfmiddlewaretoken: csrfToken
                     },
                     success: function(response) {
                         if (response.added) {
@@ -546,7 +536,8 @@
                             button.attr('aria-label', 'Ajouter aux favoris');
                         }
                     },
-                    error: function() {
+                    error: function(xhr, status, error) {
+                        console.log('Erreur AJAX:', error, xhr.responseText);
                         alert('Erreur lors de la mise à jour des favoris.');
                     }
                 });

@@ -10871,3 +10871,647 @@ C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\books
 C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\books\views.py changed, reloading.
 Watching for file changes with StatReloader
 Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+User logged in: esso.daniel001, first_login=False
+Not Found: /favicon.ico
+Watching for file changes with StatReloader
+Not Found: /favicon.ico
+User logged in: admin_biblio, first_login=False
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\books\models.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\users\forms.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\books\views.py changed, reloading.
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+Not Found: /favicon.ico
+User logged in: admin_biblio, first_login=False
+Notification count: total=6
+Not Found: /favicon.ico
+Login failed for username=admin_biblio, errors=<ul class="errorlist"><li>__all__<ul class="errorlist nonfield"><li>Saisissez un nom d’utilisateur et un mot de passe valides. Remarquez que chacun de ces champs est sensible à la casse (différenciation des majuscules/minuscules).</li></ul></li></ul>, data=<QueryDict: {'csrfmiddlewaretoken': ['zFtDmpGdtt0loI4qSkbE4NEiqdXufBprokCwlDcCBuNsUQlgGwvGlBFU96P9gICh'], 'username': ['admin_biblio'], 'password': ['admin_biblio']}>
+User logged in: admin_biblio, first_login=False
+Notification count: total=6
+User logged in: admin_biblio, first_login=False
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Login failed for username=esso.daniel001, errors=<ul class="errorlist"><li>__all__<ul class="errorlist nonfield"><li>Saisissez un nom d’utilisateur et un mot de passe valides. Remarquez que chacun de ces champs est sensible à la casse (différenciation des majuscules/minuscules).</li></ul></li></ul>, data=<QueryDict: {'csrfmiddlewaretoken': ['Y7VBLpD1h6i6BaoZpUwBXHPUsLowQsdv0BqDlzu94dzbZnsTsmtYcqHDm6XO8CMt'], 'username': ['esso.daniel001'], 'password': ['05juin2006']}>
+Login failed for username=esso.daniel001, errors=<ul class="errorlist"><li>__all__<ul class="errorlist nonfield"><li>Saisissez un nom d’utilisateur et un mot de passe valides. Remarquez que chacun de ces champs est sensible à la casse (différenciation des majuscules/minuscules).</li></ul></li></ul>, data=<QueryDict: {'csrfmiddlewaretoken': ['FBkcxBHhsWoAf4nGxNeNKq1G6i34BKwcH5Pe7Lypf3FFDhrAAfbaZ9Tp0DCmTU5a'], 'username': ['esso.daniel001'], 'password': ['05juin2006']}>
+Login failed for username=esso.daniel001, errors=<ul class="errorlist"><li>__all__<ul class="errorlist nonfield"><li>Saisissez un nom d’utilisateur et un mot de passe valides. Remarquez que chacun de ces champs est sensible à la casse (différenciation des majuscules/minuscules).</li></ul></li></ul>, data=<QueryDict: {'csrfmiddlewaretoken': ['14uxm44C2RPohCOm7YCATIbrLsemVKwZ3yZzWeVKPY6tFPSgaqzX8r3aFNNEdU5X'], 'username': ['esso.daniel001'], 'password': ['05juiN2006']}>
+Login failed for username=esso.daniel001, errors=<ul class="errorlist"><li>__all__<ul class="errorlist nonfield"><li>Saisissez un nom d’utilisateur et un mot de passe valides. Remarquez que chacun de ces champs est sensible à la casse (différenciation des majuscules/minuscules).</li></ul></li></ul>, data=<QueryDict: {'csrfmiddlewaretoken': ['yETk8pbHwP1zUJ0gBqHoU3o1WC4YP3yJz0L25ACLjzq190BwH8JpgaeyebQOnV7T'], 'username': ['esso.daniel001'], 'password': ['05juin2006']}>
+User logged in: admin_biblio, first_login=False
+Notification count: total=6
+Notification count: total=6
+User logged in: ntima.merveille001, first_login=False
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=8
+Notification count: total=8
+Notification count: total=8
+Notification count: total=8
+Notification count: total=8
+Notification count: total=8
+Notification count: total=8
+Notification count: total=8
+Notification count: total=8
+Notification count: total=8
+Notification count: total=8
+Notification count: total=8
+Notification count: total=8
+Notification count: total=8
+Notification count: total=8
+Notification count: total=8
+Notification count: total=8
+Notification count: total=8
+Notification count: total=8
+Notification count: total=8
+Notification count: total=8
+Notification count: total=8
+Notification count: total=8
+Notification count: total=8
+Notification count: total=8
+Notification count: total=8
+Notification count: total=8
+Notification count: total=8
+Notification count: total=8
+Notification count: total=9
+User logged in: admin_biblio, first_login=False
+Notification count: total=9
+Notification count: total=9
+User logged in: akoumba.marylin001, first_login=False
+User logged in: admin_biblio, first_login=False
+Notification count: total=9
+Notification count: total=10
+Notification count: total=11
+Notification count: total=12
+Notification count: total=13
+Notification count: total=14
+Notification count: total=14
+Notification count: total=14
+Notification count: total=14
+Notification count: total=14
+Notification count: total=14
+Notification count: total=14
+Notification count: total=14
+Notification count: total=14
+Notification count: total=14
+Notification count: total=14
+Notification count: total=14
+Notification count: total=14
+Notification count: total=14
+Notification count: total=14
+Notification count: total=14
+Notification count: total=14
+Notification count: total=14
+Notification count: total=14
+Notification count: total=14
+Notification count: total=14
+Notification count: total=14
+Notification count: total=14
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+Notification count: total=14
+Notification count: total=14
+Notification count: total=14
+Notification count: total=14
+Notification count: total=14
+Notification count: total=14
+Notification count: total=14
+User logged in: akoumba.marylin001, first_login=False
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+User logged in: admin_biblio, first_login=False
+Notification count: total=14
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+Notification count: total=14
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+Notification count: total=14
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+Notification count: total=14
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+User logged in: admin_biblio, first_login=False
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+Notification count: total=14
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+Notification count: total=14
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+Notification count: total=15
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+Notification count: total=15
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+Notification count: total=15
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+Notification count: total=15
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+Notification count: total=16
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+Notification count: total=17
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+Notification count: total=17
+Internal Server Error: /statistics/
+Traceback (most recent call last):
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader_tags.py", line 134, in render
+    compiled_parent = self.get_parent(context)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader_tags.py", line 131, in get_parent
+    return self.find_template(parent, context)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader_tags.py", line 109, in find_template
+    template, origin = context.template.engine.find_template(
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        template_name,
+        ^^^^^^^^^^^^^^
+        skip=history,
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\engine.py", line 163, in find_template
+    raise TemplateDoesNotExist(name, tried=tried)
+django.template.exceptions.TemplateDoesNotExist: books/base.html
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\library_stats\views.py", line 58, in statistics
+    return render(request, 'library_stats/statistics.html', context)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\backends\django.py", line 109, in render
+    reraise(exc, self.backend)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\backends\django.py", line 130, in reraise
+    raise new from exc
+django.template.exceptions.TemplateDoesNotExist: books/base.html
+Notification count: total=17
+Notification count: total=17
+Notification count: total=17
+Notification count: total=17
+Notification count: total=17
+Notification count: total=17
+Internal Server Error: /books/librarian-dashboard/
+Traceback (most recent call last):
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\books\views.py", line 30, in librarian_dashboard
+    return render(request, 'books/librarian_dashboard.html', {'books': books, 'document_types': document_types, 'academic_levels': academic_levels})
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\urls\base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\urls\resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'choose-type' not found. 'choose-type' is not a valid view function or pattern name.
+Notification count: total=17
+Notification count: total=17
+Notification count: total=17
+Notification count: total=17
+Notification count: total=17
+Notification count: total=17
+Notification count: total=17
+Notification count: total=17
+Notification count: total=17
+Notification count: total=17
+Notification count: total=17
+Notification count: total=17
+Notification count: total=17
+Notification count: total=17
+Notification count: total=17
+Notification count: total=17
+Notification count: total=17
+Notification count: total=17
+Notification count: total=17
+Notification count: total=17
+Notification count: total=17
+Notification count: total=17
+Notification count: total=17
+Notification count: total=17
+Notification count: total=17
+Notification count: total=17
+Total des notifications affichées: 17
+Notification count: total=17
+Tentative de suppression de toutes les notifications par l'utilisateur admin_biblio
+17 notifications supprimées
+Notification count: total=0
+Tentative de marquage de toutes les notifications comme lues par l'utilisateur admin_biblio
+0 notifications marquées comme lues
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+Notification count: total=0
+Notification count: total=0
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+Notification count: total=0
+Internal Server Error: /statistics/
+Traceback (most recent call last):
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader_tags.py", line 134, in render
+    compiled_parent = self.get_parent(context)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader_tags.py", line 131, in get_parent
+    return self.find_template(parent, context)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader_tags.py", line 109, in find_template
+    template, origin = context.template.engine.find_template(
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        template_name,
+        ^^^^^^^^^^^^^^
+        skip=history,
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\engine.py", line 163, in find_template
+    raise TemplateDoesNotExist(name, tried=tried)
+django.template.exceptions.TemplateDoesNotExist: books/base.html
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\library_stats\views.py", line 58, in statistics
+    return render(request, 'library_stats/statistics.html', context)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\backends\django.py", line 109, in render
+    reraise(exc, self.backend)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\backends\django.py", line 130, in reraise
+    raise new from exc
+django.template.exceptions.TemplateDoesNotExist: books/base.html
+Internal Server Error: /statistics/
+Traceback (most recent call last):
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader_tags.py", line 134, in render
+    compiled_parent = self.get_parent(context)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader_tags.py", line 131, in get_parent
+    return self.find_template(parent, context)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader_tags.py", line 109, in find_template
+    template, origin = context.template.engine.find_template(
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        template_name,
+        ^^^^^^^^^^^^^^
+        skip=history,
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\engine.py", line 163, in find_template
+    raise TemplateDoesNotExist(name, tried=tried)
+django.template.exceptions.TemplateDoesNotExist: books/base.html
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\library_stats\views.py", line 58, in statistics
+    return render(request, 'library_stats/statistics.html', context)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\backends\django.py", line 109, in render
+    reraise(exc, self.backend)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\backends\django.py", line 130, in reraise
+    raise new from exc
+django.template.exceptions.TemplateDoesNotExist: books/base.html
+Internal Server Error: /statistics/
+Traceback (most recent call last):
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader_tags.py", line 134, in render
+    compiled_parent = self.get_parent(context)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader_tags.py", line 131, in get_parent
+    return self.find_template(parent, context)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader_tags.py", line 109, in find_template
+    template, origin = context.template.engine.find_template(
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        template_name,
+        ^^^^^^^^^^^^^^
+        skip=history,
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\engine.py", line 163, in find_template
+    raise TemplateDoesNotExist(name, tried=tried)
+django.template.exceptions.TemplateDoesNotExist: books/base.html
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\library_stats\views.py", line 58, in statistics
+    return render(request, 'library_stats/statistics.html', context)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\backends\django.py", line 109, in render
+    reraise(exc, self.backend)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\backends\django.py", line 130, in reraise
+    raise new from exc
+django.template.exceptions.TemplateDoesNotExist: books/base.html
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Login failed for username=esso.daniel001, errors=<ul class="errorlist"><li>__all__<ul class="errorlist nonfield"><li>Saisissez un nom d’utilisateur et un mot de passe valides. Remarquez que chacun de ces champs est sensible à la casse (différenciation des majuscules/minuscules).</li></ul></li></ul>, data=<QueryDict: {'csrfmiddlewaretoken': ['8mleLVKqzKeOZKoePoH4UhEzUCO7wkHcqgVNQ5q6q9YlLMg1DVGOAEJG3bRjb98c'], 'username': ['esso.daniel001'], 'password': ['05juin2006']}>
+Login failed for username=akoumba.marylin001, errors=<ul class="errorlist"><li>__all__<ul class="errorlist nonfield"><li>Saisissez un nom d’utilisateur et un mot de passe valides. Remarquez que chacun de ces champs est sensible à la casse (différenciation des majuscules/minuscules).</li></ul></li></ul>, data=<QueryDict: {'csrfmiddlewaretoken': ['XP3DLnKVUmCu2ihe58ODusDugd6RhYdLfJDcQxqBLLm1Ok91TFNnaPIBpM93WNEL'], 'username': ['akoumba.marylin001'], 'password': ['05juin206']}>
+User logged in: akoumba.marylin001, first_login=False
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+Watching for file changes with StatReloader
+User logged in: akoumba.marylin001, first_login=False
+Not Found: /favicon.ico
+C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\books\views.py changed, reloading.
+Watching for file changes with StatReloader
+Not Found: /favicon.ico
+Internal Server Error: /books/search/
+Traceback (most recent call last):
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\books\views.py", line 212, in search_view
+    return render(request, 'books/search_books_for_standard_users.html', context)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader_tags.py", line 228, in do_block
+    raise TemplateSyntaxError(
+        "'%s' tag with name '%s' appears more than once" % (bits[0], block_name)
+    )
+django.template.exceptions.TemplateSyntaxError: 'block' tag with name 'extra_js' appears more than once
+C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\books\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\books\urls.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\books\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque\Projet-bibliotheque-admin\books\views.py changed, reloading.
+Watching for file changes with StatReloader

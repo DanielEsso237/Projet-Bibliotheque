@@ -123,7 +123,6 @@
             padding: 0.25rem;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 8px;
-            
         }
 
         .navbar-toggler:focus {
@@ -198,7 +197,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -328,7 +326,6 @@
         @media (max-width: 991.98px) {
             .navbar-collapse {
                 background: rgba(0, 0, 0, 0.1);
-
                 border-radius: 12px;
                 margin-top: 1rem;
                 padding: 1rem;
@@ -406,11 +403,14 @@
     {% block extra_css %}{% endblock %}
 </head>
 <body>
+    <!-- Ajout du champ CSRF caché -->
+    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+
     <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
             <a class="navbar-brand" href="{% url 'books:home' %}">
                 <i class="fas fa-graduation-cap"></i>
-                📚 Bibliotech Universitaire
+                📚 Bibliotech Academique
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -425,12 +425,7 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'books:search' %}">
-                                <i class="fas fa-search"></i> Rechercher
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">
-                                <i class="fas fa-book"></i> Mes emprunts
+                                <i class="fas fa-search"></i> Rechercher un e-book
                             </a>
                         </li>
                         <li class="nav-item">
@@ -493,7 +488,7 @@
 
     <footer>
         <div class="container">
-            <p><i class="fas fa-university"></i> © 2025 Bibliotech Universitaire. Tous droits réservés.</p>
+            <p><i class="fas fa-university"></i> © 2025 Bibliotech Academique. Tous droits réservés.</p>
             <p>
                 <a href="{% url 'books:home' %}"><i class="fas fa-home"></i> Accueil</a> | 
                 <a href="{% url 'books:search' %}"><i class="fas fa-search"></i> Rechercher</a> | 
@@ -569,3 +564,5 @@
         }
     </script>
     {% block extra_js %}{% endblock %}
+</body>
+</html>
