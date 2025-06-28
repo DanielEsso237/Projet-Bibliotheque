@@ -107,28 +107,12 @@
         font-weight: 500;
     }
 
-    .availability-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        background: linear-gradient(135deg, #22c55e, #16a34a);
-        color: white;
-        padding: 0.5rem 1rem;
-        border-radius: 10px;
-        font-size: 0.875rem;
-        font-weight: 600;
-        margin-bottom: 1rem;
-        box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
-    }
-
-    .card-footer {
+    .card-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        margin-top: 1.5rem;
         padding: 1rem;
-        background: var(--card-bg);
-        border-top: 1px solid var(--card-border);
-    }
-
-    .btn-group-vertical {
-        width: 100%;
     }
 
     .btn-primary {
@@ -139,7 +123,7 @@
         border: 1px solid var(--primary-blue);
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         width: 100%;
-        margin-bottom: 0.5rem;
+        text-align: center;
     }
 
     .btn-primary:hover {
@@ -148,10 +132,30 @@
         box-shadow: 0 4px 12px var(--glow-color);
     }
 
-    /* Style pour le bouton favoris */
+    .btn-consult {
+        padding: 0.5rem 1rem;
+        font-size: 0.95rem;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #8b5cf6, #6b21a8);
+        border: 1px solid #6b21a8;
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        width: 100%;
+        text-align: center;
+    }
+
+    .btn-consult:hover {
+        background: linear-gradient(135deg, #7c3aed, #5b21b6);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+    }
+
     .favorite-btn {
         display: flex;
         align-items: center;
+        justify-content: center;
         gap: 0.5rem;
         padding: 0.5rem 1rem;
         background: linear-gradient(135deg, #f59e0b, #f97316);
@@ -163,9 +167,8 @@
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         text-decoration: none;
         font-size: 0.875rem;
-        width: 100%;
-        margin-bottom: 0.5rem;
         box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+        width: 100%;
     }
 
     .favorite-btn:hover {
@@ -193,25 +196,26 @@
         font-weight: 600;
     }
 
-    .btn-success {
+    .btn-download {
         padding: 0.5rem 1rem;
         font-size: 0.95rem;
         border-radius: 10px;
         background: linear-gradient(135deg, #10b981, #047857);
-        border: none;
+        border: 1px solid #047857;
         color: white;
-        width: 100%;
+        font-weight: 600;
+        cursor: pointer;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        width: 100%;
+        text-align: center;
     }
 
-    .btn-success:hover {
-        background: linear-gradient(135deg, #10b981, #034e3d);
+    .btn-download:hover {
+        background: linear-gradient(135deg, #059669, #034e3d);
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
     }
 
-    /* Grille pour les cartes */
     .books-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -219,7 +223,6 @@
         margin-top: 2rem;
     }
 
-    /* Message pour aucune recommandation */
     .no-recommendations-message {
         text-align: center;
         padding: 4rem 2rem;
@@ -245,16 +248,21 @@
         margin: 0 auto;
     }
 
-    /* Responsive Design */
     @media (max-width: 768px) {
         .books-grid {
             grid-template-columns: 1fr;
             gap: 1.5rem;
         }
 
+        .card-actions {
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
         .btn-primary,
+        .btn-consult,
         .favorite-btn,
-        .btn-success {
+        .btn-download {
             width: 100%;
             justify-content: center;
             padding: 0.75rem;
@@ -298,37 +306,45 @@
                             <i class="fas fa-tag me-2"></i>
                             <strong>Catégorie:</strong> {{ book.category|default:"Non spécifiée" }}
                         </p>
-                        
-                        <div class="availability-badge">
-                            <i class="fas fa-check-circle"></i>
-                            <span>Disponible</span>
-                        </div>
+                        <p class="card-text">
+                            <i class="fas fa-tablet-alt me-2"></i>
+                            <strong>Type:</strong>{% if book.is_physical %} Livre physique {% else %} E-book {% endif %}
+                        </p>
                     </div>
-                    <div class="card-footer">
-                        <div class="btn-group-vertical">
-                            <a href="{% url 'books:book_detail' book.pk %}" class="btn btn-primary">
-                                <i class="fas fa-eye me-2"></i>
-                                Voir détails
-                            </a>
+                    <div class="card-actions">
+                        <a href="{% url 'books:book_detail' book.pk %}" class="btn btn-primary">
+                            <i class="fas fa-eye me-2"></i>
+                            Voir détails
+                        </a>
+                        {% if user.is_authenticated %}
                             <button class="favorite-btn" data-book-id="{{ book.id }}" 
-                                    title="Ajouter aux favoris" aria-label="Ajouter aux favoris">
+                                    title="{% if book.id in favorite_ids %}Retirer des favoris{% else %}Ajouter aux favoris{% endif %}" 
+                                    aria-label="{% if book.id in favorite_ids %}Retirer des favoris{% else %}Ajouter aux favoris{% endif %}">
                                 <svg class="empty" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" 
-                                     style="opacity: 1;">
+                                     {% if book.id in favorite_ids %}style="opacity: 0;"{% else %}style="opacity: 1;"{% endif %}>
                                     <path fill="none" d="M0 0h24v24H0z"/>
                                     <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
                                 </svg>
                                 <svg class="filled" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" 
-                                     style="opacity: 0;">
+                                     {% if book.id in favorite_ids %}style="opacity: 1;"{% else %}style="opacity: 0;"{% endif %}>
                                     <path fill="none" d="M0 0h24v24H0z"/>
                                     <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" fill="#ffca28"/>
                                 </svg>
-                                <span class="favorite-text">Ajouter aux favoris</span>
+                                <span class="favorite-text">
+                                    {% if book.id in favorite_ids %}Retirer des favoris{% else %}Ajouter aux favoris{% endif %}
+                                </span>
                             </button>
-                            <a href="{% url 'books:download_book' book.pk %}" class="btn btn-success">
-                                <i class="fas fa-download me-2"></i>
-                                Télécharger
-                            </a>
-                        </div>
+                            {% if book.ebook_file %}
+                                <a href="{% url 'books:download_book' book.pk %}?action=view" class="btn-consult" target="_blank">
+                                    <i class="fas fa-book-open me-2"></i>
+                                    Consulter
+                                </a>
+                                <a href="{% url 'books:download_book' book.pk %}" class="btn-download">
+                                    <i class="fas fa-download me-2"></i>
+                                    Télécharger
+                                </a>
+                            {% endif %}
+                        {% endif %}
                     </div>
                 </div>
             {% endfor %}
@@ -346,8 +362,7 @@
 {% block extra_js %}
 <script src="{% static 'js/jquery.min.js' %}"></script>
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        // Animation d'apparition des cartes
+    $(document).ready(function() {
         const cards = document.querySelectorAll(".book-card");
         
         const observer = new IntersectionObserver((entries) => {
@@ -355,7 +370,7 @@
                 if (entry.isIntersecting) {
                     setTimeout(() => {
                         entry.target.classList.add("visible");
-                    }, index * 150); // décalage entre chaque carte
+                    }, index * 150);
                 }
             });
         }, {
@@ -365,8 +380,9 @@
 
         cards.forEach(card => observer.observe(card));
 
-        // Gestion des favoris avec jQuery
-        $(document).ready(function() {
+        const isAuthenticated = {{ user.is_authenticated|lower }};
+
+        if (isAuthenticated) {
             $('.favorite-btn').click(function() {
                 const bookId = $(this).data('book-id');
                 const button = $(this);
@@ -398,9 +414,8 @@
                     }
                 });
             });
-        });
+        }
 
-        
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && e.target.classList.contains('favorite-btn')) {
                 e.target.click();

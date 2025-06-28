@@ -5,8 +5,14 @@
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/search.css' %}">
 <style>
+    /* Container for buttons */
+    .card-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
 
-/* Style pour le bouton favoris */
+    /* Style pour le bouton favoris */
     .favorite-btn {
         display: flex;
         align-items: center;
@@ -49,6 +55,57 @@
         font-weight: 600;
     }
 
+    /* Styles existants pour btn-consult et btn-download (déjà définis dans search.css) */
+    .btn-consult {
+        padding: 0.5rem 1rem;
+        font-size: 0.95rem;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #8b5cf6, #6b21a8);
+        border: 1px solid #6b21a8;
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        width: 100%;
+        text-align: center;
+    }
+
+    .btn-consult:hover {
+        background: linear-gradient(135deg, #7c3aed, #5b21b6);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+    }
+
+    .btn-download {
+        padding: 0.5rem 1rem;
+        font-size: 0.95rem;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #10b981, #047857);
+        border: 1px solid #047857;
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        width: 100%;
+        text-align: center;
+    }
+
+    .btn-download:hover {
+        background: linear-gradient(135deg, #059669, #034e3d);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+    }
+
+    @media (max-width: 768px) {
+        .favorite-btn,
+        .btn-consult,
+        .btn-download {
+            width: 100%;
+            justify-content: center;
+            padding: 0.75rem;
+            font-size: 0.9rem;
+        }
+    }
 </style>
 {% endblock %}
 
@@ -66,10 +123,9 @@
                 <h2>{{ book.title }}</h2>
                 <p><strong>Auteur:</strong> {{ book.author }}</p>
                 <p><strong>Catégorie:</strong> {{ book.category }}</p>
-
                 <p>
                     <i class="fas fa-tablet-alt me-2"></i>
-                    <strong>Type:</strong>{% if book.is_physical %} Livre physique {% else %} E-book  {% endif %}
+                    <strong>Type:</strong>{% if book.is_physical %} Livre physique {% else %} E-book {% endif %}
                 </p>
                 <p><strong>ISBN:</strong> {{ book.isbn }}</p>
                 <p><strong>Date de publication:</strong> {{ book.publication_date }}</p>
@@ -77,24 +133,35 @@
                 <p><strong>Résumé:</strong> {{ book.summary|default:"Aucun résumé disponible." }}</p>
 
                 {% if user.is_authenticated %}
-                    
+                    <div class="card-actions">
                         <button class="favorite-btn" data-book-id="{{ book.id }}" 
-                                title="Ajouter aux favoris" aria-label="Ajouter aux favoris">
+                                title="{% if book.id in favorite_ids %}Retirer des favoris{% else %}Ajouter aux favoris{% endif %}" 
+                                aria-label="{% if book.id in favorite_ids %}Retirer des favoris{% else %}Ajouter aux favoris{% endif %}">
                             <svg class="empty" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" 
-                                 {% if book in user.favorites.all %}style="opacity: 0;"{% else %}style="opacity: 1;"{% endif %}>
+                                 {% if book.id in favorite_ids %}style="opacity: 0;"{% else %}style="opacity: 1;"{% endif %}>
                                 <path fill="none" d="M0 0h24v24H0z"/>
                                 <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
                             </svg>
                             <svg class="filled" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" 
-                                 {% if book in user.favorites.all %}style="opacity: 1;"{% else %}style="opacity: 0;"{% endif %}>
+                                 {% if book.id in favorite_ids %}style="opacity: 1;"{% else %}style="opacity: 0;"{% endif %}>
                                 <path fill="none" d="M0 0h24v24H0z"/>
                                 <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" fill="#ffca28"/>
                             </svg>
                             <span class="favorite-text">
-                                {% if book in user.favorites.all %}Retirer des favoris{% else %}Ajouter aux favoris{% endif %}
+                                {% if book.id in favorite_ids %}Retirer des favoris{% else %}Ajouter aux favoris{% endif %}
                             </span>
                         </button>
-
+                        {% if book.ebook_file %}
+                            <a href="{% url 'books:download_book' book.pk %}?action=view" class="btn-consult" target="_blank">
+                                <i class="fas fa-book-open me-2"></i>
+                                Consulter
+                            </a>
+                            <a href="{% url 'books:download_book' book.pk %}" class="btn-download">
+                                <i class="fas fa-download me-2"></i>
+                                Télécharger
+                            </a>
+                        {% endif %}
+                    </div>
                 {% endif %}
             </div>
         </div>
@@ -102,58 +169,6 @@
     {% if user.is_authenticated %}
         <script src="{% static 'js/jquery.min.js' %}"></script>
         <script>
-            $(document).ready(function() {
-                $('.favorite-btn').click(function() {
-                    const bookId = $(this).data('book-id');
-                    const icon = $(this).find('i');
-                    $.ajax({
-                        url: '{% url 'books:toggle_favorite' %}',
-                        method: 'POST',
-                        data: {
-                            book_id: bookId,
-                            csrfmiddlewaretoken: '{{ csrf_token }}'
-                        },
-                        success: function(response) {
-                            if (response.added) {
-                                icon.removeClass('text-muted').addClass('text-warning');
-                            } else {
-                                icon.removeClass('text-warning').addClass('text-muted');
-                            }
-                        },
-                        error: function() {
-                            alert('Erreur lors de la mise à jour des favoris.');
-                        }
-                    });
-                });
-            });
-        </script>
-    {% endif %}
-{% endblock %}
-
-{% block extra_js %}
-<script src="{% static 'js/jquery.min.js' %}"></script>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        // Animation d'apparition des cartes
-        const cards = document.querySelectorAll(".book-card");
-        
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach((entry, index) => {
-                if (entry.isIntersecting) {
-                    setTimeout(() => {
-                        entry.target.classList.add("visible");
-                    }, index * 150); // décalage entre chaque carte
-                }
-            });
-        }, {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        });
-
-        cards.forEach(card => observer.observe(card));
-
-        // Gestion des favoris avec jQuery
-        {% if user.is_authenticated %}
             $(document).ready(function() {
                 $('.favorite-btn').click(function() {
                     const bookId = $(this).data('book-id');
@@ -187,9 +202,30 @@
                     });
                 });
             });
-        {% endif %}
+        </script>
+    {% endif %}
+{% endblock %}
 
-        // Amélioration de l'accessibilité
+{% block extra_js %}
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Animation d'apparition (non applicable ici car une seule carte)
+        // Gardé pour cohérence avec d'autres templates
+        const cards = document.querySelectorAll(".book-card");
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("visible");
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+
+        cards.forEach(card => observer.observe(card));
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && e.target.classList.contains('favorite-btn')) {
                 e.target.click();

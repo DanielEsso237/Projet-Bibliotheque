@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 import logging
 from users.models import UserFavorite, UserDownload
+from django.http import Http404
 
 logger = logging.getLogger(__name__)
 
@@ -201,31 +202,37 @@ def search_view(request):
     query = request.GET.get('q', '')
     category = request.GET.get('category', '')
     books = Book.objects.all()
-
     if query:
-        books = books.filter(title__icontains=query) | books.filter(author__icontains=query)
+        books = books.filter(Q(title__icontains=query) | Q(author__icontains=query))
     if category:
         books = books.filter(category=category)
-
-    
+    paginator = Paginator(books, 9)
+    page_number = request.GET.get('page')
+    books_page = paginator.get_page(page_number)
     favorite_ids = UserFavorite.objects.filter(user=request.user).values_list('book_id', flat=True)
     context = {
-        'books': books,
+        'books': books_page,
         'query': query,
         'categories': Book.objects.values_list('category', flat=True).distinct(),
-        'favorite_ids': list(favorite_ids)  # Passer les IDs des favoris
+        'favorite_ids': list(favorite_ids)
     }
     return render(request, 'books/search_books_for_standard_users.html', context)
 
+@login_required
 def book_detail_view(request, pk):
     book = get_object_or_404(Book, pk=pk)
-    context = {'book': book}
+    favorite_ids = UserFavorite.objects.filter(user=request.user).values_list('book_id', flat=True)
+    context = {'book': book, 'favorite_ids': list(favorite_ids)}
     return render(request, 'books/book_detail.html', context)
 
 @login_required
 def new_arrivals_view(request):
-    recent_books = Book.objects.order_by('-created_at')[:10]
-    context = {'recent_books': recent_books}
+    recent_books = Book.objects.order_by('-created_at')
+    paginator = Paginator(recent_books, 9)
+    page_number = request.GET.get('page')
+    recent_books_page = paginator.get_page(page_number)
+    favorite_ids = UserFavorite.objects.filter(user=request.user).values_list('book_id', flat=True)
+    context = {'recent_books': recent_books_page, 'favorite_ids': list(favorite_ids)}
     return render(request, 'books/new_arrivals_books_for_user.html', context)
 
 @login_required
@@ -235,7 +242,10 @@ def epreuves_view(request):
     epreuves = Document.objects.filter(document_type='exam')
     if selected_level:
         epreuves = epreuves.filter(academic_level=selected_level)
-    context = {'epreuves': epreuves, 'levels': levels}
+    paginator = Paginator(epreuves, 9)
+    page_number = request.GET.get('page')
+    epreuves_page = paginator.get_page(page_number)
+    context = {'epreuves': epreuves_page, 'levels': levels}
     return render(request, 'books/epreuves_liste.html', context)
 
 @login_required
@@ -245,7 +255,10 @@ def documents_view(request):
     documents = Document.objects.all()
     if selected_type:
         documents = documents.filter(document_type=selected_type)
-    context = {'documents': documents, 'document_types': document_types}
+    paginator = Paginator(documents, 9)
+    page_number = request.GET.get('page')
+    documents_page = paginator.get_page(page_number)
+    context = {'documents': documents_page, 'document_types': document_types}
     return render(request, 'books/documents_list.html', context)
 
 @login_required
@@ -257,7 +270,10 @@ def document_detail_view(request, pk):
 @login_required
 def favorites_view(request):
     favorite_books = Book.objects.filter(favorited_by__user=request.user)
-    context = {'favorite_books': favorite_books, 'message': 'Aucun livre en favoris.' if not favorite_books else ''}
+    paginator = Paginator(favorite_books, 9)
+    page_number = request.GET.get('page')
+    favorite_books_page = paginator.get_page(page_number)
+    context = {'favorite_books': favorite_books_page, 'message': 'Aucun livre en favoris.' if not favorite_books else ''}
     return render(request, 'books/favorites_books_for_users.html', context)
 
 @require_POST
@@ -276,12 +292,18 @@ def toggle_favorite(request):
 @login_required
 def download_book(request, pk):
     book = get_object_or_404(Book, pk=pk)
-    if book.ebook_file:
-        UserDownload.objects.get_or_create(user=request.user, book=book)
-        print(f"Téléchargement enregistré pour {request.user.username} - {book.title}")  # Pour débogage
+    if not book.ebook_file or not book.ebook_file.name.endswith('.pdf'):
+        raise Http404("Ce livre n'est pas disponible pour consultation ou téléchargement.")
+    action = request.GET.get('action', 'download')  
+    UserDownload.objects.get_or_create(user=request.user, book=book)
+    if action == 'view':
+        response = FileResponse(open(book.ebook_file.path, 'rb'), as_attachment=False)
+        response['Content-Type'] = 'application/pdf'
+        response['Content-Disposition'] = 'inline; filename="{}"'.format(book.ebook_file.name)
+        return response
+    else:
         response = FileResponse(open(book.ebook_file.path, 'rb'), as_attachment=True, filename=book.ebook_file.name)
         return response
-    return redirect('books:search')
 
 @login_required
 def home(request):
@@ -292,8 +314,12 @@ def home(request):
 
 @login_required
 def recommendations_view(request):
-    recommended_books = Book.objects.order_by('-created_at')[:10]
-    context = {'recommended_books': recommended_books}
+    recommended_books = Book.objects.order_by('-created_at')
+    paginator = Paginator(recommended_books, 9)
+    page_number = request.GET.get('page')
+    recommended_books_page = paginator.get_page(page_number)
+    favorite_ids = UserFavorite.objects.filter(user=request.user).values_list('book_id', flat=True)
+    context = {'recommended_books': recommended_books_page, 'favorite_ids': list(favorite_ids)}
     return render(request, 'books/recommendations_for_users.html', context)
 
 @login_required
@@ -301,6 +327,5 @@ def check_favorite_status(request):
     book_ids = request.GET.getlist('book_ids')
     if not book_ids:
         return JsonResponse({'favorites': []})
-    
     user_favorites = UserFavorite.objects.filter(user=request.user, book_id__in=book_ids).values_list('book_id', flat=True)
     return JsonResponse({'favorites': list(user_favorites)})
