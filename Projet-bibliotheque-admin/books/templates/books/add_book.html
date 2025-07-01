@@ -48,7 +48,7 @@
                 }
             }).trigger('change');
 
-            // Soumettre le formulaire uniquement si tout est valide
+           
             $('form').submit(function(e) {
                 if (!$('#id_category').val() && !$('#id_custom_category').val()) {
                     e.preventDefault();

@@ -1,5 +1,5 @@
-from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
-from .forms import LibrarianRegistrationForm, UserCreationForm
+from django.contrib.auth import login, logout, update_session_auth_hash
+from .forms import LibrarianRegistrationForm, UserCreationForm, UserProfileForm, UserPasswordChangeForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -7,12 +7,12 @@ from django.core.paginator import Paginator
 from .forms import CustomPasswordChangeForm
 from django.db.models import Q
 from .models import CustomUser
-from django.http import JsonResponse
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.forms import PasswordChangeForm, AuthenticationForm
 from django.utils.text import slugify
 import logging
-from django.db.models import Q, Count
+
+
 
 logger = logging.getLogger(__name__)
 
@@ -208,3 +208,36 @@ def change_password(request):
         form = CustomPasswordChangeForm(request.user)
     
     return render(request, 'users/change_password.html', {'form': form})
+
+
+
+
+
+
+@login_required
+def user_profile(request):
+    if request.method == 'POST':
+        profile_form = UserProfileForm(request.POST, instance=request.user)
+        password_form = UserPasswordChangeForm(request.user, request.POST) if 'old_password' in request.POST else None
+
+        if profile_form.is_valid() and (password_form is None or password_form.is_valid()):
+            profile_form.save()
+            if password_form and password_form.is_valid():
+                password_form.save()
+                update_session_auth_hash(request, password_form.user)  # Maintient la session active après changement de mot de passe
+                messages.success(request, "Mot de passe mis à jour avec succès !")
+            messages.success(request, "Profil mis à jour avec succès !")
+            return redirect('users:user_profile')
+        else:
+            if profile_form.errors:
+                messages.error(request, "Veuillez corriger les erreurs dans les informations personnelles.")
+            if password_form and password_form.errors:
+                messages.error(request, "Veuillez corriger les erreurs dans le changement de mot de passe.")
+    else:
+        profile_form = UserProfileForm(instance=request.user)
+        password_form = UserPasswordChangeForm(request.user)
+
+    return render(request, 'users/user_profile.html', {
+        'form': profile_form,
+        'password_form': password_form
+    })

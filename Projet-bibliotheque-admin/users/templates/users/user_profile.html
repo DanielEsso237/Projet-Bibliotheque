@@ -1,0 +1,730 @@
+{% extends 'books/base_user.html' %}
+{% load static %}
+
+{% block title %}Mon Profil{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Enveloppe pour isoler les styles spécifiques à la page */
+    .profile-page {
+        max-width: 1000px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+
+    /* En-tête */
+    .profile-page .profile-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #f8fafc;
+    }
+
+    .profile-page .profile-header h1 {
+        color: #1e293b;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .profile-page .profile-header p {
+        color: #6b7280;
+        font-size: 1.1rem;
+    }
+
+    /* Cards modernes */
+    .profile-page .profile-card {
+        background: white;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+        border: 1px solid rgba(37, 99, 235, 0.2);
+        animation: slideUp 0.4s ease-out;
+        margin-bottom: 2rem;
+    }
+
+    /* En-têtes de section */
+    .profile-page .section-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #f8fafc;
+    }
+
+    .profile-page .section-title {
+        color: #1e293b;
+        font-size: 1.4rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .profile-page .section-icon {
+        width: 2rem;
+        height: 2rem;
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1rem;
+    }
+
+    /* Messages d'alerte */
+    .profile-page .alert {
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1.5rem;
+        border: none;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .profile-page .alert-success {
+        background-color: #ecfdf5;
+        color: #065f46;
+        border-left: 4px solid #10b981;
+    }
+
+    .profile-page .alert-error, .profile-page .alert-danger {
+        background-color: #fef2f2;
+        color: #991b1b;
+        border-left: 4px solid #ef4444;
+    }
+
+    .profile-page .alert-warning {
+        background-color: #fffbeb;
+        color: #92400e;
+        border-left: 4px solid #f59e0b;
+    }
+
+    .profile-page .alert-info {
+        background-color: #eff6ff;
+        color: #1e40af;
+        border-left: 4px solid #2563eb;
+    }
+
+    /* Groupes de champs */
+    .profile-page .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    /* Labels */
+    .profile-page label {
+        display: block;
+        font-weight: 600;
+        color: #1e293b;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .profile-page .required-label::after {
+        content: ' *';
+        color: #ef4444;
+        font-weight: bold;
+    }
+
+    /* Champs de formulaire avec icônes */
+    .profile-page .field-with-icon {
+        position: relative;
+    }
+
+    .profile-page .field-icon {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6b7280;
+        pointer-events: none;
+        z-index: 1;
+        font-size: 1.1rem;
+    }
+
+    /* Champs de formulaire */
+    .profile-page .form-control {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid rgba(37, 99, 235, 0.2);
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        transition: all 0.2s ease-in-out;
+        background: linear-gradient(145deg, #ffffff, #f8fafc);
+        color: #1e293b;
+        box-sizing: border-box;
+    }
+
+    .profile-page .field-with-icon .form-control {
+        padding-left: 2.5rem;
+        padding-right: 2.5rem;
+    }
+
+    .profile-page .form-control:focus {
+        outline: none;
+        border-color: #2563eb;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1), 0 4px 12px rgba(0, 0, 0, 0.05);
+        transform: translateY(-1px);
+    }
+
+    .profile-page .form-control:hover {
+        border-color: #cbd5e1;
+        transform: translateY(-1px);
+    }
+
+    .profile-page .form-control::placeholder {
+        color: #6b7280;
+        opacity: 0.7;
+    }
+
+    /* Messages d'erreur */
+    .profile-page .error-message {
+        color: #ef4444;
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .profile-page .error-message::before {
+        content: '⚠';
+    }
+
+    /* Indicateur de force du mot de passe */
+    .profile-page .password-strength {
+        margin-top: 0.5rem;
+    }
+
+    .profile-page .strength-meter {
+        height: 4px;
+        background: #e5e7eb;
+        border-radius: 2px;
+        overflow: hidden;
+        margin-bottom: 0.5rem;
+    }
+
+    .profile-page .strength-bar {
+        height: 100%;
+        width: 0%;
+        transition: all 0.3s ease;
+        border-radius: 2px;
+    }
+
+    .profile-page .strength-text {
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+
+    .profile-page .strength-weak { background: #ef4444; }
+    .profile-page .strength-fair { background: #f59e0b; }
+    .profile-page .strength-good { background: #3b82f6; }
+    .profile-page .strength-strong { background: #10b981; }
+
+    /* Bouton de sauvegarde */
+    .profile-page .save-section {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #f8fafc;
+    }
+
+    .profile-page .btn {
+        padding: 0.75rem 2rem;
+        border: none;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        min-width: 140px;
+        justify-content: center;
+    }
+
+    .profile-page .btn-primary {
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        color: white;
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    }
+
+    .profile-page .btn-primary:hover {
+        background: linear-gradient(135deg, #1d4ed8, #1e40af);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .profile-page .btn-secondary {
+        background: #f3f4f6;
+        color: #1e293b;
+        border: 1px solid rgba(37, 99, 235, 0.2);
+    }
+
+    .profile-page .btn-secondary:hover {
+        background: #e5e7eb;
+        transform: translateY(-1px);
+    }
+
+    /* États de validation */
+    .profile-page .form-control.is-valid {
+        border-color: #10b981;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%2310b981' d='m2.3 6.73.94-.94 1.94 1.94 3.4-3.4.94.94L2.3 6.73z'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right calc(0.375em + 0.1875rem) center;
+        background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+    }
+
+    .profile-page .form-control.is-invalid {
+        border-color: #ef4444;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23ef4444'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath d='m5.8 4.6 1.4 1.4m0 0 1.4 1.4m-1.4-1.4L5.8 8.4m1.4-1.4L8.6 5.6'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right calc(0.375em + 0.1875rem) center;
+        background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+    }
+
+    /* Bouton show/hide password */
+    .profile-page .password-toggle {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #6b7280;
+        cursor: pointer;
+        font-size: 1.1rem;
+        padding: 4px;
+        z-index: 2;
+        border-radius: 4px;
+    }
+
+    .profile-page .password-toggle:hover {
+        color: #2563eb;
+        background-color: rgba(37, 99, 235, 0.1);
+    }
+
+    /* Match indicator */
+    .profile-page .password-match {
+        font-size: 0.8rem;
+        margin-top: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .profile-page .match-success {
+        color: #10b981;
+    }
+
+    .profile-page .match-error {
+        color: #ef4444;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .profile-page {
+            margin: 1rem auto;
+            padding: 0 0.5rem;
+        }
+        
+        .profile-page .profile-card {
+            padding: 1.5rem;
+        }
+        
+        .profile-page .save-section {
+            flex-direction: column;
+        }
+        
+        .profile-page .btn {
+            width: 100%;
+        }
+    }
+
+    /* Animation d'entrée */
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="profile-page">
+    <div class="profile-header">
+        <h1>Mon Profil</h1>
+        <p>Gérez vos informations personnelles</p>
+    </div>
+    
+    <form method="post" id="profileForm">
+        {% csrf_token %}
+        
+        <!-- Section Informations Personnelles -->
+        <div class="profile-card">
+            <div class="section-header">
+                <div class="section-icon">👤</div>
+                <h3 class="section-title">Informations Personnelles</h3>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="{{ form.email.id_for_label }}" class="required-label">
+                        {{ form.email.label }}
+                    </label>
+                    <div class="field-with-icon">
+                        <span class="field-icon">📧</span>
+                        {{ form.email }}
+                    </div>
+                    {% if form.email.errors %}
+                        <div class="error-message">{{ form.email.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.phone_number.id_for_label }}" class="required-label">
+                        {{ form.phone_number.label }}
+                    </label>
+                    <div class="field-with-icon">
+                        <span class="field-icon">📞</span>
+                        {{ form.phone_number }}
+                    </div>
+                    {% if form.phone_number.errors %}
+                        <div class="error-message">{{ form.phone_number.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Sécurité du Compte -->
+        <div class="profile-card">
+            <div class="section-header">
+                <div class="section-icon">🔐</div>
+                <h3 class="section-title">Sécurité du Compte</h3>
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ password_form.old_password.id_for_label }}" class="required-label">
+                    {{ password_form.old_password.label }}
+                </label>
+                <div class="field-with-icon">
+                    <span class="field-icon">🔒</span>
+                    {{ password_form.old_password }}
+                    <button type="button" class="password-toggle" data-target="{{ password_form.old_password.id_for_label }}">
+                        👁
+                    </button>
+                </div>
+                {% if password_form.old_password.errors %}
+                    <div class="error-message">{{ password_form.old_password.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ password_form.new_password1.id_for_label }}" class="required-label">
+                    {{ password_form.new_password1.label }}
+                </label>
+                <div class="field-with-icon">
+                    <span class="field-icon">🔑</span>
+                    {{ password_form.new_password1 }}
+                    <button type="button" class="password-toggle" data-target="{{ password_form.new_password1.id_for_label }}">
+                        👁
+                    </button>
+                </div>
+                <div class="password-strength" id="passwordStrength">
+                    <div class="strength-meter">
+                        <div class="strength-bar" id="strengthBar"></div>
+                    </div>
+                    <div class="strength-text" id="strengthText">Entrez un mot de passe</div>
+                </div>
+                {% if password_form.new_password1.errors %}
+                    <div class="error-message">{{ password_form.new_password1.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ password_form.new_password2.id_for_label }}" class="required-label">
+                    {{ password_form.new_password2.label }}
+                </label>
+                <div class="field-with-icon">
+                    <span class="field-icon">🔑</span>
+                    {{ password_form.new_password2 }}
+                    <button type="button" class="password-toggle" data-target="{{ password_form.new_password2.id_for_label }}">
+                        👁
+                    </button>
+                </div>
+                <div class="password-match" id="passwordMatch"></div>
+                {% if password_form.new_password2.errors %}
+                    <div class="error-message">{{ password_form.new_password2.errors.0 }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Bouton Enregistrer -->
+        <div class="save-section">
+            <button type="submit" class="btn btn-primary" id="saveButton">
+                <span>🔄</span> Enregistrer les Modifications
+            </button>
+            <a href="{% url 'books:home' %}" class="btn btn-secondary">
+                <span>←</span> Annuler
+            </a>
+        </div>
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    console.log('DOM chargé - initialisation du script');
+    
+    // Sélection des éléments
+    const form = document.getElementById('profileForm');
+    const oldPassword = document.getElementById('id_old_password');
+    const newPassword1 = document.getElementById('id_new_password1');
+    const newPassword2 = document.getElementById('id_new_password2');
+    const strengthBar = document.getElementById('strengthBar');
+    const strengthText = document.getElementById('strengthText');
+    const passwordMatch = document.getElementById('passwordMatch');
+    const saveButton = document.getElementById('saveButton');
+
+    console.log('Éléments trouvés:', {
+        oldPassword: !!oldPassword,
+        newPassword1: !!newPassword1,
+        newPassword2: !!newPassword2,
+        strengthBar: !!strengthBar,
+        strengthText: !!strengthText
+    });
+
+    // Gestion du toggle voir/masquer
+    document.querySelectorAll('.password-toggle').forEach(button => {
+        console.log('Configuration du bouton toggle:', button);
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const targetId = this.getAttribute('data-target');
+            const targetField = document.getElementById(targetId);
+            
+            console.log('Toggle cliqué pour:', targetId, 'Champ trouvé:', !!targetField);
+            
+            if (targetField) {
+                if (targetField.type === 'password') {
+                    targetField.type = 'text';
+                    this.textContent = '🙈';
+                    console.log('Mot de passe affiché');
+                } else {
+                    targetField.type = 'password';
+                    this.textContent = '👁';
+                    console.log('Mot de passe masqué');
+                }
+            }
+        });
+    });
+
+    // Fonction d'évaluation de la force du mot de passe
+    function evaluatePasswordStrength(password) {
+        let score = 0;
+        let feedback = [];
+
+        if (password.length >= 8) score += 1;
+        else feedback.push('Au moins 8 caractères');
+
+        if (/[a-z]/.test(password)) score += 1;
+        else feedback.push('Minuscules');
+
+        if (/[A-Z]/.test(password)) score += 1;
+        else feedback.push('Majuscules');
+
+        if (/[0-9]/.test(password)) score += 1;
+        else feedback.push('Chiffres');
+
+        if (/[^A-Za-z0-9]/.test(password)) score += 1;
+        else feedback.push('Symboles');
+
+        return { score, feedback };
+    }
+
+    // Mise à jour de la force du mot de passe
+    function updatePasswordStrength() {
+        if (!newPassword1 || !strengthBar || !strengthText) {
+            console.log('Éléments manquants pour la force du mot de passe');
+            return;
+        }
+
+        const password = newPassword1.value;
+        const { score, feedback } = evaluatePasswordStrength(password);
+
+        console.log('Évaluation du mot de passe:', { password: password.length > 0 ? '[MASQUÉ]' : '', score, feedback });
+
+        let strengthClass = '';
+        let strengthLabel = '';
+        let width = 0;
+
+        switch (score) {
+            case 0:
+                strengthLabel = password.length === 0 ? 'Entrez un mot de passe' : 'Très faible';
+                width = 0;
+                break;
+            case 1:
+            case 2:
+                strengthClass = 'strength-weak';
+                strengthLabel = `Faible - Manque: ${feedback.join(', ')}`;
+                width = 25;
+                break;
+            case 3:
+                strengthClass = 'strength-fair';
+                strengthLabel = `Moyen - Manque: ${feedback.join(', ')}`;
+                width = 50;
+                break;
+            case 4:
+                strengthClass = 'strength-good';
+                strengthLabel = 'Bon';
+                width = 75;
+                break;
+            case 5:
+                strengthClass = 'strength-strong';
+                strengthLabel = 'Excellent';
+                width = 100;
+                break;
+        }
+
+        // Nettoyage des classes précédentes
+        strengthBar.className = 'strength-bar';
+        if (strengthClass) {
+            strengthBar.classList.add(strengthClass);
+        }
+        
+        strengthBar.style.width = width + '%';
+        strengthText.textContent = strengthLabel;
+        
+        // Application de la classe de couleur au texte aussi
+        strengthText.className = 'strength-text';
+        if (strengthClass) {
+            strengthText.classList.add(strengthClass);
+        }
+
+        console.log('Barre de force mise à jour:', { width: width + '%', class: strengthClass, label: strengthLabel });
+    }
+
+    // Vérification de la correspondance des mots de passe
+    function checkPasswordMatch() {
+        if (!newPassword1 || !newPassword2 || !passwordMatch) {
+            console.log('Éléments manquants pour la vérification des mots de passe');
+            return;
+        }
+
+        const password1 = newPassword1.value;
+        const password2 = newPassword2.value;
+
+        console.log('Vérification correspondance:', { 
+            password1Length: password1.length, 
+            password2Length: password2.length 
+        });
+
+        if (password2.length === 0) {
+            passwordMatch.textContent = '';
+            passwordMatch.className = 'password-match';
+            newPassword2.classList.remove('is-valid', 'is-invalid');
+            return;
+        }
+
+        if (password1 === password2) {
+            passwordMatch.innerHTML = '<span>✓</span> Les mots de passe correspondent';
+            passwordMatch.className = 'password-match match-success';
+            newPassword2.classList.add('is-valid');
+            newPassword2.classList.remove('is-invalid');
+            console.log('Mots de passe correspondent');
+        } else {
+            passwordMatch.innerHTML = '<span>✗</span> Les mots de passe ne correspondent pas';
+            passwordMatch.className = 'password-match match-error';
+            newPassword2.classList.add('is-invalid');
+            newPassword2.classList.remove('is-valid');
+            console.log('Mots de passe ne correspondent pas');
+        }
+    }
+
+    // Validation des champs
+    function validateField(field) {
+        if (!field) return;
+
+        const value = field.value.trim();
+        
+        if (field === newPassword1) {
+            const { score } = evaluatePasswordStrength(value);
+            if (score >= 3) {
+                field.classList.add('is-valid');
+                field.classList.remove('is-invalid');
+            } else if (value.length > 0) {
+                field.classList.add('is-invalid');
+                field.classList.remove('is-valid');
+            } else {
+                field.classList.remove('is-valid', 'is-invalid');
+            }
+        } else if (value.length > 0) {
+            field.classList.add('is-valid');
+            field.classList.remove('is-invalid');
+        } else {
+            field.classList.remove('is-valid', 'is-invalid');
+        }
+    }
+
+    // Ajout des écouteurs d'événements
+    if (newPassword1) {
+        console.log('Configuration des événements pour newPassword1');
+        newPassword1.addEventListener('input', function() {
+            console.log('Input détecté sur newPassword1');
+            updatePasswordStrength();
+            validateField(this);
+            if (newPassword2 && newPassword2.value) {
+                checkPasswordMatch();
+            }
+        });
+        
+        newPassword1.addEventListener('keyup', function() {
+            console.log('Keyup détecté sur newPassword1');
+            updatePasswordStrength();
+        });
+    }
+
+    if (newPassword2) {
+        console.log('Configuration des événements pour newPassword2');
+        newPassword2.addEventListener('input', function() {
+            console.log('Input détecté sur newPassword2');
+            checkPasswordMatch();
+        });
+    }
+
+    if (oldPassword) {
+        oldPassword.addEventListener('input', function() {
+            validateField(this);
+        });
+    }
+
+    if (form && saveButton) {
+        form.addEventListener('submit', function(e) {
+            saveButton.innerHTML = '<span>⏳</span> Enregistrement en cours...';
+            saveButton.disabled = true;
+        });
+    }
+
+    // Initialisation
+    console.log('Initialisation de la force du mot de passe');
+    updatePasswordStrength();
+});
+</script>
+{% endblock %}
