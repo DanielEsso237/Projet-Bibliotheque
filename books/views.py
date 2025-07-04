@@ -342,8 +342,8 @@ def favorites_view(request):
 @login_required
 @require_POST
 def toggle_favorite(request):
-    item_id = request.POST.get('book_id')  # Renommé pour plus de clarté, peut être généralisé
-    item_type = request.POST.get('item_type', 'book')  # Ajout pour gérer book ou document
+    item_id = request.POST.get('book_id')  
+    item_type = request.POST.get('item_type', 'book')  
     if not item_id or not item_type:
         return JsonResponse({'status': 'error', 'message': 'ID ou type manquant.'}, status=400)
 
@@ -364,11 +364,11 @@ def toggle_favorite(request):
         )
 
         if created:
-            messages.success(request, f'{item_type.capitalize()} ajouté aux favoris.')
-            return JsonResponse({'status': 'success', 'created': True})
+            messages.success(request, f'{item.title} ajouté aux favoris.')
+            return JsonResponse({'status': 'success', 'created': True, 'title': item.title})
         else:
             favorite.delete()
-            messages.success(request, f'{item_type.capitalize()} retiré des favoris.')
+            messages.success(request, f'{item.title} retiré des favoris.')
             return JsonResponse({'status': 'success', 'created': False})
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)

@@ -15,6 +15,10 @@ class Book(models.Model):
     def __str__(self):
         return f"{self.title} by {self.author}"
 
+    @property
+    def item_type(self):
+        return 'book'
+
     class Meta:
         ordering = ['title']
         verbose_name = "E-book"
@@ -38,6 +42,10 @@ class Document(models.Model):
 
     def __str__(self):
         return f"{self.title} ({self.get_document_type_display()})"
+
+    @property
+    def item_type(self):
+        return 'document'
 
     class Meta:
         ordering = ['title']

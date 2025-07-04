@@ -519,10 +519,11 @@
                     method: 'POST',
                     data: {
                         book_id: bookId,
+                        item_type: 'book', // Ajout explicite du type
                         csrfmiddlewaretoken: csrfToken
                     },
                     success: function(response) {
-                        if (response.added) {
+                        if (response.created) {
                             button.find('.empty').css('opacity', '0');
                             button.find('.filled').css('opacity', '1');
                             button.find('.favorite-text').text('Retirer des favoris');

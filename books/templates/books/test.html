@@ -351,12 +351,12 @@
                         {% endif %}
                     </div>
                     <div class="card-actions">
-                        {% if item.pk and item.item_type == 'book' %}
+                        {% if item.pk and item._meta.model_name == 'book' %}
                             <a href="{% url 'books:book_detail' item.pk %}" class="btn btn-primary">
                                 <i class="fas fa-eye me-2"></i>
                                 Voir détails
                             </a>
-                        {% elif item.pk and item.item_type == 'document' %}
+                        {% elif item.pk and item._meta.model_name == 'document' %}
                             <a href="{% url 'books:document_detail' item.pk %}" class="btn btn-primary">
                                 <i class="fas fa-eye me-2"></i>
                                 Voir détails
@@ -364,7 +364,7 @@
                         {% endif %}
                         {% if user.is_authenticated %}
                             <button class="favorite-btn" data-book-id="{{ item.id }}" 
-                                    data-item-type="{{ item.item_type }}"
+                                    data-item-type="{{ item._meta.model_name }}"
                                     title="Retirer des favoris" aria-label="Retirer des favoris">
                                 <svg class="empty" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="opacity: 0;">
                                     <path fill="none" d="M0 0h24v24H0z"/>
