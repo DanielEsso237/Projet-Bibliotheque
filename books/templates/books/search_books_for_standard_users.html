@@ -1,0 +1,154 @@
+{% extends 'books/base_admin.html' %}
+{% load static %}
+
+{% block title %}Sélectionner la catégorie du document{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="card shadow-lg border-0">
+        <div class="card-header bg-primary text-white text-center">
+            <h3 class="mb-0"><i class="fas fa-folder-open me-2"></i>Choisir une catégorie</h3>
+        </div>
+        <div class="card-body">
+            <form method="post" id="categoryForm" action="{% url 'books:select_document_category' %}">
+                {% csrf_token %}
+                <!-- Messages d'erreur -->
+                {% if messages %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {% for message in messages %}
+                            <p class="mb-0">{{ message }}</p>
+                        {% endfor %}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endif %}
+                <!-- Sélection du type -->
+                <h5 class="mb-3 text-primary text-center fw-bold"><i class="fas fa-tags me-2"></i>Type de document</h5>
+                <div class="row g-2 mb-4">
+                    {% for value, label in document_types %}
+                        <div class="col-6 col-md-4">
+                            <div class="card h-100 border-0 shadow-sm type-card" data-value="{{ value }}">
+                                <div class="card-body text-center p-3">
+                                    <i class="fas {% if value == 'exam' %}fa-file-alt{% elif value == 'course' %}fa-chalkboard-teacher{% elif value == 'td' %}fa-clipboard-list{% elif value == 'article' %}fa-newspaper{% endif %} fa-2x mb-2 text-primary"></i>
+                                    <h6 class="card-title">{{ label }}</h6>
+                                    <input type="radio" name="document_type" value="{{ value }}" class="d-none" required>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Sélection du niveau -->
+                <h5 class="mb-3 text-primary text-center fw-bold"><i class="fas fa-graduation-cap me-2"></i>Niveau académique</h5>
+                <div class="row g-2 mb-4">
+                    {% for value, label in academic_levels %}
+                        <div class="col-6 col-md-3">
+                            <div class="card h-100 border-0 shadow-sm level-card" data-value="{{ value }}">
+                                <div class="card-body text-center p-3">
+                                    <i class="fas fa-user-graduate fa-2x mb-2 text-primary"></i>
+                                    <h6 class="card-title">{{ label }}</h6>
+                                    <input type="radio" name="academic_level" value="{{ value }}" class="d-none" required>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Sélection de la filière -->
+                <h5 class="mb-3 text-primary text-center fw-bold"><i class="fas fa-university me-2"></i>Filière</h5>
+                <div class="row g-2">
+                    {% for value, label in departments %}
+                        <div class="col-6 col-md-3">
+                            <div class="card h-100 border-0 shadow-sm department-card" data-value="{{ value }}">
+                                <div class="card-body text-center p-3">
+                                    <i class="fas fa-building fa-2x mb-2 text-primary"></i>
+                                    <h6 class="card-title">{{ label }}</h6>
+                                    <input type="radio" name="department" value="{{ value }}" class="d-none">
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg" id="submitBtn" disabled>
+                        <i class="fas fa-arrow-right me-2"></i>Continuer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const typeCards = document.querySelectorAll('.type-card');
+        const levelCards = document.querySelectorAll('.level-card');
+        const departmentCards = document.querySelectorAll('.department-card');
+        const submitBtn = document.getElementById('submitBtn');
+        const form = document.getElementById('categoryForm');
+        const alertContainer = document.createElement('div');
+
+        function showAlert(message) {
+            alertContainer.className = 'alert alert-warning alert-dismissible fade show mt-3';
+            alertContainer.role = 'alert';
+            alertContainer.innerHTML = `
+                <p class="mb-0">${message}</p>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            form.prepend(alertContainer);
+        }
+
+        function checkSelection() {
+            const typeSelected = document.querySelector('input[name="document_type"]:checked');
+            const levelSelected = document.querySelector('input[name="academic_level"]:checked');
+            submitBtn.disabled = !(typeSelected && levelSelected);
+        }
+
+        typeCards.forEach(card => {
+            card.addEventListener('click', () => {
+                typeCards.forEach(c => {
+                    c.classList.remove('border-primary', 'bg-primary-subtle');
+                    c.querySelector('input').checked = false;
+                });
+                card.classList.add('border-primary', 'bg-primary-subtle');
+                card.querySelector('input').checked = true;
+                checkSelection();
+            });
+        });
+
+        levelCards.forEach(card => {
+            card.addEventListener('click', () => {
+                levelCards.forEach(c => {
+                    c.classList.remove('border-primary', 'bg-primary-subtle');
+                    c.querySelector('input').checked = false;
+                });
+                card.classList.add('border-primary', 'bg-primary-subtle');
+                card.querySelector('input').checked = true;
+                checkSelection();
+            });
+        });
+
+        departmentCards.forEach(card => {
+            card.addEventListener('click', () => {
+                departmentCards.forEach(c => {
+                    c.classList.remove('border-primary', 'bg-primary-subtle');
+                    c.querySelector('input').checked = false;
+                });
+                card.classList.add('border-primary', 'bg-primary-subtle');
+                card.querySelector('input').checked = true;
+            });
+        });
+
+        submitBtn.addEventListener('click', (e) => {
+            if (submitBtn.disabled) {
+                e.preventDefault();
+                showAlert('Veuillez sélectionner un type de document et un niveau académique.');
+            }
+        });
+
+        checkSelection();
+    });
+</script>
+{% endblock %}
+{% endblock %}

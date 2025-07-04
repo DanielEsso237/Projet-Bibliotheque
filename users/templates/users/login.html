@@ -1,0 +1,652 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion Administrateur</title>
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'fontawesome/css/all.min.css' %}" rel="stylesheet">
+    <!-- Bootstrap 5 CSS via CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- Font Awesome 6 via CDN -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        :root {
+            --primary-blue: #2563eb;
+            --primary-yellow: #fbbf24;
+            --primary-white: #ffffff;
+            --light-blue: #60a5fa;
+            --light-yellow: #fcd34d;
+            --dark-blue: #1d4ed8;
+            --dark-yellow: #f59e0b;
+            --bg-color: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            --text-color: #1e293b;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --card-text: #1e293b;
+            --card-border: rgba(37, 99, 235, 0.2);
+            --navbar-bg: linear-gradient(135deg, var(--primary-blue) 0%, var(--light-blue) 50%, var(--primary-white) 100%);
+            --navbar-text: var(--primary-white);
+            --footer-bg: linear-gradient(135deg, var(--dark-blue) 0%, var(--primary-blue) 100%);
+            --footer-text: var(--primary-white);
+            --btn-primary-bg: linear-gradient(135deg, var(--primary-blue) 0%, var(--light-blue) 100%);
+            --btn-primary-hover: linear-gradient(135deg, var(--dark-blue) 0%, var(--primary-blue) 100%);
+            --btn-secondary-bg: linear-gradient(135deg, var(--primary-yellow) 0%, var(--light-yellow) 100%);
+            --btn-secondary-hover: linear-gradient(135deg, var(--dark-yellow) 0%, var(--primary-yellow) 100%);
+            --shadow-color: rgba(37, 99, 235, 0.1);
+            --glow-color: rgba(37, 99, 235, 0.3);
+        }
+
+        body.dark-mode {
+            --bg-color: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            --text-color: #f8fafc;
+            --card-bg: rgba(30, 41, 59, 0.9);
+            --card-text: #f8fafc;
+            --card-border: rgba(251, 191, 36, 0.3);
+            --navbar-bg: linear-gradient(135deg, #0f172a 0%, var(--dark-blue) 50%, var(--primary-yellow) 100%);
+            --navbar-text: var(--primary-white);
+            --footer-bg: linear-gradient(135deg, #0f172a 0%, var(--dark-yellow) 100%);
+            --footer-text: var(--primary-white);
+            --btn-primary-bg: linear-gradient(135deg, var(--primary-yellow) 0%, var(--light-yellow) 100%);
+            --btn-primary-hover: linear-gradient(135deg, var(--dark-yellow) 0%, var(--primary-yellow) 100%);
+            --btn-secondary-bg: linear-gradient(135deg, var(--primary-blue) 0%, var(--light-blue) 100%);
+            --btn-secondary-hover: linear-gradient(135deg, var(--dark-blue) 0%, var(--primary-blue) 100%);
+            --shadow-color: rgba(251, 191, 36, 0.2);
+            --glow-color: rgba(251, 191, 36, 0.4);
+        }
+
+        * {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            background: var(--bg-color);
+            background-attachment: fixed;
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin: 0;
+            padding: 2rem 1rem;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 80%, rgba(37, 99, 235, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(251, 191, 36, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        body.dark-mode::before {
+            background: radial-gradient(circle at 20% 80%, rgba(251, 191, 36, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(37, 99, 235, 0.15) 0%, transparent 50%);
+        }
+
+        .login-container {
+            max-width: 500px;
+            width: 100%;
+            padding: 3rem;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 8px 40px var(--shadow-color), 0 4px 12px rgba(0, 0, 0, 0.05);
+            border: 2px solid var(--card-border);
+            animation: slideUp 0.6s ease-out;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary-blue), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .login-container h2 {
+            color: var(--card-text);
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            text-shadow: 0 2px 4px var(--shadow-color);
+        }
+
+        .login-container h2 i {
+            background: var(--btn-primary-bg);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 2rem;
+        }
+
+        .brand-subtitle {
+            text-align: center;
+            color: var(--primary-blue);
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 2rem;
+            opacity: 0.8;
+        }
+
+        body.dark-mode .brand-subtitle {
+            color: var(--primary-yellow);
+        }
+
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            border: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(5px);
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+
+        .alert-danger {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05));
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
+
+        .alert-warning {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.05));
+            color: #92400e;
+            border-left: 4px solid #f59e0b;
+        }
+
+        .alert-info {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(37, 99, 235, 0.05));
+            color: #1e40af;
+            border-left: 4px solid #2563eb;
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--card-text);
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-label i {
+            color: var(--primary-blue);
+            font-size: 1.1rem;
+        }
+
+        body.dark-mode .form-label i {
+            color: var(--primary-yellow);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            border: 2px solid var(--card-border);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--card-bg);
+            color: var(--card-text);
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 4px var(--glow-color), 0 8px 25px var(--shadow-color);
+            transform: translateY(-2px);
+            background: var(--primary-white);
+        }
+
+        body.dark-mode .form-control:focus {
+            border-color: var(--primary-yellow);
+            box-shadow: 0 0 0 4px var(--glow-color), 0 8px 25px var(--shadow-color);
+        }
+
+        .form-control:hover {
+            border-color: var(--primary-blue);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px var(--shadow-color);
+        }
+
+        body.dark-mode .form-control:hover {
+            border-color: var(--primary-yellow);
+        }
+
+        .form-control::placeholder {
+            color: rgba(107, 114, 128, 0.7);
+            opacity: 0.8;
+        }
+
+        .btn-primary {
+            background: var(--btn-primary-bg);
+            color: var(--primary-white);
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 20px var(--shadow-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:hover {
+            background: var(--btn-primary-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px var(--shadow-color);
+        }
+
+        .btn-primary:active {
+            transform: translateY(-1px);
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 1rem;
+        }
+
+        .register-link a {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 600;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        body.dark-mode .register-link a {
+            color: var(--primary-yellow);
+        }
+
+        .register-link a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 50%;
+            background: var(--primary-blue);
+            transition: all 0.3s;
+            transform: translateX(-50%);
+        }
+
+        body.dark-mode .register-link a::after {
+            background: var(--primary-yellow);
+        }
+
+        .register-link a:hover::after {
+            width: 100%;
+        }
+
+        .register-link a:hover {
+            transform: translateY(-1px);
+            text-shadow: 0 2px 8px var(--glow-color);
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 20px;
+            border: 2px solid var(--card-border);
+            box-shadow: 0 8px 40px var(--shadow-color);
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-header {
+            border-bottom: 1px solid var(--card-border);
+            padding: 2rem;
+        }
+
+        .modal-title {
+            color: var(--card-text);
+            font-weight: 700;
+            font-size: 1.75rem;
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .modal-footer {
+            border-top: 1px solid var(--card-border);
+            padding: 1.5rem 2rem;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .modal-footer .btn {
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            border-radius: 10px;
+        }
+
+        .modal-footer .btn-primary {
+            background: var(--btn-primary-bg);
+            color: var(--primary-white);
+        }
+
+        .modal-footer .btn-primary:hover {
+            background: var(--btn-primary-hover);
+        }
+
+        .modal-footer .btn-secondary {
+            background: var(--btn-secondary-bg);
+            color: var(--primary-white);
+            border: none;
+        }
+
+        .modal-footer .btn-secondary:hover {
+            background: var(--btn-secondary-hover);
+        }
+
+        .toggle-dark-mode {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: var(--card-bg);
+            border: 2px solid var(--card-border);
+            color: var(--card-text);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.75rem;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px var(--shadow-color);
+            z-index: 1000;
+        }
+
+        .toggle-dark-mode:hover {
+            transform: rotate(180deg) scale(1.1);
+            box-shadow: 0 8px 25px var(--glow-color);
+            border-color: var(--primary-blue);
+        }
+
+        body.dark-mode .toggle-dark-mode:hover {
+            border-color: var(--primary-yellow);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @media (max-width: 576px) {
+            body {
+                padding: 1rem;
+            }
+
+            .login-container {
+                padding: 2rem;
+                margin-top: 1rem;
+            }
+
+            .login-container h2 {
+                font-size: 2rem;
+            }
+
+            .toggle-dark-mode {
+                top: 1rem;
+                right: 1rem;
+                width: 45px;
+                height: 45px;
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        .btn:focus, .form-control:focus, .toggle-dark-mode:focus {
+            outline: 2px solid var(--primary-yellow);
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <button class="toggle-dark-mode" id="toggleDarkMode" title="Basculer le mode sombre" aria-label="Basculer entre mode sombre et clair">
+        <i class="fas fa-moon"></i>
+    </button>
+
+    <div class="login-container">
+        <h2>
+            <i class="fas fa-graduation-cap"></i>
+            Connexion
+        </h2>
+        <div class="brand-subtitle">
+            📚 Bibliotech Academique
+        </div>
+        
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}" role="alert">
+                    <i class="fas fa-info-circle"></i>
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="id_username" class="form-label">
+                    <i class="fas fa-user"></i>
+                    Nom d'utilisateur
+                </label>
+                <input type="text" name="username" id="id_username" class="form-control" placeholder="Entrez votre nom d'utilisateur" required>
+            </div>
+            <div class="form-group">
+                <label for="id_password" class="form-label">
+                    <i class="fas fa-lock"></i>
+                    Mot de passe
+                </label>
+                <input type="password" name="password" id="id_password" class="form-control" placeholder="Entrez votre mot de passe" required>
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-sign-in-alt"></i>
+                Se connecter
+            </button>
+        </form>
+    </div>
+
+    <!-- Modal pour changer le mot de passe -->
+    {% if show_password_modal %}
+    <div class="modal fade" id="passwordChangeModal" tabindex="-1" aria-labelledby="passwordChangeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="passwordChangeModalLabel">
+                        <i class="fas fa-key"></i>
+                        Définir un nouveau mot de passe
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'users:change_password' %}">
+                        {% csrf_token %}
+                        {% for field in form %}
+                            <div class="form-group">
+                                <label for="{{ field.id_for_label }}" class="form-label">
+                                    <i class="fas fa-key"></i>
+                                    {{ field.label }}
+                                </label>
+                                {{ field }}
+                                {% if field.errors %}
+                                    {% for error in field.errors %}
+                                        <div class="alert alert-danger mt-2">
+                                            <i class="fas fa-exclamation-triangle"></i>
+                                            {{ error }}
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i>
+                            Enregistrer
+                        </button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times"></i>
+                        Fermer
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            if (document.getElementById('passwordChangeModal')) {
+                var passwordModal = new bootstrap.Modal(document.getElementById('passwordChangeModal'));
+                passwordModal.show();
+            }
+        });
+    </script>
+    {% endif %}
+
+    <!-- Bootstrap 5 JS Bundle via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggleButton = document.getElementById('toggleDarkMode');
+            const body = document.body;
+
+            // Vérifier si le mode sombre est activé
+            const isDarkMode = localStorage.getItem('darkMode') === 'true';
+            if (isDarkMode) {
+                body.classList.add('dark-mode');
+                toggleButton.innerHTML = '<i class="fas fa-sun"></i>';
+            }
+
+            // Basculer le mode sombre
+            toggleButton.addEventListener('click', () => {
+                toggleButton.style.transform = 'rotate(360deg) scale(1.2)';
+                setTimeout(() => {
+                    body.classList.toggle('dark-mode');
+                    const isDark = body.classList.contains('dark-mode');
+                    toggleButton.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+                    localStorage.setItem('darkMode', isDark);
+                    toggleButton.style.transform = '';
+                }, 150);
+            });
+
+            // Gestion du focus pour l'accessibilité
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Tab') {
+                    document.body.classList.add('keyboard-navigation');
+                }
+            });
+
+            document.addEventListener('mousedown', () => {
+                document.body.classList.remove('keyboard-navigation');
+            });
+
+            // Animation des champs de saisie
+            const inputs = document.querySelectorAll('.form-control');
+            inputs.forEach(input => {
+                input.addEventListener('focus', () => {
+                    input.parentElement.classList.add('focused');
+                });
+                
+                input.addEventListener('blur', () => {
+                    if (!input.value) {
+                        input.parentElement.classList.remove('focused');
+                    }
+                });
+                
+                // Vérifier si le champ a une valeur au chargement
+                if (input.value) {
+                    input.parentElement.classList.add('focused');
+                }
+            });
+        });
+
+        // Désactiver les animations si l'utilisateur préfère les mouvements réduits
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            document.documentElement.style.setProperty('--animation-duration', '0.01ms');
+        }
+    </script>
+</body>
+</html>

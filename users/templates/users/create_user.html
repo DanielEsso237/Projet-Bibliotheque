@@ -1,0 +1,592 @@
+{% extends 'books/base_admin.html' %}
+{% load static %}
+
+{% block title %}Créer un utilisateur{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Variables CSS pour cohérence */
+:root {
+    --primary-color: #4f46e5;
+    --primary-hover: #4338ca;
+    --success-color: #10b981;
+    --error-color: #ef4444;
+    --warning-color: #f59e0b;
+    --text-color: #1f2937;
+    --text-muted: #6b7280;
+    --border-color: #d1d5db;
+    --border-focus: #4f46e5;
+    --bg-light: #f9fafb;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --border-radius: 0.5rem;
+    --transition: all 0.2s ease-in-out;
+}
+
+/* Container principal */
+.form-container {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.form-card {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-md);
+    padding: 2rem;
+    border: 1px solid #e5e7eb;
+}
+
+/* En-tête */
+.form-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--bg-light);
+}
+
+.form-title {
+    color: var(--text-color);
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.form-subtitle {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+/* Messages d'alerte */
+.alert {
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 1.5rem;
+    border: none;
+    font-weight: 500;
+}
+
+.alert-success {
+    background-color: #ecfdf5;
+    color: #065f46;
+    border-left: 4px solid var(--success-color);
+}
+
+.alert-error, .alert-danger {
+    background-color: #fef2f2;
+    color: #991b1b;
+    border-left: 4px solid var(--error-color);
+}
+
+.alert-warning {
+    background-color: #fffbeb;
+    color: #92400e;
+    border-left: 4px solid var(--warning-color);
+}
+
+/* Groupes de champs */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+/* Labels */
+label {
+    display: block;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.required-label::after {
+    content: ' *';
+    color: var(--error-color);
+    font-weight: bold;
+}
+
+/* Champs de formulaire */
+.form-control, .form-select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    transition: var(--transition);
+    background-color: white;
+    color: var(--text-color);
+}
+
+.form-control:focus, .form-select:focus {
+    outline: none;
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    transform: translateY(-1px);
+}
+
+.form-control::placeholder {
+    color: var(--text-muted);
+    opacity: 0.7;
+}
+
+/* Styles spéciaux pour les champs modernes */
+.form-control-modern, .form-select-modern {
+    position: relative;
+    background: linear-gradient(145deg, #ffffff, #f8fafc);
+    border: 2px solid #e2e8f0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.form-control-modern:focus, .form-select-modern:focus {
+    border-color: var(--primary-color);
+    background: white;
+    box-shadow: 
+        0 0 0 3px rgba(79, 70, 229, 0.1),
+        0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.form-control-modern:hover, .form-select-modern:hover {
+    border-color: #cbd5e1;
+    transform: translateY(-1px);
+}
+
+/* Champ conditionnel (matricule étudiant) */
+.conditional-field {
+    transition: all 0.3s ease-in-out;
+    overflow: hidden;
+}
+
+.conditional-field.hidden {
+    max-height: 0;
+    margin: 0;
+    padding: 0;
+    opacity: 0;
+}
+
+/* Icônes pour les types de champs */
+.field-with-icon {
+    position: relative;
+}
+
+.field-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.field-with-icon .form-control {
+    padding-left: 2.5rem;
+}
+
+/* Messages d'erreur */
+.error-message {
+    color: var(--error-color);
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.error-message::before {
+    content: '⚠';
+}
+
+/* Boutons */
+.btn-container {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--bg-light);
+}
+
+.btn {
+    padding: 0.75rem 2rem;
+    border: none;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: var(--transition);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 120px;
+    justify-content: center;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+    color: white;
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, var(--primary-hover), #3730a3);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-secondary {
+    background: #f3f4f6;
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+    background: #e5e7eb;
+    transform: translateY(-1px);
+}
+
+/* Indicateur de progression */
+.form-progress {
+    height: 4px;
+    background: var(--bg-light);
+    border-radius: 2px;
+    margin-bottom: 2rem;
+    overflow: hidden;
+}
+
+.form-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-color), var(--success-color));
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .form-container {
+        margin: 1rem auto;
+        padding: 0 0.5rem;
+    }
+    
+    .form-card {
+        padding: 1.5rem;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+    
+    .btn-container {
+        flex-direction: column;
+    }
+    
+    .btn {
+        width: 100%;
+    }
+}
+
+/* Animation d'entrée */
+.form-card {
+    animation: slideUp 0.4s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* États de validation */
+.form-control.is-valid {
+    border-color: var(--success-color);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%2310b981' d='m2.3 6.73.94-.94 1.94 1.94 3.4-3.4.94.94L2.3 6.73z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+.form-control.is-invalid {
+    border-color: var(--error-color);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23ef4444'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath d='m5.8 4.6 1.4 1.4m0 0 1.4 1.4m-1.4-1.4L5.8 8.4m1.4-1.4L8.6 5.6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <div class="form-card">
+        <div class="form-header">
+            <h1 class="form-title">Créer un utilisateur</h1>
+            <p class="form-subtitle">Remplissez le formulaire pour ajouter un nouvel utilisateur</p>
+        </div>
+
+        <div class="form-progress">
+            <div class="form-progress-bar" id="progressBar"></div>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="post" action="" id="userForm" novalidate>
+            {% csrf_token %}
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="{{ form.first_name.id_for_label }}" class="required-label">
+                        {{ form.first_name.label }}
+                    </label>
+                    {{ form.first_name }}
+                    {% if form.first_name.errors %}
+                        <div class="error-message">{{ form.first_name.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.last_name.id_for_label }}" class="required-label">
+                        {{ form.last_name.label }}
+                    </label>
+                    {{ form.last_name }}
+                    {% if form.last_name.errors %}
+                        <div class="error-message">{{ form.last_name.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.email.id_for_label }}" class="required-label">
+                    {{ form.email.label }}
+                </label>
+                {{ form.email }}
+                {% if form.email.errors %}
+                    <div class="error-message">{{ form.email.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.user_type.id_for_label }}" class="required-label">
+                    {{ form.user_type.label }}
+                </label>
+                {{ form.user_type }}
+                {% if form.user_type.errors %}
+                    <div class="error-message">{{ form.user_type.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group conditional-field" id="studentIdGroup">
+                <label for="{{ form.student_id.id_for_label }}">
+                    {{ form.student_id.label }}
+                </label>
+                {{ form.student_id }}
+                {% if form.student_id.errors %}
+                    <div class="error-message">{{ form.student_id.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group conditional-field" id="academicLevelGroup">
+                <label for="{{ form.academic_level.id_for_label }}">
+                    {{ form.academic_level.label }}
+                </label>
+                <select name="academic_level" id="{{ form.academic_level.id_for_label }}" class="form-select form-select-modern">
+                    <option value="">Sélectionnez un niveau académique</option>
+                    <option value="L1">Licence 1</option>
+                    <option value="L2">Licence 2</option>
+                    <option value="L3">Licence 3</option>
+                    <option value="M1">Master 1</option>
+                    <option value="M2">Master 2</option>
+                    <option value="N/A">Non applicable</option>
+                </select>
+                {% if form.academic_level.errors %}
+                    <div class="error-message">{{ form.academic_level.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="{{ form.phone_number.id_for_label }}">
+                        {{ form.phone_number.label }}
+                    </label>
+                    {{ form.phone_number }}
+                    {% if form.phone_number.errors %}
+                        <div class="error-message">{{ form.phone_number.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.department.id_for_label }}">
+                        {{ form.department.label }}
+                    </label>
+                    <select name="department" id="{{ form.department.id_for_label }}" class="form-select form-select-modern">
+                        <option value="">Sélectionnez une filière</option>
+                        <option value="informatique">Informatique</option>
+                        <option value="mathematiques">Mathématiques</option>
+                        <option value="physique">Physique</option>
+                        <option value="chimie">Chimie</option>
+                        <option value="biologie">Biologie</option>
+                    </select>
+                    {% if form.department.errors %}
+                        <div class="error-message">{{ form.department.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="btn-container">
+                <button type="submit" class="btn btn-primary" id="submitBtn">
+                    <span>✓</span> Créer l'utilisateur
+                </button>
+                <a href="{% url 'users:manage_users' %}" class="btn btn-secondary">
+                    <span>←</span> Annuler
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('userForm');
+    const userType = document.querySelector('#id_user_type');
+    const studentIdGroup = document.getElementById('studentIdGroup');
+    const studentIdField = document.querySelector('#id_student_id');
+    const academicLevelGroup = document.getElementById('academicLevelGroup');
+    const academicLevelField = document.querySelector('#id_academic_level');
+    const progressBar = document.getElementById('progressBar');
+    const submitBtn = document.getElementById('submitBtn');
+
+    // Gestion des champs conditionnels (matricule et niveau académique)
+    function toggleConditionalFields() {
+        const labelStudent = studentIdGroup.querySelector('label');
+        const labelAcademic = academicLevelGroup.querySelector('label');
+        
+        if (userType.value === 'STUDENT') {
+            studentIdGroup.classList.remove('hidden');
+            studentIdField.setAttribute('required', 'required');
+            if (labelStudent && !labelStudent.classList.contains('required-label')) {
+                labelStudent.classList.add('required-label');
+            }
+
+            academicLevelGroup.classList.remove('hidden');
+            academicLevelField.setAttribute('required', 'required');
+            if (labelAcademic && !labelAcademic.classList.contains('required-label')) {
+                labelAcademic.classList.add('required-label');
+            }
+        } else {
+            studentIdGroup.classList.add('hidden');
+            studentIdField.removeAttribute('required');
+            studentIdField.classList.remove('is-invalid');
+            if (labelStudent) {
+                labelStudent.classList.remove('required-label');
+            }
+
+            academicLevelGroup.classList.add('hidden');
+            academicLevelField.removeAttribute('required');
+            academicLevelField.classList.remove('is-invalid');
+            if (labelAcademic) {
+                labelAcademic.classList.remove('required-label');
+            }
+        }
+        updateProgress();
+    }
+
+    // Mise à jour de la barre de progression
+    function updateProgress() {
+        const requiredFields = form.querySelectorAll('[required]');
+        let filledFields = 0;
+        
+        requiredFields.forEach(field => {
+            if (field.value.trim() !== '') {
+                filledFields++;
+            }
+        });
+        
+        const progress = (filledFields / requiredFields.length) * 100;
+        progressBar.style.width = progress + '%';
+    }
+
+    // Validation en temps réel
+    function validateField(field) {
+        const value = field.value.trim();
+        
+        // Validation email
+        if (field.type === 'email' && value) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (emailRegex.test(value)) {
+                field.classList.add('is-valid');
+                field.classList.remove('is-invalid');
+            } else {
+                field.classList.add('is-invalid');
+                field.classList.remove('is-valid');
+            }
+        }
+        // Validation champs requis
+        else if (field.hasAttribute('required')) {
+            if (value) {
+                field.classList.add('is-valid');
+                field.classList.remove('is-invalid');
+            } else {
+                field.classList.add('is-invalid');
+                field.classList.remove('is-valid');
+            }
+        }
+        // Champs optionnels avec valeur
+        else if (value) {
+            field.classList.add('is-valid');
+            field.classList.remove('is-invalid');
+        } else {
+            field.classList.remove('is-valid', 'is-invalid');
+        }
+    }
+
+    // Event listeners
+    userType.addEventListener('change', toggleConditionalFields);
+    
+    // Validation et progression en temps réel
+    form.querySelectorAll('input, select').forEach(field => {
+        field.addEventListener('input', function() {
+            validateField(this);
+            updateProgress();
+        });
+        
+        field.addEventListener('blur', function() {
+            validateField(this);
+        });
+    });
+
+    // Animation du bouton lors de la soumission
+    form.addEventListener('submit', function(e) {
+        submitBtn.innerHTML = '<span>⏳</span> Création en cours...';
+        submitBtn.disabled = true;
+    });
+
+    // Initialisation
+    toggleConditionalFields();
+    updateProgress();
+    
+    // Validation initiale des champs pré-remplis
+    form.querySelectorAll('input, select').forEach(field => {
+        if (field.value.trim() !== '') {
+            validateField(field);
+        }
+    });
+});
+</script>
+{% endblock %}
