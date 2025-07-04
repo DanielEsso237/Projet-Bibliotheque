@@ -1,0 +1,75 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription Bibliothécaire</title>
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'fontawesome/css/all.min.css' %}" rel="stylesheet">
+    <style>
+        .register-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 5rem;
+        }
+        .form-label {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <h2 class="text-center mb-4">Inscription Bibliothécaire</h2>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} text-center" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        {% if form.errors %}
+            <div class="alert alert-danger">
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="id_username" class="form-label">Nom d'utilisateur <i class="fas fa-user"></i></label>
+                <input type="text" name="username" id="id_username" class="form-control" placeholder="Entrez un nom d’utilisateur" required>
+            </div>
+            <div class="mb-3">
+                <label for="id_email" class="form-label">Email <i class="fas fa-envelope"></i></label>
+                <input type="email" name="email" id="id_email" class="form-control" placeholder="Entrez votre email" required>
+            </div>
+            <div class="mb-3">
+                <label for="id_phone_number" class="form-label">Numéro de téléphone <i class="fas fa-phone"></i></label>
+                <input type="text" name="phone_number" id="id_phone_number" class="form-control" placeholder="Entrez votre numéro (optionnel)">
+            </div>
+            <div class="mb-3">
+                <label for="id_password1" class="form-label">Mot de passe <i class="fas fa-lock"></i></label>
+                <input type="password" name="password1" id="id_password1" class="form-control" placeholder="Entrez un mot de passe" required>
+            </div>
+            <div class="mb-3">
+                <label for="id_password2" class="form-label">Confirmez le mot de passe <i class="fas fa-lock"></i></label>
+                <input type="password" name="password2" id="id_password2" class="form-control" placeholder="Confirmez votre mot de passe" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">S'inscrire <i class="fas fa-user-plus"></i></button>
+        </form>
+        <p class="text-center mt-3">Déjà un compte ? <a href="{% url 'login' %}">Se connecter</a></p>
+    </div>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

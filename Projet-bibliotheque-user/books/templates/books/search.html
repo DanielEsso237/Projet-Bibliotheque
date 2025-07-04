@@ -1,0 +1,509 @@
+{% extends "readers/base.html" %}
+{% load static %}
+{% block title %}Recherche de livres{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/search.css' %}">
+<style>
+    /* Styles spécifiques à la page de recherche */
+    .search-container {
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 16px;
+        box-shadow: 0 8px 32px var(--shadow-color);
+        margin-bottom: 2rem;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .search-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--primary-blue), var(--primary-yellow), transparent);
+        animation: searchShine 4s infinite;
+    }
+
+    @keyframes searchShine {
+        0% { left: -100%; }
+        100% { left: 100%; }
+    }
+
+    .search-title {
+        background: linear-gradient(135deg, var(--primary-blue), var(--primary-yellow));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 2rem;
+        font-size: 2.5rem;
+        text-shadow: 0 4px 8px var(--shadow-color);
+        position: relative;
+    }
+
+    .search-form {
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 8px 24px var(--shadow-color);
+        backdrop-filter: blur(15px);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .search-form::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--primary-blue), var(--primary-yellow), transparent);
+        opacity: 0.6;
+    }
+
+    .form-control, .form-select {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid var(--card-border);
+        border-radius: 12px;
+        padding: 0.75rem 1rem;
+        color: var(--text-color);
+        backdrop-filter: blur(10px);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        font-weight: 500;
+    }
+
+    .form-control:focus, .form-select:focus {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: var(--primary-blue);
+        box-shadow: 0 0 0 0.2rem var(--glow-color);
+        transform: translateY(-2px);
+    }
+
+    .form-control::placeholder {
+        color: rgba(var(--card-text), 0.6);
+        font-weight: 400;
+    }
+
+    body.dark-mode .form-control,
+    body.dark-mode .form-select {
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text-color);
+    }
+
+    body.dark-mode .form-control:focus,
+    body.dark-mode .form-select:focus {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: var(--primary-yellow);
+    }
+
+    .form-check {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.5rem;
+        border-radius: 8px;
+        transition: all 0.3s;
+    }
+
+    .form-check:hover {
+        background: rgba(var(--primary-blue), 0.1);
+    }
+
+    .form-check-input {
+        width: 1.25rem;
+        height: 1.25rem;
+        margin: 0;
+        border: 2px solid var(--card-border);
+        border-radius: 4px;
+        transition: all 0.3s;
+    }
+
+    .form-check-input:checked {
+        background: var(--btn-primary-bg);
+        border-color: var(--primary-blue);
+        box-shadow: 0 0 10px var(--glow-color);
+    }
+
+    .form-check-label {
+        color: var(--text-color);
+        font-weight: 500;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    /* Styles pour les cartes de livres */
+    .book-card {
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 16px;
+        box-shadow: 0 8px 32px var(--shadow-color);
+        overflow: hidden;
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s, border-color 0.4s;
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+        position: relative;
+    }
+
+    .book-card.visible {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+    .book-card:hover {
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 20px 40px var(--shadow-color);
+        border-color: var(--glow-color);
+    }
+
+    .book-cover-container {
+        position: relative;
+        overflow: hidden;
+        height: 300px;
+    }
+
+    .book-cover-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .book-card:hover .book-cover-container img {
+        transform: scale(1.05);
+    }
+
+    .default-cover {
+        background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-yellow) 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 300px;
+        color: var(--primary-white);
+        font-size: 18px;
+        font-weight: bold;
+        text-align: center;
+        padding: 20px;
+        box-sizing: border-box;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .default-cover::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        transform: rotate(45deg);
+        animation: defaultCoverShine 3s infinite;
+    }
+
+    @keyframes defaultCoverShine {
+        0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+        100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+    }
+
+    .default-cover i {
+        font-size: 48px;
+        margin-bottom: 15px;
+        display: block;
+        filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+    }
+
+    .card-body {
+        padding: 1.5rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    .card-title {
+        color: var(--card-text);
+        font-weight: 700;
+        font-size: 1.25rem;
+        margin-bottom: 1rem;
+        line-height: 1.3;
+    }
+
+    .card-text {
+        color: var(--card-text);
+        opacity: 0.85;
+        margin-bottom: 0.75rem;
+        font-weight: 500;
+    }
+
+    .availability-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .availability-badge.available {
+        background: linear-gradient(135deg, #10b981, #34d399);
+        color: white;
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+    }
+
+    .availability-badge.unavailable {
+        background: linear-gradient(135deg, #ef4444, #f87171);
+        color: white;
+        box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+    }
+
+    .card-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 1.5rem;
+        gap: 1rem;
+    }
+
+    /* Bouton "Voir détails" */
+    .btn-primary {
+        padding: 0.5rem 1rem;
+        font-size: 0.95rem;
+        border-radius: 10px;
+        background: var(--btn-primary-bg);
+        border: 1px solid var(--primary-blue);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        backdrop-filter: blur(10px);
+    }
+
+    .btn-primary:hover {
+        background: var(--primary-blue);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px var(--glow-color);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .search-title {
+            font-size: 2rem;
+        }
+        
+        .search-form {
+            padding: 1.5rem;
+        }
+        
+        .card-actions {
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .btn-primary {
+            width: 100%;
+            padding: 0.5rem;
+            font-size: 0.9rem;
+        }
+    }
+
+    /* Animation pour l'apparition des cartes */
+    .books-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+
+    @media (max-width: 768px) {
+        .books-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="search-container">
+    <h2 class="search-title">
+        <i class="fas fa-search me-3"></i>
+        Recherche de livres
+    </h2>
+    
+    <form method="get" class="search-form">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label for="search-query" class="form-label">Titre ou auteur</label>
+                <input type="text" id="search-query" name="q" class="form-control" 
+                       placeholder="Entrez le titre ou l'auteur..." value="{{ query }}">
+            </div>
+            <div class="col-md-3">
+                <label for="category-select" class="form-label">Catégorie</label>
+                <select name="category" id="category-select" class="form-select">
+                    <option value="">Toutes les catégories</option>
+                    {% for category in categories %}
+                        <option value="{{ category }}" {% if category == request.GET.category %}selected{% endif %}>
+                            {{ category }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+                <div class="form-check">
+                    <input type="checkbox" name="available" id="available" class="form-check-input" 
+                           {% if request.GET.available %}checked{% endif %}>
+                    <label for="available" class="form-check-label">
+                        <i class="fas fa-check-circle me-2"></i>
+                        Disponible uniquement
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-search me-2"></i>
+                    Rechercher
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="books-grid">
+    {% for book in books %}
+        <div class="book-card">
+            <div class="book-cover-container">
+                {% if book.cover_image %}
+                    <img src="{{ book.cover_image.url }}" alt="{{ book.title }}">
+                {% else %}
+                    <div class="default-cover">
+                        <div>
+                            <i class="fas fa-book"></i>
+                            <div>{{ book.title|truncatechars:50 }}</div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="card-body">
+                <h5 class="card-title">{{ book.title }}</h5>
+                <p class="card-text">
+                    <i class="fas fa-user me-2"></i>
+                    <strong>Auteur:</strong> {{ book.author }}
+                </p>
+                <p class="card-text">
+                    <i class="fas fa-tag me-2"></i>
+                    <strong>Catégorie:</strong> {{ book.category }}
+                </p>
+                <div class="availability-badge {% if book.is_available %}available{% else %}unavailable{% endif %}">
+                    <i class="fas fa-{% if book.is_available %}check-circle{% else %}times-circle{% endif %}"></i>
+                    {% if book.is_available %}Disponible{% else %}Non disponible{% endif %}
+                </div>
+                
+                <div class="card-actions">
+                    <a href="{% url 'books:book_detail' book.pk %}" class="btn btn-primary">
+                        <i class="fas fa-eye me-2"></i>
+                        Voir détails
+                    </a>
+                    {% if user.is_authenticated %}
+                        <button class="favorite-btn" data-book-id="{{ book.id }}" 
+                                title="Ajouter/Retirer des favoris" aria-label="Gérer les favoris">
+                            <svg class="empty" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"
+                                 {% if book in user.favorites.all %}style="opacity: 0;"{% else %}style="opacity: 1;"{% endif %}>
+                                <path fill="none" d="M0 0h24v24H0z"/>
+                                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                            </svg>
+                            <svg class="filled" height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
+                                 {% if book in user.favorites.all %}style="opacity: 1;"{% else %}style="opacity: 0;"{% endif %}>
+                                <path fill="none" d="M0 0h24v24H0z"/>
+                                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" fill="#ffca28"/>
+                            </svg>
+                            <span class="favorite-text">
+                                {% if book in user.favorites.all %}Retirer des favoris{% else %}Ajouter aux favoris{% endif %}
+                            </span>
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12">
+            <div class="no-books-message">
+                <i class="fas fa-search"></i>
+                <h3>Aucun livre trouvé</h3>
+                <p>Essayez de modifier vos critères de recherche ou explorez notre catalogue complet.</p>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Animation d'apparition des cartes
+        const cards = document.querySelectorAll(".book-card");
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add("visible");
+                    }, index * 150); // décalage entre chaque carte
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+
+        cards.forEach(card => observer.observe(card));
+
+        // Gestion des favoris avec jQuery
+        {% if user.is_authenticated %}
+            $(document).ready(function() {
+                $('.favorite-btn').click(function() {
+                    const bookId = $(this).data('book-id');
+                    const button = $(this);
+                    
+                    $.ajax({
+                        url: '{% url 'books:toggle_favorite' %}',
+                        method: 'POST',
+                        data: {
+                            book_id: bookId,
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                        },
+                        success: function(response) {
+                            if (response.added) {
+                                button.find('.empty').css('opacity', '0');
+                                button.find('.filled').css('opacity', '1');
+                                button.find('.favorite-text').text('Retirer des favoris');
+                            } else {
+                                button.find('.empty').css('opacity', '1');
+                                button.find('.filled').css('opacity', '0');
+                                button.find('.favorite-text').text('Ajouter aux favoris');
+                            }
+                        },
+                        error: function() {
+                            alert('Erreur lors de la mise à jour des favoris.');
+                        }
+                    });
+                });
+            });
+        {% endif %}
+
+        // Amélioration de l'accessibilité
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && e.target.classList.contains('favorite-btn')) {
+                e.target.click();
+            }
+        });
+    });
+</script>
+{% endblock %}

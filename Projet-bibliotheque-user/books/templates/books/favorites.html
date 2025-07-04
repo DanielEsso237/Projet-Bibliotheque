@@ -1,0 +1,78 @@
+{% extends "readers/base.html" %}
+{% load static %}
+{% block title %}Mes Favoris{% endblock %}
+{% block content %}
+    <div class="container my-4">
+        <h2 class="text-center mb-4">Mes favoris</h2>
+        {% if favorite_books %}
+            <div class="row">
+                {% for book in favorite_books %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            {% if book.cover_image %}
+                                <img src="{{ book.cover_image.url }}" class="card-img-top" alt="{{ book.title }}">
+                            {% else %}
+                                <img src="{% static 'images/default_book.jpg' %}" class="card-img-top" alt="Default cover">
+                            {% endif %}
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title">{{ book.title }}</h5>
+                                <p class="card-text">Auteur: {{ book.author }}</p>
+                                <p class="card-text">Catégorie: {{ book.category }}</p>
+                                <div class="mt-auto d-flex justify-content-between align-items-center">
+                                    <a href="{% url 'books:book_detail' book.pk %}" class="btn btn-primary">Voir détails</a>
+                                    <button class="favorite-btn" data-book-id="{{ book.id }}" title="Retirer des favoris">
+                                        <svg class="empty" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" style="opacity: 0;">
+                                            <path fill="none" d="M0 0h24v24H0z"/>
+                                            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                                        </svg>
+                                        <svg class="filled" height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="opacity: 1;">
+                                            <path fill="none" d="M0 0h24v24H0z"/>
+                                            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" fill="#ffca28"/>
+                                        </svg>
+                                        <span class="favorite-text">Retirer des favoris</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-center">{{ message }}</p>
+        {% endif %}
+    </div>
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script>
+        $(document).ready(function() {
+            $('.favorite-btn').click(function() {
+                const bookId = $(this).data('book-id');
+                const button = $(this);
+                $.ajax({
+                    url: '{% url 'books:toggle_favorite' %}',
+                    method: 'POST',
+                    data: {
+                        book_id: bookId,
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    success: function(response) {
+                        if (response.added) {
+                            button.find('.empty').css('opacity', '0');
+                            button.find('.filled').css('opacity', '1');
+                            button.find('.favorite-text').text('Retirer des favoris');
+                        } else {
+                            button.find('.empty').css('opacity', '1');
+                            button.find('.filled').css('opacity', '0');
+                            button.find('.favorite-text').text('Ajouter aux favoris');
+                            button.closest('.card').parent().fadeOut(300, function() {
+                                $(this).remove();
+                            });
+                        }
+                    },
+                    error: function() {
+                        alert('Erreur lors de la mise à jour des favoris.');
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}
