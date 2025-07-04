@@ -12938,3 +12938,23 @@ Notification count: total=0
 Notification count: total=0
 Watching for file changes with StatReloader
 Not Found: /favicon.ico
+Watching for file changes with StatReloader
+Not Found: /favicon.ico
+Watching for file changes with StatReloader
+User logged in: admin_biblio, first_login=False
+Notification count: total=0
+Notification count: total=0
+Notification count: total=1
+Notification count: total=1
+Notification count: total=1
+Notification count: total=2
+Notification count: total=2
+Notification count: total=2
+Notification count: total=2
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=4
+User logged in: esso.daniel001, first_login=False
+Internal Server Error: /books/toggle-favorite/
+Not Found: /favicon.ico
