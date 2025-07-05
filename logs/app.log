@@ -13376,3 +13376,51 @@ User logged in: esso.daniel001, first_login=False
 C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\Projet-Bibliotheque-daniel\Projet-bibliotheque-admin\books\views.py changed, reloading.
 Watching for file changes with StatReloader
 Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+User logged in: admin_biblio, first_login=False
+Notification count: total=5
+Notification count: total=5
+Notification count: total=5
+Notification count: total=5
+Notification count: total=5
+Notification count: total=5
+Notification count: total=5
+Notification count: total=5
+Notification count: total=5
+Notification count: total=5
+Notification count: total=5
+Notification count: total=5
+Notification count: total=5
+Notification count: total=5
+Notification count: total=5
+Notification count: total=5
+Notification count: total=5
+Notification count: total=5
+Notification count: total=5
+Notification count: total=5
+Notification count: total=5
+Notification count: total=5
+Notification count: total=5
+Notification count: total=5
+Notification count: total=5
+Notification count: total=5
+Notification count: total=5
+C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\Projet-Bibliotheque-daniel\Projet-bibliotheque-admin\books\views.py changed, reloading.
+Watching for file changes with StatReloader
+Notification count: total=5
+Internal Server Error: /books/add-document/exam/L2/
+Traceback (most recent call last):
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\Projet-Bibliotheque-daniel\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\Projet-Bibliotheque-daniel\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+TypeError: add_document() got an unexpected keyword argument 'document_type'
+C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\Projet-Bibliotheque-daniel\Projet-bibliotheque-admin\books\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\Projet-Bibliotheque-daniel\Projet-bibliotheque-admin\books\views.py changed, reloading.
+Watching for file changes with StatReloader
+Notification count: total=5
+Notification count: total=5
+Notification count: total=5
+Notification count: total=6
+User logged in: esso.daniel001, first_login=False

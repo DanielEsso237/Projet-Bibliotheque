@@ -282,6 +282,26 @@
         box-shadow: 0 4px 12px var(--glow-color);
     }
 
+    .btn-consult {
+        padding: 0.5rem 1rem;
+        font-size: 0.95rem;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #8b5cf6, #6b21a8);
+        border: 1px solid #6b21a8;
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        width: 100%;
+        text-align: center;
+    }
+
+    .btn-consult:hover {
+        background: linear-gradient(135deg, #7c3aed, #5b21b6);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+    }
+
     .favorite-btn {
         display: flex;
         align-items: center;
@@ -361,6 +381,7 @@
         }
         
         .btn-primary,
+        .btn-consult,
         .favorite-btn,
         .btn-download {
             width: 100%;
@@ -463,6 +484,10 @@
                                     </span>
                                 </button>
                                 {% if book.ebook_file %}
+                                    <a href="{% url 'books:download_book' book.pk %}?action=view" class="btn-consult" target="_blank">
+                                        <i class="fas fa-book-open"></i>
+                                        Consulter
+                                    </a>
                                     <a href="{% url 'books:download_book' book.pk %}" class="btn-download">
                                         <i class="fas fa-download"></i>
                                         Télécharger

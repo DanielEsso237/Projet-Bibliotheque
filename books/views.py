@@ -121,44 +121,59 @@ def edit_doc(request, doc_id):
 def choose_document_type(request):
     return render(request, 'books/choose_document_type.html')
 
-@login_required
+
 def select_document_category(request):
-    document_types = [dt for dt in Document.DOCUMENT_TYPES if dt[0] != 'ebook']
-    academic_levels = [al for al in Document.ACADEMIC_LEVELS if al[0] != 'N/A']
-    departments = [dp for dp in Document.DEPARTMENTS]
-    if request.method == 'POST':
+    if request.method == "POST":
         document_type = request.POST.get('document_type')
         academic_level = request.POST.get('academic_level')
-        if not document_type:
-            messages.error(request, 'Veuillez sélectionner un type de document.')
-        elif not academic_level:
-            messages.error(request, 'Veuillez sélectionner un niveau académique.')
-        elif document_type == 'ebook':
-            messages.error(request, 'Les e-books ne peuvent pas être ajoutés ici.')
-        elif academic_level == 'N/A':
-            messages.error(request, 'Veuillez sélectionner un niveau académique valide.')
-        else:
-            return redirect('books:add_document', document_type=document_type, academic_level=academic_level)
-        return render(request, 'books/select_document_category.html', {'document_types': document_types, 'academic_levels': academic_levels, 'departments': departments})
-    return render(request, 'books/select_document_category.html', {'document_types': document_types, 'academic_levels': academic_levels, 'departments': departments})
+        department = request.POST.get('department')
 
-@login_required
+        if not document_type or not academic_level:
+            messages.error(request, "Veuillez sélectionner un type de document et un niveau académique.")
+            return render(request, 'books/select_document_category.html', {
+                'document_types': Document.DOCUMENT_TYPES,
+                'academic_levels': Document.ACADEMIC_LEVELS,
+                'departments': Document.DEPARTMENTS,
+            })
+
+        # Rediriger avec les paramètres dans l'URL au lieu de la session
+        return redirect('books:add_document', document_type=document_type, academic_level=academic_level)
+
+    return render(request, 'books/select_document_category.html', {
+        'document_types': Document.DOCUMENT_TYPES,
+        'academic_levels': Document.ACADEMIC_LEVELS,
+        'departments': Document.DEPARTMENTS,
+    })
+
 def add_document(request, document_type, academic_level):
-    if request.method == 'POST':
+    department = None  # Vous pouvez ajouter la logique pour récupérer le département si nécessaire
+
+    if request.method == "POST":
         form = DocumentForm(request.POST, request.FILES)
         if form.is_valid():
             document = form.save(commit=False)
             document.document_type = document_type
             document.academic_level = academic_level
-            document.department = request.POST.get('department', '')
+            if department:
+                document.department = department
             document.save()
-            messages.success(request, 'Document ajouté avec succès !')
+            messages.success(request, "Document ajouté avec succès.")
             return redirect('books:librarian_dashboard')
         else:
-            messages.error(request, 'Veuillez corriger les erreurs ci-dessous.')
+            messages.error(request, "Erreur dans le formulaire.")
     else:
         form = DocumentForm()
-    return render(request, 'books/add_document.html', {'form': form, 'document_type': document_type, 'academic_level': academic_level})
+
+    # Obtenir le libellé traduit du document_type
+    document_type_display = dict(Document.DOCUMENT_TYPES).get(document_type, "document")
+    return render(request, 'books/add_document.html', {
+        'form': form,
+        'document_type': document_type,
+        'document_type_display': document_type_display,
+        'academic_level': academic_level,
+    })
+
+
 
 def add_book(request):
     if request.method == 'POST':

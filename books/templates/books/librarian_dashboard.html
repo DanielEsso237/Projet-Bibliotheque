@@ -183,10 +183,9 @@
 
     body.dark-mode .default-cover {
         background: linear-gradient(135deg, var(--dark-blue) 0%, var(--dark-yellow) 100%);
-
     }
 
-        .card-actions {
+    .card-actions {
         display: flex;
         flex-direction: column; /* Empile les boutons verticalement */
         gap: 0.5rem; /* Espace entre les boutons */
@@ -260,10 +259,8 @@
     .card-text {
         flex-grow: 1;
     }
-
 </style>
 {% endblock %}
-
 
 {% block content %}
     <div class="container-fluid">
@@ -704,7 +701,6 @@
                 `<img src="${book.cover_image}" class="card-img-top" alt="${book.title}">` : 
                 `<div class="default-cover">
                     <i class="fas fa-book"></i>
-                    <div>${book.title}</div>
                 </div>`
             }
         </div>
