@@ -211,19 +211,21 @@ def search_view(request):
     page_number = request.GET.get('page')
     books_page = paginator.get_page(page_number)
 
-    # Récupérer les IDs des favoris pour les Books uniquement
     favorite_book_ids = UserFavorite.objects.filter(
         user=request.user,
         content_type=ContentType.objects.get_for_model(Book)
     ).values_list('object_id', flat=True)
 
-    academic_levels = Document.ACADEMIC_LEVELS
+    categories = Book.objects.values_list('category', flat=True)
+    unique_categories = sorted(set(cat for cat in categories if cat))
+
     context = {
         'books': books_page,
         'query': query,
-        'categories': Book.objects.values_list('category', flat=True).distinct(),
+        'category': category,
+        'categories': unique_categories,
         'favorite_ids': list(favorite_book_ids),
-        'academic_levels': academic_levels
+        'academic_levels': Document.ACADEMIC_LEVELS
     }
     return render(request, 'books/search_books_for_standard_users.html', context)
 

@@ -388,7 +388,7 @@ body.dark-mode .form-select:focus {
                             Détails
                         </a>
                         {% if user.is_authenticated %}
-                            <button class="favorite-btn" data-book-id="{{ document.id }}" 
+                            <button class="favorite-btn" data-book-id="{{ document.id }}" data-item-type="document" 
                                     title="{% if document.id in favorite_ids %}Retirer des favoris{% else %}Ajouter aux favoris{% endif %}" 
                                     aria-label="{% if document.id in favorite_ids %}Retirer des favoris{% else %}Ajouter aux favoris{% endif %}">
                                 <svg class="empty" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" 
@@ -490,18 +490,20 @@ $(document).ready(function() {
 
     if (isAuthenticated) {
         $('.favorite-btn').click(function() {
-            const bookId = $(this).data('book-id');
+            const itemId = $(this).data('book-id');
+            const itemType = $(this).data('item-type');
             const button = $(this);
             
             $.ajax({
                 url: '{% url 'books:toggle_favorite' %}',
                 method: 'POST',
                 data: {
-                    book_id: bookId,
+                    book_id: itemId,
+                    item_type: itemType,
                     csrfmiddlewaretoken: '{{ csrf_token }}'
                 },
                 success: function(response) {
-                    if (response.added) {
+                    if (response.created) {
                         button.find('.empty').css('opacity', '0');
                         button.find('.filled').css('opacity', '1');
                         button.find('.favorite-text').text('Retirer des favoris');
@@ -515,7 +517,8 @@ $(document).ready(function() {
                         button.attr('aria-label', 'Ajouter aux favoris');
                     }
                 },
-                error: function() {
+                error: function(xhr, status, error) {
+                    console.log('Erreur AJAX:', error, xhr.responseText);
                     alert('Erreur lors de la mise à jour des favoris.');
                 }
             });

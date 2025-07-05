@@ -13367,3 +13367,12 @@ django.template.exceptions.TemplateSyntaxError: Variables and attributes may not
 C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\Projet-Bibliotheque-daniel\Projet-bibliotheque-admin\books\models.py changed, reloading.
 Watching for file changes with StatReloader
 Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+User logged in: admin_biblio, first_login=False
+Notification count: total=4
+Notification count: total=4
+Notification count: total=5
+User logged in: esso.daniel001, first_login=False
+C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\Projet-Bibliotheque-daniel\Projet-bibliotheque-admin\books\views.py changed, reloading.
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader

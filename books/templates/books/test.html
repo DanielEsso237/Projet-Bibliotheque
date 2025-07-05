@@ -1,6 +1,6 @@
 {% extends 'books/base_user.html' %}
 {% load static %}
-{% block title %}Mes Favoris{% endblock %}
+{% block title %}Documents{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -78,8 +78,8 @@
 }
 
 .default-cover i {
-    font-size: 48px;
-    margin-bottom: 15px;
+    font-size: 36px;
+    margin-bottom: 10px;
     display: block;
     filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
 }
@@ -221,29 +221,42 @@
     margin-top: 2rem;
 }
 
-.no-favorites-message {
-    text-align: center;
-    padding: 4rem 2rem;
+.search-form {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 8px 24px var(--shadow-color);
+    margin-bottom: 2rem;
+}
+
+.form-select, .btn-primary {
+    border-radius: 12px;
+}
+
+.form-select {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--card-border);
     color: var(--text-color);
-    opacity: 0.7;
+    padding: 0.75rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.no-favorites-message i {
-    font-size: 4rem;
-    margin-bottom: 1rem;
-    opacity: 0.5;
+.form-select:focus {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 0.2rem var(--glow-color);
+    transform: translateY(-2px);
 }
 
-.no-favorites-message h3 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-    font-weight: 600;
+body.dark-mode .form-select {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-color);
 }
 
-.no-favorites-message p {
-    font-size: 1rem;
-    max-width: 400px;
-    margin: 0 auto;
+body.dark-mode .form-select:focus {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--primary-yellow);
 }
 
 .pagination .page-link {
@@ -277,19 +290,17 @@
         gap: 1.5rem;
     }
 
-    .card-actions {
-        flex-direction: column;
-        gap: 0.75rem;
-    }
-
     .btn-primary,
     .btn-consult,
     .favorite-btn,
     .btn-download {
         width: 100%;
-        justify-content: center;
         padding: 0.75rem;
         font-size: 0.9rem;
+    }
+
+    .search-form {
+        padding: 1rem;
     }
 }
 </style>
@@ -298,99 +309,108 @@
 {% block content %}
 <div class="container my-4">
     <h2 class="text-center mb-4">
-        <i class="fas fa-heart me-3"></i>
-        Mes favoris
+        <i class="fas fa-file-alt me-3"></i>
+        Documents
     </h2>
-    
-    {% if favorite_items %}
+
+    <div class="search-form">
+        <form method="get">
+            <div class="row g-3">
+                <div class="col-md-5">
+                    <select name="type" class="form-select" onchange="this.form.submit()">
+                        <option value="">Toutes les catégories</option>
+                        {% for value, label in document_types %}
+                            <option value="{{ value }}" {% if request.GET.type == value %}selected{% endif %}>
+                                {{ label }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-5">
+                    <select name="level" class="form-select" onchange="this.form.submit()">
+                        <option value="">Tous les niveaux</option>
+                        {% for value, label in academic_levels %}
+                            <option value="{{ value }}" {% if request.GET.level == value %}selected{% endif %}>
+                                {{ label }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">Filtrer</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    {% if documents %}
         <div class="books-grid">
-            {% for item in favorite_items %}
+            {% for document in documents %}
                 <div class="book-card">
                     <div class="book-cover-container">
-                        {% if item.cover_image %}
-                            <img src="{{ item.cover_image.url }}" alt="{{ item.title }}">
+                        {% if document.cover_image %}
+                            <img src="{{ document.cover_image.url }}" alt="{{ document.title }}">
                         {% else %}
                             <div class="default-cover">
                                 <div>
-                                    <i class="fas fa-book"></i>
-                                    <div>{{ item.title|truncatechars:50 }}</div>
+                                    {% if document.document_type == 'course' %}
+                                        <i class="fas fa-book"></i>
+                                    {% elif document.document_type == 'td' %}
+                                        <i class="fas fa-file"></i>
+                                    {% elif document.document_type == 'article' %}
+                                        <i class="fas fa-newspaper"></i>
+                                    {% else %}
+                                        <i class="fas fa-file-alt"></i>
+                                    {% endif %}
+                                    <div>{{ document.title|truncatechars:50 }}</div>
                                 </div>
                             </div>
                         {% endif %}
                     </div>
-                    
                     <div class="card-body">
-                        <h5 class="card-title">{{ item.title }}</h5>
-                        {% if item.author %}
-                            <p class="card-text">
-                                <i class="fas fa-user me-2"></i>
-                                <strong>Auteur:</strong> {{ item.author }}
-                            </p>
-                        {% endif %}
-                        {% if item.category %}
-                            <p class="card-text">
-                                <i class="fas fa-tag me-2"></i>
-                                <strong>Catégorie:</strong> {{ item.category|default:"Non spécifiée" }}
-                            </p>
-                        {% endif %}
-                        {% if item.document_type %}
-                            <p class="card-text">
-                                <i class="fas fa-file-alt me-2"></i>
-                                <strong>Type:</strong> {{ item.document_type|title }}
-                            </p>
-                        {% elif item.is_physical %}
-                            <p class="card-text">
-                                <i class="fas fa-tablet-alt me-2"></i>
-                                <strong>Type:</strong> Livre physique
-                            </p>
-                        {% else %}
-                            <p class="card-text">
-                                <i class="fas fa-tablet-alt me-2"></i>
-                                <strong>Type:</strong> E-book
-                            </p>
-                        {% endif %}
+                        <h5 class="card-title">{{ document.title }}</h5>
+                        <p class="card-text">
+                            <i class="fas fa-user me-2"></i>
+                            <strong>Auteur :</strong> {{ document.author|default:"Inconnu" }}
+                        </p>
+                        <p class="card-text">
+                            <i class="fas fa-file-alt me-2"></i>
+                            <strong>Type :</strong> {{ document.get_document_type_display }}
+                        </p>
+                        <p class="card-text">
+                            <i class="fas fa-graduation-cap me-2"></i>
+                            <strong>Niveau :</strong> {{ document.get_academic_level_display }}
+                        </p>
                     </div>
                     <div class="card-actions">
-                        {% if item.pk and item._meta.model_name == 'book' %}
-                            <a href="{% url 'books:book_detail' item.pk %}" class="btn btn-primary">
-                                <i class="fas fa-eye me-2"></i>
-                                Voir détails
-                            </a>
-                        {% elif item.pk and item._meta.model_name == 'document' %}
-                            <a href="{% url 'books:document_detail' item.pk %}" class="btn btn-primary">
-                                <i class="fas fa-eye me-2"></i>
-                                Voir détails
-                            </a>
-                        {% endif %}
+                        <a href="{% url 'books:document_detail' document.pk %}" class="btn btn-primary">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Détails
+                        </a>
                         {% if user.is_authenticated %}
-                            <button class="favorite-btn" data-book-id="{{ item.id }}" 
-                                    data-item-type="{{ item._meta.model_name }}"
-                                    title="Retirer des favoris" aria-label="Retirer des favoris">
-                                <svg class="empty" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="opacity: 0;">
+                            <button class="favorite-btn" data-book-id="{{ document.id }}" data-item-type="document" 
+                                    title="{% if document.id in favorite_ids %}Retirer des favoris{% else %}Ajouter aux favoris{% endif %}" 
+                                    aria-label="{% if document.id in favorite_ids %}Retirer des favoris{% else %}Ajouter aux favoris{% endif %}">
+                                <svg class="empty" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" 
+                                     {% if document.id in favorite_ids %}style="opacity: 0;"{% else %}style="opacity: 1;"{% endif %}>
                                     <path fill="none" d="M0 0h24v24H0z"/>
                                     <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
                                 </svg>
-                                <svg class="filled" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="opacity: 1;">
+                                <svg class="filled" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" 
+                                     {% if document.id in favorite_ids %}style="opacity: 1;"{% else %}style="opacity: 0;"{% endif %}>
                                     <path fill="none" d="M0 0h24v24H0z"/>
                                     <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" fill="#ffca28"/>
                                 </svg>
-                                <span class="favorite-text">Retirer des favoris</span>
+                                <span class="favorite-text">
+                                    {% if document.id in favorite_ids %}Retirer des favoris{% else %}Ajouter aux favoris{% endif %}
+                                </span>
                             </button>
-                            {% if item.ebook_file %}
-                                <a href="{% url 'books:download_book' item.pk %}?action=view" class="btn-consult" target="_blank">
+                            {% if document.file %}
+                                <a href="{% url 'books:download_document' document.pk %}?action=view" class="btn btn-consult" target="_blank">
                                     <i class="fas fa-book-open me-2"></i>
                                     Consulter
                                 </a>
-                                <a href="{% url 'books:download_book' item.pk %}" class="btn-download">
-                                    <i class="fas fa-download me-2"></i>
-                                    Télécharger
-                                </a>
-                            {% elif item.file %}
-                                <a href="{% url 'books:download_document' item.pk %}?action=view" class="btn-consult" target="_blank">
-                                    <i class="fas fa-book-open me-2"></i>
-                                    Consulter
-                                </a>
-                                <a href="{% url 'books:download_document' item.pk %}" class="btn-download">
+                                <a href="{% url 'books:download_document' document.pk %}" class="btn btn-download" download>
                                     <i class="fas fa-download me-2"></i>
                                     Télécharger
                                 </a>
@@ -400,32 +420,32 @@
                 </div>
             {% endfor %}
         </div>
-        {% if favorite_items.has_other_pages %}
+        {% if documents.has_other_pages %}
             <div class="pagination mt-4 d-flex justify-content-center">
                 <ul class="pagination">
-                    {% if favorite_items.has_previous %}
+                    {% if documents.has_previous %}
                         <li class="page-item">
-                            <a class="page-link" href="?page={{ favorite_items.previous_page_number }}">« Précédent</a>
+                            <a class="page-link" href="?page={{ documents.previous_page_number }}{% if request.GET.type %}&type={{ request.GET.type }}{% endif %}{% if request.GET.level %}&level={{ request.GET.level }}{% endif %}">« Précédent</a>
                         </li>
                     {% else %}
                         <li class="page-item disabled">
                             <span class="page-link">« Précédent</span>
                         </li>
                     {% endif %}
-                    {% for num in favorite_items.paginator.page_range %}
-                        {% if favorite_items.number == num %}
+                    {% for num in documents.paginator.page_range %}
+                        {% if documents.number == num %}
                             <li class="page-item active">
                                 <span class="page-link">{{ num }}</span>
                             </li>
-                        {% elif num > favorite_items.number|add:-3 and num < favorite_items.number|add:3 %}
+                        {% elif num > documents.number|add:-3 and num < documents.number|add:3 %}
                             <li class="page-item">
-                                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                <a class="page-link" href="?page={{ num }}{% if request.GET.type %}&type={{ request.GET.type }}{% endif %}{% if request.GET.level %}&level={{ request.GET.level }}{% endif %}">{{ num }}</a>
                             </li>
                         {% endif %}
                     {% endfor %}
-                    {% if favorite_items.has_next %}
+                    {% if documents.has_next %}
                         <li class="page-item">
-                            <a class="page-link" href="?page={{ favorite_items.next_page_number }}">Suivant »</a>
+                            <a class="page-link" href="?page={{ documents.next_page_number }}{% if request.GET.type %}&type={{ request.GET.type }}{% endif %}{% if request.GET.level %}&level={{ request.GET.level }}{% endif %}">Suivant »</a>
                         </li>
                     {% else %}
                         <li class="page-item disabled">
@@ -436,10 +456,10 @@
             </div>
         {% endif %}
     {% else %}
-        <div class="no-favorites-message">
-            <i class="fas fa-heart-broken"></i>
-            <h3>Aucun livre dans vos favoris</h3>
-            <p>{{ message|default:"Explorez notre catalogue et ajoutez vos livres préférés à cette liste !" }}</p>
+        <div class="no-documents-message text-center">
+            <i class="fas fa-file-alt"></i>
+            <h3>Aucun document disponible</h3>
+            <p>Sélectionnez une catégorie ou un niveau académique, ou revenez plus tard pour de nouveaux documents.</p>
         </div>
     {% endif %}
 </div>
@@ -473,7 +493,6 @@ $(document).ready(function() {
             const itemId = $(this).data('book-id');
             const itemType = $(this).data('item-type');
             const button = $(this);
-            const card = button.closest('.book-card');
             
             $.ajax({
                 url: '{% url 'books:toggle_favorite' %}',
@@ -491,25 +510,15 @@ $(document).ready(function() {
                         button.attr('title', 'Retirer des favoris');
                         button.attr('aria-label', 'Retirer des favoris');
                     } else {
-                        card.css('transform', 'scale(0.95) translateY(-20px)');
-                        card.css('opacity', '0');
-                        
-                        setTimeout(() => {
-                            card.remove();
-                            
-                            if ($('.book-card').length === 0) {
-                                $('.books-grid').replaceWith(`
-                                    <div class="no-favorites-message">
-                                        <i class="fas fa-heart-broken"></i>
-                                        <h3>Aucun livre dans vos favoris</h3>
-                                        <p>Explorez notre catalogue et ajoutez vos livres préférés à cette liste !</p>
-                                    </div>
-                                `);
-                            }
-                        }, 400);
+                        button.find('.empty').css('opacity', '1');
+                        button.find('.filled').css('opacity', '0');
+                        button.find('.favorite-text').text('Ajouter aux favoris');
+                        button.attr('title', 'Ajouter aux favoris');
+                        button.attr('aria-label', 'Ajouter aux favoris');
                     }
                 },
-                error: function() {
+                error: function(xhr, status, error) {
+                    console.log('Erreur AJAX:', error, xhr.responseText);
                     alert('Erreur lors de la mise à jour des favoris.');
                 }
             });

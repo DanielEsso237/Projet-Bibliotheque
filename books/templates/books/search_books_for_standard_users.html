@@ -386,14 +386,13 @@
 </style>
 {% endblock %}
 
-
 {% block content %}
 <div class="container my-4">
-    <h2 class="text-center mb-4">
-        <i class="fas fa-search me-3"></i>
+    <h2 class="search-title">
+        <i class="fas fa-search"></i>
         Rechercher un e-book
     </h2>
-    <form method="get" class="search-form mb-4">
+    <form method="get" class="search-form">
         <div class="input-group">
             <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Rechercher par titre ou auteur...">
             <select name="category" class="form-select">
@@ -428,21 +427,21 @@
                     <div class="card-body">
                         <h5 class="card-title">{{ book.title }}</h5>
                         <p class="card-text">
-                            <i class="fas fa-user me-2"></i>
+                            <i class="fas fa-user"></i>
                             <strong>Auteur:</strong> {{ book.author }}
                         </p>
                         <p class="card-text">
-                            <i class="fas fa-tag me-2"></i>
+                            <i class="fas fa-tag"></i>
                             <strong>Catégorie:</strong> {{ book.category }}
                         </p>
                         <p class="card-text">
-                            <i class="fas fa-tablet-alt me-2"></i>
+                            <i class="fas fa-tablet-alt"></i>
                             <strong>Type:</strong>{% if book.is_physical %} Livre physique {% else %} E-book {% endif %}
                         </p>
 
                         <div class="card-actions">
                             <a href="{% url 'books:book_detail' book.pk %}" class="btn btn-primary">
-                                <i class="fas fa-eye me-2"></i>
+                                <i class="fas fa-eye"></i>
                                 Voir détails
                             </a>
                             {% if user.is_authenticated %}
@@ -465,7 +464,7 @@
                                 </button>
                                 {% if book.ebook_file %}
                                     <a href="{% url 'books:download_book' book.pk %}" class="btn-download">
-                                        <i class="fas fa-download me-2"></i>
+                                        <i class="fas fa-download"></i>
                                         Télécharger
                                     </a>
                                 {% endif %}
@@ -519,7 +518,7 @@
                     method: 'POST',
                     data: {
                         book_id: bookId,
-                        item_type: 'book', // Ajout explicite du type
+                        item_type: 'book',
                         csrfmiddlewaretoken: csrfToken
                     },
                     success: function(response) {
@@ -538,7 +537,6 @@
                         }
                     },
                     error: function(xhr, status, error) {
-                        console.log('Erreur AJAX:', error, xhr.responseText);
                         alert('Erreur lors de la mise à jour des favoris.');
                     }
                 });
