@@ -13424,3 +13424,309 @@ Notification count: total=5
 Notification count: total=5
 Notification count: total=6
 User logged in: esso.daniel001, first_login=False
+Watching for file changes with StatReloader
+C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\Projet-Bibliotheque-daniel\Projet-bibliotheque-admin\books\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\Projet-Bibliotheque-daniel\Projet-bibliotheque-admin\books\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\Projet-Bibliotheque-daniel\Projet-bibliotheque-admin\books\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\Projet-Bibliotheque-daniel\Projet-bibliotheque-admin\books\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\Projet-Bibliotheque-daniel\Projet-bibliotheque-admin\books\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\Projet-Bibliotheque-daniel\Projet-bibliotheque-admin\books\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\Projet-Bibliotheque-daniel\Projet-bibliotheque-admin\users\models.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\Projet-Bibliotheque-daniel\Projet-bibliotheque-admin\books\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\Projet-Bibliotheque-daniel\Projet-bibliotheque-admin\books\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\Projet-Bibliotheque-daniel\Projet-bibliotheque-admin\books\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\Projet-Bibliotheque-daniel\Projet-bibliotheque-admin\books\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\Projet-Bibliotheque-daniel\Projet-bibliotheque-admin\books\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\Projet-Bibliotheque-daniel\Projet-bibliotheque-admin\books\views.py changed, reloading.
+Watching for file changes with StatReloader
+Téléchargement enregistré pour esso.daniel001 (ID: 2), Book ID: 1
+Téléchargement enregistré pour esso.daniel001 (ID: 2), Book ID: 3
+C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\Projet-Bibliotheque-daniel\Projet-bibliotheque-admin\books\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\Projet-Bibliotheque-daniel\Projet-bibliotheque-admin\books\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\Projet-Bibliotheque-daniel\Projet-bibliotheque-admin\books\views.py changed, reloading.
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+User logged in: esso.daniel001, first_login=False
+Utilisateur: esso.daniel001 (ID: 2), Téléchargements: 4, Enregistrements: [{'id': 5, 'user_id': 2, 'content_type_id': 6, 'object_id': 1, 'downloaded_at': datetime.datetime(2025, 7, 5, 2, 31, 1, 412906, tzinfo=datetime.timezone.utc)}, {'id': 3, 'user_id': 2, 'content_type_id': 6, 'object_id': 2, 'downloaded_at': datetime.datetime(2025, 7, 5, 2, 8, 18, 974442, tzinfo=datetime.timezone.utc)}, {'id': 6, 'user_id': 2, 'content_type_id': 6, 'object_id': 3, 'downloaded_at': datetime.datetime(2025, 7, 5, 2, 32, 11, 473065, tzinfo=datetime.timezone.utc)}, {'id': 4, 'user_id': 2, 'content_type_id': 7, 'object_id': 2, 'downloaded_at': datetime.datetime(2025, 7, 5, 2, 17, 52, 210473, tzinfo=datetime.timezone.utc)}]
+Not Found: /favicon.ico
+User logged in: admin_biblio, first_login=False
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Total des notifications affichées: 6
+Notification count: total=6
+Tentative de suppression de toutes les notifications par l'utilisateur admin_biblio
+6 notifications supprimées
+Notification count: total=0
+User logged in: esso.daniel001, first_login=False
+Utilisateur: esso.daniel001 (ID: 2), Téléchargements: 4, Enregistrements: [{'id': 5, 'user_id': 2, 'content_type_id': 6, 'object_id': 1, 'downloaded_at': datetime.datetime(2025, 7, 5, 2, 31, 1, 412906, tzinfo=datetime.timezone.utc)}, {'id': 3, 'user_id': 2, 'content_type_id': 6, 'object_id': 2, 'downloaded_at': datetime.datetime(2025, 7, 5, 2, 8, 18, 974442, tzinfo=datetime.timezone.utc)}, {'id': 6, 'user_id': 2, 'content_type_id': 6, 'object_id': 3, 'downloaded_at': datetime.datetime(2025, 7, 5, 2, 32, 11, 473065, tzinfo=datetime.timezone.utc)}, {'id': 4, 'user_id': 2, 'content_type_id': 7, 'object_id': 2, 'downloaded_at': datetime.datetime(2025, 7, 5, 2, 17, 52, 210473, tzinfo=datetime.timezone.utc)}]
+Watching for file changes with StatReloader
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+User logged in: admin_biblio, first_login=False
+Notification count: total=0
+User logged in: admin_biblio, first_login=False
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=0
+Notification count: total=1
+Notification count: total=2
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=3
+Notification count: total=4
+Notification count: total=4
+Notification count: total=4
+Notification count: total=4
+Notification count: total=4
+Notification count: total=4
+Notification count: total=5
+Notification count: total=5
+Notification count: total=5
+Notification count: total=5
+Notification count: total=5
+Notification count: total=5
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Total des notifications affichées: 6
+Notification count: total=6
+Tentative de suppression de la notification ID 16 par l'utilisateur admin_biblio
+Notification supprimée: ID 16, unique_identifier: dc212be0b7ec812f81f51a95f543711e02f4c02649380f7fa550c056ca619a0c
+Notification count: total=5
+Tentative de suppression de la notification ID 15 par l'utilisateur admin_biblio
+Notification supprimée: ID 15, unique_identifier: 8c21a51eae6d199146b35143dfa35449698a3e76fadd0abd5583fd7361d5b082
+Notification count: total=4
+Notification count: total=4
+Notification count: total=4
+Notification count: total=4
+Notification count: total=4
+Notification count: total=4
+Notification count: total=4
+Notification count: total=4
+User created: junior.boris001, password hash: pbkdf2_sha256$1000000$7ZfnrCqAd8ASty5DWrzknU$YKVznawMHbJY22BgiauKGa3BNdREs7cHpV/4gpmdZ1Y=, first_login=True
+Notification count: total=5
+Notification count: total=5
+Notification count: total=5
+User created: abomo.hermann001, password hash: pbkdf2_sha256$1000000$gglIeVXRlCy10nfKp3CfI7$PTGQA/bH/6jdH2UIHEWrYp3pTwbtjMo/GmFtbspbiN0=, first_login=True
+Notification count: total=6
+Notification count: total=6
+Internal Server Error: /statistics/
+Traceback (most recent call last):
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\Projet-Bibliotheque-daniel\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\Projet-Bibliotheque-daniel\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\Projet-Bibliotheque-daniel\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\Projet-Bibliotheque-daniel\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\Projet-Bibliotheque-daniel\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\Projet-Bibliotheque-daniel\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader_tags.py", line 134, in render
+    compiled_parent = self.get_parent(context)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\Projet-Bibliotheque-daniel\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader_tags.py", line 131, in get_parent
+    return self.find_template(parent, context)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\Projet-Bibliotheque-daniel\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader_tags.py", line 109, in find_template
+    template, origin = context.template.engine.find_template(
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        template_name,
+        ^^^^^^^^^^^^^^
+        skip=history,
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\Projet-Bibliotheque-daniel\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\engine.py", line 163, in find_template
+    raise TemplateDoesNotExist(name, tried=tried)
+django.template.exceptions.TemplateDoesNotExist: books/base.html
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\Projet-Bibliotheque-daniel\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\Projet-Bibliotheque-daniel\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\Projet-Bibliotheque-daniel\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\Projet-Bibliotheque-daniel\Projet-bibliotheque-admin\library_stats\views.py", line 58, in statistics
+    return render(request, 'library_stats/statistics.html', context)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\Projet-Bibliotheque-daniel\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\Projet-Bibliotheque-daniel\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\Projet-Bibliotheque-daniel\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\backends\django.py", line 109, in render
+    reraise(exc, self.backend)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\Projet-Bibliotheque-daniel\Projet-bibliotheque-admin\venv_admin\Lib\site-packages\django\template\backends\django.py", line 130, in reraise
+    raise new from exc
+django.template.exceptions.TemplateDoesNotExist: books/base.html
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+Notification count: total=6
+User created: elono.bella001, password hash: pbkdf2_sha256$1000000$5RE05kcY2XIKnXfsbpFBF9$qexIU5Cu76Y6ngZay5kioLeXsohzhaZfZgmAhLQq3AI=, first_login=True
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Watching for file changes with StatReloader
+C:\Users\T.SHIGARAKI\Desktop\Projet-Bibliotheque-daniel\Projet-Bibliotheque-daniel\Projet-bibliotheque-admin\users\models.py changed, reloading.
+Watching for file changes with StatReloader
+Not Found: /favicon.ico
+User logged in: admin_biblio, first_login=False
+Notification count: total=7
+Not Found: /favicon.ico
+User logged in: admin_biblio, first_login=False
+Notification count: total=7
+Total des notifications affichées: 7
+Notification count: total=7
+Notification count: total=7
+Total des notifications affichées: 7
+Notification count: total=7
+Notification count: total=7
+Total des notifications affichées: 7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7
+Notification count: total=7

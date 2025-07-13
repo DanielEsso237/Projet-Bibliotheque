@@ -31,15 +31,40 @@ def librarian_dashboard(request):
     academic_levels = Document.ACADEMIC_LEVELS
     return render(request, 'books/librarian_dashboard.html', {'books': books, 'document_types': document_types, 'academic_levels': academic_levels})
 
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from users.models import UserDownload
+from .models import Document
+import logging
+
+logger = logging.getLogger(__name__)
+
 @login_required
 def standard_user_dashboard(request):
     if request.user.user_type == 'LIBRARIAN':
         messages.error(request, "Les bibliothécaires doivent utiliser leur tableau de bord dédié.")
         return redirect('books:librarian_dashboard')
+    
+    # Calculer le nombre de téléchargements avec débogage
+    user_id = request.user.id
+    downloads = UserDownload.objects.filter(user_id=user_id)
+    downloads_count = downloads.count()
+    logger.info(f"Utilisateur: {request.user.username} (ID: {user_id}), Téléchargements: {downloads_count}, Enregistrements: {list(downloads.values())}")
+    
+    # Calculer le nombre de favoris
     favorites_count = request.user.favorites.count()
-    downloads_count = request.user.downloads.count()
+    
+    # Notifications (à implémenter si nécessaire)
+    notifications_count = 0
+    
     academic_levels = Document.ACADEMIC_LEVELS
-    return render(request, 'books/standard_user_dashboard.html', {'loans_count': 0, 'notifications_count': 0, 'favorites_count': favorites_count, 'downloads_count': downloads_count, 'academic_levels': academic_levels})
+    return render(request, 'books/standard_user_dashboard.html', {
+        'notifications_count': notifications_count,
+        'favorites_count': favorites_count,
+        'downloads_count': downloads_count,
+        'academic_levels': academic_levels,
+    })
 
 def stats_api(request):
     total_books = Book.objects.count()
@@ -390,17 +415,34 @@ def toggle_favorite(request):
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse, FileResponse
+from django.contrib.auth.decorators import login_required
+from django.http import Http404
+from django.contrib.contenttypes.models import ContentType
+from .models import Book, Document
+from users.models import UserDownload
+import logging
+
+logger = logging.getLogger(__name__)
+
 @login_required
 def download_book(request, pk):
     book = get_object_or_404(Book, pk=pk)
     if not book.ebook_file or not book.ebook_file.name.endswith('.pdf'):
         raise Http404("Ce livre n'est pas disponible pour consultation ou téléchargement.")
-    action = request.GET.get('action', 'download')  
-    UserDownload.objects.get_or_create(
+    
+    action = request.GET.get('action', 'download')
+    
+    # Enregistrer le téléchargement
+    download, created = UserDownload.objects.get_or_create(
         user=request.user,
         content_type=ContentType.objects.get_for_model(Book),
         object_id=book.id
     )
+    if created:
+        logger.info(f"Téléchargement enregistré pour {request.user.username} (ID: {request.user.id}), Book ID: {book.id}")
+    
     if action == 'view':
         response = FileResponse(open(book.ebook_file.path, 'rb'), as_attachment=False)
         response['Content-Type'] = 'application/pdf'
@@ -415,12 +457,18 @@ def download_document(request, pk):
     document = get_object_or_404(Document, pk=pk)
     if not document.file or not document.file.name.endswith('.pdf'):
         raise Http404("Ce document n'est pas disponible pour consultation ou téléchargement.")
+    
     action = request.GET.get('action', 'download')
-    UserDownload.objects.get_or_create(
+    
+    # Enregistrer le téléchargement
+    download, created = UserDownload.objects.get_or_create(
         user=request.user,
         content_type=ContentType.objects.get_for_model(Document),
         object_id=document.id
     )
+    if created:
+        logger.info(f"Téléchargement enregistré pour {request.user.username} (ID: {request.user.id}), Document ID: {document.id}")
+    
     if action == 'view':
         response = FileResponse(open(document.file.path, 'rb'), as_attachment=False)
         response['Content-Type'] = 'application/pdf'
